@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Daily AI Papers{% endblock %}</title>
+    <meta name="description" content="{% block description %}Latest papers in AI research - RAG, Knowledge Graph, and more{% endblock %}">
+    
+    <!-- RSS Feed -->
+    <link rel="alternate" type="application/rss+xml" title="Daily AI Papers" href="/rss.xml">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="/assets/css/main.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="site-title">
+                <a href="/">Daily AI Papers</a>
+            </h1>
+            <nav class="site-nav">
+                <a href="/" class="nav-link">首页</a>
+                <a href="/rss.xml" class="nav-link">RSS</a>
+                <a href="/about.html" class="nav-link">关于</a>
+                <a href="https://github.com/your-username/daily-papers-site" class="nav-link" target="_blank">GitHub</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="site-main">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2024 Daily AI Papers | 
+               <a href="/rss.xml">RSS订阅</a> | 
+               <a href="https://github.com/your-username/daily-paper-v2">源码</a>
+            </p>
+            <p class="footer-note">
+                自动生成于 {{ site.build_time }} | 
+                数据来源: <a href="https://arxiv.org" target="_blank">arXiv</a>
+            </p>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

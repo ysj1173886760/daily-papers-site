@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}关于我们 - Daily AI Papers{% endblock %}
+{% block description %}了解Daily AI Papers项目，一个自动化的AI论文收集和分析系统{% endblock %}
+
+{% block content %}
+<div class="about-page">
+    <header class="page-header">
+        <h1>关于 Daily AI Papers</h1>
+        <p class="page-subtitle">自动化的AI论文收集与分析系统</p>
+    </header>
+    
+    <section class="about-section">
+        <h2>项目介绍</h2>
+        <p>Daily AI Papers 是一个基于大语言模型的智能论文分析系统，专注于AI前沿研究领域，特别是检索增强生成(RAG)和知识图谱(KG)等方向。</p>
+        
+        <h3>核心功能</h3>
+        <ul>
+            <li><strong>自动获取</strong>：每日从arXiv自动获取最新论文</li>
+            <li><strong>智能过滤</strong>：使用LLM过滤相关性高的优质论文</li>
+            <li><strong>深度分析</strong>：提供结构化的论文分析，包括技术方案、创新点、实验结果等</li>
+            <li><strong>RSS发布</strong>：支持RSS订阅，兼容所有主流阅读器</li>
+            <li><strong>多端适配</strong>：响应式设计，支持移动端和桌面端</li>
+        </ul>
+    </section>
+    
+    <section class="about-section">
+        <h2>技术栈</h2>
+        <div class="tech-grid">
+            <div class="tech-item">
+                <h4>后端处理</h4>
+                <ul>
+                    <li>Python + PocketFlow框架</li>
+                    <li>大语言模型分析</li>
+                    <li>arXiv API集成</li>
+                </ul>
+            </div>
+            <div class="tech-item">
+                <h4>前端展示</h4>
+                <ul>
+                    <li>静态站点生成</li>
+                    <li>Jinja2模板引擎</li>
+                    <li>响应式CSS设计</li>
+                </ul>
+            </div>
+            <div class="tech-item">
+                <h4>部署发布</h4>
+                <ul>
+                    <li>GitHub Pages</li>
+                    <li>GitHub Actions CI/CD</li>
+                    <li>RSS 2.0标准</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <section class="about-section">
+        <h2>分析模板</h2>
+        <div class="template-grid">
+            <div class="template-item">
+                <h4>Simple模板</h4>
+                <p>简洁明了的论文要点总结，适合快速浏览</p>
+            </div>
+            <div class="template-item">
+                <h4>V1模板</h4>
+                <p>结构化分析，包含核心方法和实验结果</p>
+            </div>
+            <div class="template-item">
+                <h4>V2模板</h4>
+                <p>深度分析模板，11个维度的详细解读</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="about-section">
+        <h2>RSS订阅</h2>
+        <div class="rss-info">
+            <p>我们提供标准的RSS 2.0 feed，您可以使用任何RSS阅读器订阅：</p>
+            <div class="rss-url-box">
+                <code>{{ site.url }}/rss.xml</code>
+                <button onclick="copyRSSUrl()" class="copy-btn">复制</button>
+            </div>
+            
+            <h4>推荐阅读器</h4>
+            <div class="readers-grid">
+                <a href="https://feedly.com" target="_blank" class="reader-link">
+                    <strong>Feedly</strong><br>
+                    <small>网页版，功能丰富</small>
+                </a>
+                <a href="https://reederapp.com" target="_blank" class="reader-link">
+                    <strong>Reeder</strong><br>
+                    <small>iOS/macOS原生应用</small>
+                </a>
+                <a href="https://miniflux.app" target="_blank" class="reader-link">
+                    <strong>Miniflux</strong><br>
+                    <small>简洁的自托管方案</small>
+                </a>
+                <a href="https://freshrss.org" target="_blank" class="reader-link">
+                    <strong>FreshRSS</strong><br>
+                    <small>开源自托管阅读器</small>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <section class="about-section">
+        <h2>开源信息</h2>
+        <p>本项目完全开源，欢迎贡献代码和建议：</p>
+        <ul>
+            <li><strong>主项目</strong>：<a href="https://github.com/your-username/daily-paper-v2" target="_blank">daily-paper-v2</a></li>
+            <li><strong>网站源码</strong>：<a href="https://github.com/your-username/daily-papers-site" target="_blank">daily-papers-site</a></li>
+            <li><strong>框架</strong>：<a href="https://github.com/the-pocket/PocketFlow" target="_blank">PocketFlow</a></li>
+        </ul>
+    </section>
+    
+    <section class="about-section">
+        <h2>联系我们</h2>
+        <p>如有问题或建议，欢迎通过以下方式联系：</p>
+        <ul>
+            <li>GitHub Issues：<a href="https://github.com/your-username/daily-paper-v2/issues" target="_blank">提交问题</a></li>
+            <li>Email：your-email@example.com</li>
+        </ul>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyRSSUrl() {
+    const url = '{{ site.url }}/rss.xml';
+    navigator.clipboard.writeText(url).then(function() {
+        alert('RSS地址已复制到剪贴板');
+    });
+}
+</script>
+{% endblock %}

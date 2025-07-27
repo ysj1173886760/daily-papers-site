@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Daily AI Papers - 最新AI论文汇总{% endblock %}
+{% block description %}最新的AI研究论文，包括RAG、知识图谱等前沿领域的深度分析{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h2>最新AI论文汇总</h2>
+    <p>每日精选最前沿的AI研究论文，提供深度分析和关键洞察</p>
+    <div class="hero-actions">
+        <a href="/rss.xml" class="btn btn-primary">RSS订阅</a>
+        <a href="#recent-papers" class="btn btn-secondary">查看论文</a>
+    </div>
+</div>
+
+<section id="recent-papers" class="papers-section">
+    <h3>最近更新</h3>
+    
+    {% if recent_posts %}
+    <div class="papers-grid">
+        {% for post in recent_posts %}
+        <article class="paper-card">
+            <div class="paper-meta">
+                <time datetime="{{ post.date }}">{{ post.date_formatted }}</time>
+                <span class="paper-category">{{ post.category }}</span>
+                <span class="paper-count">{{ post.papers_count }}篇论文</span>
+            </div>
+            
+            <h4 class="paper-title">
+                <a href="{{ post.url }}">{{ post.title }}</a>
+            </h4>
+            
+            <p class="paper-excerpt">{{ post.excerpt }}</p>
+            
+            <div class="paper-actions">
+                <a href="{{ post.url }}" class="read-more">阅读全文</a>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>暂无论文更新，请稍后再来查看。</p>
+    </div>
+    {% endif %}
+</section>
+
+<section class="stats-section">
+    <h3>统计信息</h3>
+    <div class="stats-grid">
+        <div class="stat-item">
+            <span class="stat-number">{{ total_papers }}</span>
+            <span class="stat-label">总论文数</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">{{ categories_count }}</span>
+            <span class="stat-label">研究领域</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">{{ days_active }}</span>
+            <span class="stat-label">活跃天数</span>
+        </div>
+    </div>
+</section>
+
+<section class="subscribe-section">
+    <h3>订阅方式</h3>
+    <div class="subscribe-grid">
+        <div class="subscribe-item">
+            <h4>RSS阅读器</h4>
+            <p>复制RSS地址到您喜欢的阅读器中：</p>
+            <code class="rss-url">{{ site.url }}/rss.xml</code>
+        </div>
+        <div class="subscribe-item">
+            <h4>推荐阅读器</h4>
+            <ul>
+                <li><a href="https://feedly.com" target="_blank">Feedly</a> - 网页版</li>
+                <li><a href="https://reederapp.com" target="_blank">Reeder</a> - iOS/macOS</li>
+                <li><a href="https://miniflux.app" target="_blank">Miniflux</a> - 自托管</li>
+            </ul>
+        </div>
+    </div>
+</section>
+{% endblock %}

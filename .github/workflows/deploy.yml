@@ -1,0 +1,70 @@
+name: Deploy to GitHub Pages
+
+on:
+  # 手动触发
+  workflow_dispatch:
+    inputs:
+      papers_data:
+        description: 'Papers data payload'
+        required: false
+        type: string
+  
+  # API触发（由主项目调用）
+  repository_dispatch:
+    types: [publish_papers]
+
+  # 推送到main分支时触发
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+    
+    - name: Process papers data
+      run: |
+        # 如果有传入的论文数据，处理它们
+        if [ -n "${{ github.event.client_payload.papers_data }}" ]; then
+          echo "Processing papers data from API call"
+          python scripts/process_papers.py --data='${{ github.event.client_payload.papers_data }}'
+        else
+          echo "No papers data provided, using existing content"
+        fi
+    
+    - name: Build site
+      run: |
+        python scripts/build_site.py
+    
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+    
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './public'
+    
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4

@@ -1,0 +1,20 @@
+site:
+  title: "Daily AI Papers"
+  description: "Latest papers in AI research - RAG, Knowledge Graph, and more"
+  url: "https://your-username.github.io/daily-papers-site"  # 需要替换为实际URL
+  author: "AI Research Team"
+  email: "your-email@example.com"  # 需要替换为实际邮箱
+  github_repo: "https://github.com/your-username/daily-papers-site"  # 需要替换为实际仓库
+  main_project: "https://github.com/your-username/daily-paper-v2"  # 需要替换为实际仓库
+
+# RSS设置
+rss:
+  max_items: 50
+  language: "zh-cn"
+
+# 网站特性
+features:
+  - responsive_design
+  - rss_feed
+  - syntax_highlighting
+  - mobile_friendly

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} - Daily AI Papers{% endblock %}
+{% block description %}{{ post.excerpt }}{% endblock %}
+
+{% block head %}
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:description" content="{{ post.excerpt }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ site.url }}{{ post.url }}">
+<meta property="article:published_time" content="{{ post.date }}">
+<meta property="article:section" content="{{ post.category }}">
+{% endblock %}
+
+{% block content %}
+<article class="post">
+    <header class="post-header">
+        <h1 class="post-title">{{ post.title }}</h1>
+        
+        <div class="post-meta">
+            <time datetime="{{ post.date }}" class="post-date">{{ post.date_formatted }}</time>
+            <span class="post-category">{{ post.category }}</span>
+            <span class="post-count">{{ post.papers_count }}篇论文</span>
+        </div>
+        
+        <div class="post-actions">
+            <a href="/rss.xml" class="btn btn-sm">RSS订阅</a>
+            <button onclick="copyUrl()" class="btn btn-sm">复制链接</button>
+        </div>
+    </header>
+    
+    <div class="post-content">
+        {{ post.content | safe }}
+    </div>
+    
+    <footer class="post-footer">
+        <div class="post-tags">
+            {% for tag in post.tags %}
+            <span class="tag">{{ tag }}</span>
+            {% endfor %}
+        </div>
+        
+        <div class="post-navigation">
+            {% if prev_post %}
+            <a href="{{ prev_post.url }}" class="nav-link prev">
+                ← {{ prev_post.title }}
+            </a>
+            {% endif %}
+            
+            {% if next_post %}
+            <a href="{{ next_post.url }}" class="nav-link next">
+                {{ next_post.title }} →
+            </a>
+            {% endif %}
+        </div>
+    </footer>
+</article>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copyUrl() {
+    navigator.clipboard.writeText(window.location.href).then(function() {
+        alert('链接已复制到剪贴板');
+    });
+}
+</script>
+{% endblock %}
