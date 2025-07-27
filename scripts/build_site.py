@@ -7,7 +7,7 @@ import os
 import json
 import yaml
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from jinja2 import Environment, FileSystemLoader
 from feedgen.feed import FeedGenerator
 import markdown
@@ -129,7 +129,7 @@ class SiteBuilder:
         fg.link(href=f"{site_config['url']}/rss.xml", rel='self')
         fg.description(site_config["description"])
         fg.language('zh-cn')
-        fg.lastBuildDate(datetime.now())
+        fg.lastBuildDate(datetime.now(timezone.utc))
         fg.managingEditor(f"{site_config.get('email', 'noreply@example.com')} ({site_config['author']})")
         
         # 添加文章条目
@@ -146,9 +146,9 @@ class SiteBuilder:
             # 解析日期
             try:
                 post_date = datetime.strptime(post.get("date", ""), "%Y-%m-%d")
-                fe.pubDate(post_date)
+                fe.pubDate(post_date.replace(tzinfo=timezone.utc))
             except:
-                fe.pubDate(datetime.now())
+                fe.pubDate(datetime.now(timezone.utc))
             
             # 添加内容
             if post.get("content"):
@@ -156,7 +156,11 @@ class SiteBuilder:
             
             # 添加分类
             if post.get("category"):
-                fe.category(post["category"])
+                fe.category({
+                    "term": post["category"],
+                    "scheme": "http://example.com/categories",
+                    "label": post["category"]
+                })
         
         # 保存RSS文件
         rss_str = fg.rss_str(pretty=True)

@@ -1,0 +1,41 @@
+{
+  "posts": [
+    {
+      "title": "2024-07-27 RAG Papers (3篇)",
+      "date": "2024-07-27",
+      "date_formatted": "2024年07月27日",
+      "category": "RAG",
+      "papers_count": 3,
+      "url": "/posts/2024-07-27-rag.html",
+      "filename": "2024-07-27-rag.html",
+      "excerpt": "今日RAG领域精选论文 3 篇，包含详细分析和关键洞察。",
+      "tags": [
+        "RAG",
+        "AI Research",
+        "arXiv"
+      ],
+      "content": "<h2>论文概述</h2><p>今日为您带来3篇RAG领域的前沿研究...</p>"
+    },
+    {
+      "title": "2024-07-26 Knowledge Graph Papers (2篇)",
+      "date": "2024-07-26",
+      "date_formatted": "2024年07月26日",
+      "category": "Knowledge Graph",
+      "papers_count": 2,
+      "url": "/posts/2024-07-26-kg.html",
+      "filename": "2024-07-26-kg.html",
+      "excerpt": "今日Knowledge Graph领域精选论文 2 篇，包含详细分析和关键洞察。",
+      "tags": [
+        "Knowledge Graph",
+        "AI Research",
+        "arXiv"
+      ],
+      "content": "<h2>论文概述</h2><p>今日为您带来2篇知识图谱领域的前沿研究...</p>"
+    }
+  ],
+  "stats": {
+    "total_papers": 5,
+    "categories_count": 2,
+    "days_active": 2
+  }
+}
