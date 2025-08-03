@@ -67,16 +67,77 @@
         }
         .paper-summary {
             color: #444;
-            line-height: 1.7;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        .paper-summary h1 {
+            color: #667eea;
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            padding: 0.8rem 1rem;
+            background: linear-gradient(90deg, #f8f9ff 0%, #ffffff 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
         }
         .paper-summary h2 {
-            color: #667eea;
-            border-bottom: 2px solid #f0f0f0;
+            color: #5a67d8;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.8rem 0;
             padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
         }
         .paper-summary h3 {
-            color: #555;
-            margin-top: 1.5rem;
+            color: #4a5568;
+            font-size: 1.1rem;
+            margin: 1.2rem 0 0.6rem 0;
+        }
+        .paper-summary p {
+            margin: 1rem 0;
+            text-align: justify;
+        }
+        .paper-summary ul, .paper-summary ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .paper-summary li {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+        .paper-summary strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        .paper-summary em {
+            color: #4a5568;
+            font-style: italic;
+        }
+        .paper-summary blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary code {
+            background: #edf2f7;
+            color: #2d3748;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+        }
+        .paper-summary pre {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .paper-summary pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
         }
         .paper-links {
             margin-top: 1rem;
@@ -128,171 +189,215 @@
             <h2 class="paper-title">MUST-RAG: MUSical Text Question Answering with Retrieval Augmented Generation</h2>
             
             <div class="paper-summary">
-                <h1>问题定义</h1>
-<p>problem: |
-  1. 论文要解决的具体问题是：通用大型语言模型（LLM）在音乐文本问答（MQA）任务中表现不佳，因训练数据中音乐专用知识占比小，导致事实性回答不准确、上下文理解能力弱。
-  2. 问题的重要性体现在：音乐相关应用（如音乐推荐系统、音乐聊天机器人）需要LLM能准确回答用户关于艺术家、专辑、风格等音乐元数据的问题，而现有LLM难以满足这一需求，限制了其在音乐领域的实用性。
-  3. 目前存在的挑战：
-     - 通用LLM缺乏音乐领域专用知识，难以回答事实性问题（如艺术家出生日期、专辑发行时间）；
-     - 传统领域适应方法（如微调）需要大量高质量音乐QA数据，获取成本高，且难以持续更新知识；
-     - 现有音乐QA基准多关注多模态或音乐学（如旋律、和弦），缺乏针对艺术家元数据的专用评估，无法有效衡量LLM在实际音乐 listening 场景中的表现。</p>
-<h1>研究背景</h1>
-<p>background: |
-  1. 前人研究成果：
-     - 领域适应方面：已有工作通过微调LLM到特定领域（如医学、法律），但微调需大量数据，且模型规模增大时训练成本急剧上升；
-     - RAG技术：检索增强生成（RAG）结合LLM的生成能力与外部知识检索，解决了LLM依赖参数记忆的问题，已在通用领域取得成功；
-     - 音乐QA基准：现有基准如MuChoMusic（多模态）、MusicTheoryBench（音乐学）、TrustMus（音乐史），但缺乏针对艺术家元数据的专用基准。
-  2. 现有方法的优点和局限性：
-     - 微调：能让LLM适应特定领域，但数据获取难、训练成本高，且难以更新知识；
-     - 通用RAG：能补充外部知识，但缺乏音乐专用数据库，检索效率和相关性低；
-     - 音乐专用模型（如ChatMusician、MuLLaMA）：针对音乐任务设计，但未专注于文本QA，且事实性回答能力弱。
-  3. 当前技术水平：通用LLM（如GPT-4o、Llama 3.1）在音乐上下文理解（如艺术家风格分析）上表现尚可，但事实性问题（如专辑发行时间）准确率低；音乐专用模型未解决文本QA的事实性问题，且缺乏专用基准。</p>
-<h1>创新来源</h1>
-<p>idea_source: |
-  1. 核心思路来自：RAG技术的成功（结合检索与生成解决LLM知识不足），以及音乐领域对专用知识的需求，将RAG适配到音乐文本QA任务。
-  2. 灵感来自：
-     - 通用RAG框架（如原始RAG论文），但针对音乐领域的空白（无专用数据库、无艺术家元数据基准）；
-     - 音乐领域的实际需求（用户常问艺术家传记、专辑信息等事实性问题，而现有LLM难以回答）。
-  3. 作者产生创新想法的过程：
-     - 观察到通用LLM在音乐事实性问题上的低性能（如Table 2中Llama 3.1零样本事实性准确率仅39%）；
-     - 意识到RAG能补充外部知识，但现有RAG缺乏音乐专用数据库，因此提出MusWikiDB；
-     - 发现传统微调会降低上下文理解能力（如Table 2中QA微调的上下文准确率比零样本低5.5%），因此提出RAG-style微调（结合上下文的微调）。</p>
-<h1>解决方案</h1>
-<p>solution: |
-  1. 具体技术方案：提出MusT-RAG框架，基于RAG技术，通过音乐专用向量数据库（MusWikiDB）检索相关上下文，增强LLM的音乐文本QA能力；同时提出RAG-style微调，将上下文纳入微调过程，提升模型的上下文理解能力。
-  2. 关键技术细节和实现要点：
-     - MusWikiDB构建：
-       - 数据来源：从维基百科收集音乐相关内容，覆盖艺术家、流派、乐器等7类，页面深度2；
-       - 数据处理：去除短于60 token的 sections，将文本 chunk 为128 token，相邻 chunk 重叠10%（保留上下文）；
-       - 嵌入与索引：使用BM25（经典文本检索算法）构建索引，确保检索效率和相关性。
-     - RAG流程：
-       - 索引：将MusWikiDB的文本chunk转换为BM25嵌入，构建可检索数据库；
-       - 检索：对于输入问题q，计算q与数据库中所有chunk的BM25相似度，选取top-k（如k=8）chunk作为上下文c；
-       - 生成：将q与c拼接为prompt（如"Context: [c] \n Question: [q] \n Answer:"），输入LLM生成答案。
-     - RAG-style微调：
-       - 数据集：构建（context, question, answer）三元组，其中context来自MusWikiDB，question和answer来自生成的QA对；
-       - 训练目标：让LLM学习结合context生成answer，损失函数为条件生成的对数损失（LRAG Fine-tuning = -Σlog pθ(xi|[q, c; x&lt;i])）；
-       - 训练配置：使用LoRA（低秩适应）微调Llama 3.1 8B，批量大小2，学习率3e-5，训练1 epoch。</p>
-<h1>实验验证</h1>
-<p>experiment: |
-  1. 实验设计：
-     - 对比不同方法：零样本（GPT-4o、Llama 3.1、ChatMusician、MuLLaMA）、QA微调（Llama 3.1微调于MusWikiDB的QA对）、RAG推理（Llama 3.1结合MusWikiDB检索）、RAG微调（Llama 3.1微调于（context, question, answer）三元组）；
-     - 评估场景：in-domain（ArtistMus，艺术家元数据QA）、out-of-domain（TrustMus，音乐史/乐器QA）；
-     -  ablation研究：测试不同嵌入模型（BM25、Contriever、CLAP）和chunk大小（128、256、512 token）对RAG性能的影响。
-  2. 数据集与基准：
-     - 数据集：
-       - ArtistMus（自建）：1000个多 choice 问题，覆盖艺术家传记、职业生涯、专辑等5类，分为Seen（训练数据中的艺术家）和Unseen（未见过的艺术家）；
-       - TrustMus（现有）：400个问题，覆盖People、Instrument &amp; Technology等4类，来自The Grove Dictionary Online。
-     - 基准：零样本模型（如GPT-4o）、音乐专用模型（如ChatMusician、MuLLaMA）、传统微调模型（QA微调）。
-     - 评估指标：准确率（Accuracy），要求答案符合指定格式（如选项字母），偏离格式则判错。
-  3. 实验结果：
-     - in-domain（ArtistMus）：
-       - RAG推理的factual准确率（82.0%）比零样本Llama 3.1（39.0%）高43.0%，比GPT-4o（67.4%）高14.6%；
-       - RAG微调的factual准确率（82.4%）比RAG推理高0.4%，上下文准确率（92.0%）比RAG推理（88.8%）高3.2%；
-       - QA微调的factual准确率（40.0%）仅比零样本高1.0%，但上下文准确率（79.7%）比零样本低5.5%。
-     - out-of-domain（TrustMus）：
-       - RAG推理的准确率（40.8%）比零样本Llama 3.1（35.8%）高5.0%；
-       - RAG微调的准确率（41.5%）比RAG推理高0.7%，比QA微调（32.0%）高9.5%。
-     - ablation研究：
-       - BM25嵌入的性能（factual 82.2%、contextual 89.0%）优于Contriever（factual 58.2%、contextual 86.6%）和CLAP（factual 41.8%、contextual 84.0%）；
-       - chunk大小128 token的性能（factual 82.2%、contextual 89.0%）优于256（factual 82.8%、contextual 88.0%）和512（factual 82.0%、contextual 88.8%）。</p>
-<h1>研究结论</h1>
-<p>conclusion: |
-  1. 重要结论：
-     - MusT-RAG框架能有效提升LLM在音乐文本QA的表现，尤其是事实性问题；
-     - 音乐专用数据库（MusWikiDB）比通用维基百科更有效（检索速度快10倍，性能高5.9%）；
-     - RAG-style微调优于传统QA微调，能同时提升事实性和上下文理解能力；
-     - 现有音乐专用模型（如ChatMusician、MuLLaMA）在文本QA任务中的表现不如通用LLM（如Llama 3.1）。
-  2. 主要贡献：
-     - 提出MusT-RAG框架：结合RAG技术与音乐专用数据库，解决LLM在音乐文本QA的知识不足问题；
-     - 构建MusWikiDB：首个音乐专用向量数据库，覆盖7类音乐知识，提升检索效率和相关性；
-     - 提出ArtistMus基准：首个针对艺术家元数据的文本QA基准，填补了现有基准的空白；
-     - 验证了RAG-style微调的有效性：比传统微调更能提升LLM的上下文理解能力。
-  3. 对领域发展的意义：
-     - 为音乐领域LLM的应用（如音乐聊天机器人、推荐系统）提供了可行的解决方案；
-     - 提供了音乐专用的数据库和基准，推动了音乐文本QA领域的研究；
-     - 证明了RAG技术在音乐领域的有效性，为其他垂直领域的RAG应用提供了参考。</p>
-<h1>未来展望</h1>
-<p>future_work: |
-  1. 当前工作的局限性：
-     - MusWikiDB的覆盖范围：仅来自维基百科，可能缺少一些小众艺术家或最新音乐信息；
-     - 检索算法：使用BM25（稀疏嵌入），可能不如 dense 嵌入（如Sentence-BERT）在语义匹配上的性能；
-     - 上下文整合：RAG生成时仅拼接上下文与问题，未优化上下文的融合方式（如注意力机制）；
-     - 基准覆盖：ArtistMus仅关注艺术家元数据，未覆盖专辑、歌曲等其他音乐元数据。
-  2. 未来改进方向：
-     - 扩展MusWikiDB：纳入更多来源（如音乐数据库、新闻），更新最新音乐信息；
-     - 优化检索算法：尝试 dense 嵌入（如Contriever）与BM25的混合检索，提升语义匹配能力；
-     - 改进上下文融合：使用上下文编码器（如Longformer）处理长上下文，或引入注意力机制优化上下文与问题的融合；
-     - 扩展基准：构建覆盖专辑、歌曲、流派等更多音乐元数据的QA基准。
-  3. 值得深入探索的问题：
-     - 多模态RAG：结合音频与文本，解决音乐多模态QA问题（如“这首歌的风格像哪个艺术家？”）；
-     - 知识更新：研究如何高效更新MusWikiDB，以适应音乐领域的快速变化（如新歌发布、艺术家动态）；
-     - 小样本学习：探索在少量音乐QA数据下，如何高效微调RAG模型，降低数据需求。</p>
-<h1>核心算法</h1>
-<p>pseudocode: |
-  # MusT-RAG核心算法流程（RAG推理+RAG微调）</p>
-<p># 1. 索引阶段（构建MusWikiDB）
-  def build_muswikidb(corpus_path, chunk_size=128, overlap=0.1):
-      # 读取音乐相关文本 corpus（来自维基百科的7类内容）
-      corpus = load_corpus(corpus_path)
-      # 过滤短 sections（&lt;60 token）
-      filtered_corpus = [doc for doc in corpus if len(doc) &gt;= 60]
-      # Chunk 文本：将每个 doc 分割为 chunk_size 的片段，相邻 chunk 重叠 overlap*chunk_size token
-      chunks = []
-      for doc in filtered_corpus:
-          start = 0
-          while start &lt; len(doc):
-              end = start + chunk_size
-              chunk = doc[start:end]
-              chunks.append(chunk)
-              start = end - int(chunk_size * overlap)
-      # 使用BM25构建索引
-      bm25 = BM25()
-      bm25.index(chunks)
+                <h1 id="_1">问题定义</h1>
+<p><strong>problem</strong></p>
+<ol>
+<li>论文要解决的具体问题是：通用大型语言模型（LLM）在音乐文本问答（MQA）任务中表现不佳，因训练数据中音乐专用知识占比小，导致事实性回答不准确、上下文理解能力弱。</li>
+<li>问题的重要性体现在：音乐相关应用（如音乐推荐系统、音乐聊天机器人）需要LLM能准确回答用户关于艺术家、专辑、风格等音乐元数据的问题，而现有LLM难以满足这一需求，限制了其在音乐领域的实用性。</li>
+<li>目前存在的挑战：<ul>
+<li>通用LLM缺乏音乐领域专用知识，难以回答事实性问题（如艺术家出生日期、专辑发行时间）；</li>
+<li>传统领域适应方法（如微调）需要大量高质量音乐QA数据，获取成本高，且难以持续更新知识；</li>
+<li>现有音乐QA基准多关注多模态或音乐学（如旋律、和弦），缺乏针对艺术家元数据的专用评估，无法有效衡量LLM在实际音乐 listening 场景中的表现。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_2">研究背景</h1>
+<p><strong>background</strong></p>
+<ol>
+<li>前人研究成果：<ul>
+<li>领域适应方面：已有工作通过微调LLM到特定领域（如医学、法律），但微调需大量数据，且模型规模增大时训练成本急剧上升；</li>
+<li>RAG技术：检索增强生成（RAG）结合LLM的生成能力与外部知识检索，解决了LLM依赖参数记忆的问题，已在通用领域取得成功；</li>
+<li>音乐QA基准：现有基准如MuChoMusic（多模态）、MusicTheoryBench（音乐学）、TrustMus（音乐史），但缺乏针对艺术家元数据的专用基准。</li>
+</ul>
+</li>
+<li>现有方法的优点和局限性：<ul>
+<li>微调：能让LLM适应特定领域，但数据获取难、训练成本高，且难以更新知识；</li>
+<li>通用RAG：能补充外部知识，但缺乏音乐专用数据库，检索效率和相关性低；</li>
+<li>音乐专用模型（如ChatMusician、MuLLaMA）：针对音乐任务设计，但未专注于文本QA，且事实性回答能力弱。</li>
+</ul>
+</li>
+<li>当前技术水平：通用LLM（如GPT-4o、Llama 3.1）在音乐上下文理解（如艺术家风格分析）上表现尚可，但事实性问题（如专辑发行时间）准确率低；音乐专用模型未解决文本QA的事实性问题，且缺乏专用基准。</li>
+</ol>
+<h1 id="_3">创新来源</h1>
+<p><strong>idea_source</strong></p>
+<ol>
+<li>核心思路来自：RAG技术的成功（结合检索与生成解决LLM知识不足），以及音乐领域对专用知识的需求，将RAG适配到音乐文本QA任务。</li>
+<li>灵感来自：<ul>
+<li>通用RAG框架（如原始RAG论文），但针对音乐领域的空白（无专用数据库、无艺术家元数据基准）；</li>
+<li>音乐领域的实际需求（用户常问艺术家传记、专辑信息等事实性问题，而现有LLM难以回答）。</li>
+</ul>
+</li>
+<li>作者产生创新想法的过程：<ul>
+<li>观察到通用LLM在音乐事实性问题上的低性能（如Table 2中Llama 3.1零样本事实性准确率仅39%）；</li>
+<li>意识到RAG能补充外部知识，但现有RAG缺乏音乐专用数据库，因此提出MusWikiDB；</li>
+<li>发现传统微调会降低上下文理解能力（如Table 2中QA微调的上下文准确率比零样本低5.5%），因此提出RAG-style微调（结合上下文的微调）。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_4">解决方案</h1>
+<p><strong>solution</strong></p>
+<ol>
+<li>具体技术方案：提出MusT-RAG框架，基于RAG技术，通过音乐专用向量数据库（MusWikiDB）检索相关上下文，增强LLM的音乐文本QA能力；同时提出RAG-style微调，将上下文纳入微调过程，提升模型的上下文理解能力。</li>
+<li>关键技术细节和实现要点：<ul>
+<li>MusWikiDB构建：</li>
+<li>数据来源：从维基百科收集音乐相关内容，覆盖艺术家、流派、乐器等7类，页面深度2；</li>
+<li>数据处理：去除短于60 token的 sections，将文本 chunk 为128 token，相邻 chunk 重叠10%（保留上下文）；</li>
+<li>嵌入与索引：使用BM25（经典文本检索算法）构建索引，确保检索效率和相关性。</li>
+<li>RAG流程：</li>
+<li>索引：将MusWikiDB的文本chunk转换为BM25嵌入，构建可检索数据库；</li>
+<li>检索：对于输入问题q，计算q与数据库中所有chunk的BM25相似度，选取top-k（如k=8）chunk作为上下文c；</li>
+<li>生成：将q与c拼接为prompt（如"Context: [c] \n Question: [q] \n Answer:"），输入LLM生成答案。</li>
+<li>RAG-style微调：</li>
+<li>数据集：构建（context, question, answer）三元组，其中context来自MusWikiDB，question和answer来自生成的QA对；</li>
+<li>训练目标：让LLM学习结合context生成answer，损失函数为条件生成的对数损失（LRAG Fine-tuning = -Σlog pθ(xi|[q, c; x&lt;i])）；</li>
+<li>训练配置：使用LoRA（低秩适应）微调Llama 3.1 8B，批量大小2，学习率3e-5，训练1 epoch。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_5">实验验证</h1>
+<p><strong>experiment</strong></p>
+<ol>
+<li>实验设计：<ul>
+<li>对比不同方法：零样本（GPT-4o、Llama 3.1、ChatMusician、MuLLaMA）、QA微调（Llama 3.1微调于MusWikiDB的QA对）、RAG推理（Llama 3.1结合MusWikiDB检索）、RAG微调（Llama 3.1微调于（context, question, answer）三元组）；</li>
+<li>评估场景：in-domain（ArtistMus，艺术家元数据QA）、out-of-domain（TrustMus，音乐史/乐器QA）；</li>
+<li>ablation研究：测试不同嵌入模型（BM25、Contriever、CLAP）和chunk大小（128、256、512 token）对RAG性能的影响。</li>
+</ul>
+</li>
+<li>数据集与基准：<ul>
+<li>数据集：</li>
+<li>ArtistMus（自建）：1000个多 choice 问题，覆盖艺术家传记、职业生涯、专辑等5类，分为Seen（训练数据中的艺术家）和Unseen（未见过的艺术家）；</li>
+<li>TrustMus（现有）：400个问题，覆盖People、Instrument &amp; Technology等4类，来自The Grove Dictionary Online。</li>
+<li>基准：零样本模型（如GPT-4o）、音乐专用模型（如ChatMusician、MuLLaMA）、传统微调模型（QA微调）。</li>
+<li>评估指标：准确率（Accuracy），要求答案符合指定格式（如选项字母），偏离格式则判错。</li>
+</ul>
+</li>
+<li>实验结果：<ul>
+<li>in-domain（ArtistMus）：</li>
+<li>RAG推理的factual准确率（82.0%）比零样本Llama 3.1（39.0%）高43.0%，比GPT-4o（67.4%）高14.6%；</li>
+<li>RAG微调的factual准确率（82.4%）比RAG推理高0.4%，上下文准确率（92.0%）比RAG推理（88.8%）高3.2%；</li>
+<li>QA微调的factual准确率（40.0%）仅比零样本高1.0%，但上下文准确率（79.7%）比零样本低5.5%。</li>
+<li>out-of-domain（TrustMus）：</li>
+<li>RAG推理的准确率（40.8%）比零样本Llama 3.1（35.8%）高5.0%；</li>
+<li>RAG微调的准确率（41.5%）比RAG推理高0.7%，比QA微调（32.0%）高9.5%。</li>
+<li>ablation研究：</li>
+<li>BM25嵌入的性能（factual 82.2%、contextual 89.0%）优于Contriever（factual 58.2%、contextual 86.6%）和CLAP（factual 41.8%、contextual 84.0%）；</li>
+<li>chunk大小128 token的性能（factual 82.2%、contextual 89.0%）优于256（factual 82.8%、contextual 88.0%）和512（factual 82.0%、contextual 88.8%）。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_6">研究结论</h1>
+<p><strong>conclusion</strong></p>
+<ol>
+<li>重要结论：<ul>
+<li>MusT-RAG框架能有效提升LLM在音乐文本QA的表现，尤其是事实性问题；</li>
+<li>音乐专用数据库（MusWikiDB）比通用维基百科更有效（检索速度快10倍，性能高5.9%）；</li>
+<li>RAG-style微调优于传统QA微调，能同时提升事实性和上下文理解能力；</li>
+<li>现有音乐专用模型（如ChatMusician、MuLLaMA）在文本QA任务中的表现不如通用LLM（如Llama 3.1）。</li>
+</ul>
+</li>
+<li>主要贡献：<ul>
+<li>提出MusT-RAG框架：结合RAG技术与音乐专用数据库，解决LLM在音乐文本QA的知识不足问题；</li>
+<li>构建MusWikiDB：首个音乐专用向量数据库，覆盖7类音乐知识，提升检索效率和相关性；</li>
+<li>提出ArtistMus基准：首个针对艺术家元数据的文本QA基准，填补了现有基准的空白；</li>
+<li>验证了RAG-style微调的有效性：比传统微调更能提升LLM的上下文理解能力。</li>
+</ul>
+</li>
+<li>对领域发展的意义：<ul>
+<li>为音乐领域LLM的应用（如音乐聊天机器人、推荐系统）提供了可行的解决方案；</li>
+<li>提供了音乐专用的数据库和基准，推动了音乐文本QA领域的研究；</li>
+<li>证明了RAG技术在音乐领域的有效性，为其他垂直领域的RAG应用提供了参考。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_7">未来展望</h1>
+<p><strong>future_work</strong></p>
+<ol>
+<li>当前工作的局限性：<ul>
+<li>MusWikiDB的覆盖范围：仅来自维基百科，可能缺少一些小众艺术家或最新音乐信息；</li>
+<li>检索算法：使用BM25（稀疏嵌入），可能不如 dense 嵌入（如Sentence-BERT）在语义匹配上的性能；</li>
+<li>上下文整合：RAG生成时仅拼接上下文与问题，未优化上下文的融合方式（如注意力机制）；</li>
+<li>基准覆盖：ArtistMus仅关注艺术家元数据，未覆盖专辑、歌曲等其他音乐元数据。</li>
+</ul>
+</li>
+<li>未来改进方向：<ul>
+<li>扩展MusWikiDB：纳入更多来源（如音乐数据库、新闻），更新最新音乐信息；</li>
+<li>优化检索算法：尝试 dense 嵌入（如Contriever）与BM25的混合检索，提升语义匹配能力；</li>
+<li>改进上下文融合：使用上下文编码器（如Longformer）处理长上下文，或引入注意力机制优化上下文与问题的融合；</li>
+<li>扩展基准：构建覆盖专辑、歌曲、流派等更多音乐元数据的QA基准。</li>
+</ul>
+</li>
+<li>值得深入探索的问题：<ul>
+<li>多模态RAG：结合音频与文本，解决音乐多模态QA问题（如“这首歌的风格像哪个艺术家？”）；</li>
+<li>知识更新：研究如何高效更新MusWikiDB，以适应音乐领域的快速变化（如新歌发布、艺术家动态）；</li>
+<li>小样本学习：探索在少量音乐QA数据下，如何高效微调RAG模型，降低数据需求。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_8">核心算法</h1>
+<p><strong>pseudocode</strong></p>
+<p># MusT-RAG核心算法流程（RAG推理+RAG微调）</p>
+<p># 1. 索引阶段（构建MusWikiDB）<br />
+  def build_muswikidb(corpus_path, chunk_size=128, overlap=0.1):<br />
+      # 读取音乐相关文本 corpus（来自维基百科的7类内容）<br />
+      corpus = load_corpus(corpus_path)<br />
+      # 过滤短 sections（&lt;60 token）<br />
+      filtered_corpus = [doc for doc in corpus if len(doc) &gt;= 60]<br />
+      # Chunk 文本：将每个 doc 分割为 chunk_size 的片段，相邻 chunk 重叠 overlap*chunk_size token<br />
+      chunks = []<br />
+      for doc in filtered_corpus:<br />
+          start = 0<br />
+          while start &lt; len(doc):<br />
+              end = start + chunk_size<br />
+              chunk = doc[start:end]<br />
+              chunks.append(chunk)<br />
+              start = end - int(chunk_size * overlap)<br />
+      # 使用BM25构建索引<br />
+      bm25 = BM25()<br />
+      bm25.index(chunks)<br />
       return bm25, chunks</p>
-<p># 2. RAG推理阶段
-  def rag_inference(question, bm25, chunks, llm, k=8):
-      # 检索：计算问题与所有chunk的BM25相似度，选取top-k chunk
-      similarities = bm25.compute_similarity(question, chunks)
-      top_k_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:k]
-      context = [chunks[i] for i in top_k_indices]
-      # 构建prompt：拼接上下文与问题
-      prompt = f"Context: {' '.join(context)} \n Question: {question} \n Answer:"
-      # 生成答案：输入LLM生成
-      answer = llm.generate(prompt)
+<p># 2. RAG推理阶段<br />
+  def rag_inference(question, bm25, chunks, llm, k=8):<br />
+      # 检索：计算问题与所有chunk的BM25相似度，选取top-k chunk<br />
+      similarities = bm25.compute_similarity(question, chunks)<br />
+      top_k_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:k]<br />
+      context = [chunks[i] for i in top_k_indices]<br />
+      # 构建prompt：拼接上下文与问题<br />
+      prompt = f"Context: {' '.join(context)} \n Question: {question} \n Answer:"<br />
+      # 生成答案：输入LLM生成<br />
+      answer = llm.generate(prompt)<br />
       return answer</p>
-<p># 3. RAG-style微调阶段
-  def rag_fine_tune(llm, train_data, epochs=1, batch_size=2, lr=3e-5):
-      # train_data: 列表，每个元素是（context, question, answer）三元组
-      # 构建训练样本：将context与question拼接为输入，answer为目标
-      train_samples = []
-      for context, question, answer in train_data:
-          input_text = f"Context: {context} \n Question: {question}"
-          train_samples.append((input_text, answer))
-      # 使用LoRA微调LLM
-      lora_config = LoRAConfig(r=16, alpha=16, dropout=0.1)
-      model = prepare_model_for_kbit_training(llm)
-      model = get_peft_model(model, lora_config)
-      # 训练循环
-      for epoch in range(epochs):
-          for batch in batch_generator(train_samples, batch_size):
-              inputs, targets = batch
-              # 前向传播：计算条件生成损失
-              outputs = model(inputs, labels=targets)
-              loss = outputs.loss
-              # 反向传播与优化
-              loss.backward()
-              optimizer.step()
-              optimizer.zero_grad()
+<p># 3. RAG-style微调阶段<br />
+  def rag_fine_tune(llm, train_data, epochs=1, batch_size=2, lr=3e-5):<br />
+      # train_data: 列表，每个元素是（context, question, answer）三元组<br />
+      # 构建训练样本：将context与question拼接为输入，answer为目标<br />
+      train_samples = []<br />
+      for context, question, answer in train_data:<br />
+          input_text = f"Context: {context} \n Question: {question}"<br />
+          train_samples.append((input_text, answer))<br />
+      # 使用LoRA微调LLM<br />
+      lora_config = LoRAConfig(r=16, alpha=16, dropout=0.1)<br />
+      model = prepare_model_for_kbit_training(llm)<br />
+      model = get_peft_model(model, lora_config)<br />
+      # 训练循环<br />
+      for epoch in range(epochs):<br />
+          for batch in batch_generator(train_samples, batch_size):<br />
+              inputs, targets = batch<br />
+              # 前向传播：计算条件生成损失<br />
+              outputs = model(inputs, labels=targets)<br />
+              loss = outputs.loss<br />
+              # 反向传播与优化<br />
+              loss.backward()<br />
+              optimizer.step()<br />
+              optimizer.zero_grad()<br />
       return model</p>
-<p># 示例调用
-  # 构建MusWikiDB
-  bm25_index, chunks = build_muswikidb("music_corpus/")
-  # RAG推理
-  question = "Taylor Swift的首张专辑是什么？"
-  answer = rag_inference(question, bm25_index, chunks, Llama3.1_8B_Instruct())
-  # RAG微调
-  train_data = load_rag_train_data("rag_train_data.json")  # （context, question, answer）三元组
+<p># 示例调用<br />
+  # 构建MusWikiDB<br />
+  bm25_index, chunks = build_muswikidb("music_corpus/")<br />
+  # RAG推理<br />
+  question = "Taylor Swift的首张专辑是什么？"<br />
+  answer = rag_inference(question, bm25_index, chunks, Llama3.1_8B_Instruct())<br />
+  # RAG微调<br />
+  train_data = load_rag_train_data("rag_train_data.json")  # （context, question, answer）三元组<br />
   fine_tuned_model = rag_fine_tune(Llama3.1_8B_Instruct(), train_data)</p>
             </div>
             
