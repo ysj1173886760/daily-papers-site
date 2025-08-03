@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automated Label Placement on Maps via Large Language Models - Daily AI Papers</title>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/highlight.css">
+    <link rel="alternate" type="application/rss+xml" title="Daily AI Papers" href="/rss.xml">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+        nav {
+            margin-top: 1rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+        nav a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .paper-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        .paper-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .paper-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .paper-summary {
+            color: #444;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        .paper-summary h1 {
+            color: #667eea;
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            padding: 0.8rem 1rem;
+            background: linear-gradient(90deg, #f8f9ff 0%, #ffffff 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary h2 {
+            color: #5a67d8;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.8rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .paper-summary h3 {
+            color: #4a5568;
+            font-size: 1.1rem;
+            margin: 1.2rem 0 0.6rem 0;
+        }
+        .paper-summary p {
+            margin: 1rem 0;
+            text-align: justify;
+        }
+        .paper-summary ul, .paper-summary ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .paper-summary li {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+        .paper-summary strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        .paper-summary em {
+            color: #4a5568;
+            font-style: italic;
+        }
+        .paper-summary blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary code {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+        }
+        .paper-summary pre {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid #334155;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .paper-summary pre::before {
+            content: 'Python';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 0 8px 0 8px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .paper-summary pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            border: none;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .paper-summary .codehilite {
+            margin: 1.5rem 0;
+        }
+        .paper-summary .codehilite pre {
+            margin: 0;
+        }
+        /* 语法高亮颜色 */
+        .paper-summary .codehilite .c { color: #6b7280; } /* 注释 */
+        .paper-summary .codehilite .k { color: #8b5cf6; } /* 关键字 */
+        .paper-summary .codehilite .s { color: #10b981; } /* 字符串 */
+        .paper-summary .codehilite .n { color: #f8fafc; } /* 变量名 */
+        .paper-summary .codehilite .o { color: #f59e0b; } /* 操作符 */
+        .paper-summary .codehilite .p { color: #94a3b8; } /* 标点 */
+        .paper-summary .codehilite .m { color: #ef4444; } /* 数字 */
+        .paper-summary .codehilite .nf { color: #06b6d4; } /* 函数名 */
+        .paper-links {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        .paper-links a {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+        .paper-links a:hover {
+            background: #5a6fd8;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Daily AI Papers</h1>
+        <p>2025年08月03日 - RAG_test 论文</p>
+        <nav>
+            <a href="/">首页</a>
+            <a href="/rss.xml">RSS订阅</a>
+            <a href="/about.html">关于</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="paper-card">
+            <div class="paper-meta">
+                <span>发布: 2025-07-29</span> | 
+                <span>更新: 2025-07-29</span> |
+                <span>分类: cs.HC</span> |
+                <span>arXiv ID: 2507.22952v1</span>
+            </div>
+            
+            <h2 class="paper-title">Automated Label Placement on Maps via Large Language Models</h2>
+            
+            <div class="paper-summary">
+                <h1 id="_1">问题定义</h1>
+<p><strong>problem</strong></p>
+<ol>
+<li>论文要解决的具体问题是<strong>自动地图标签放置（Automatic Label Placement, ALP）</strong>，即如何算法化地确定地图地标标签的位置，使其符合制图规范、上下文语境和视觉可读性。  </li>
+<li>该问题的重要性体现在：地图标签是地图可读性和可解释性的关键，手动放置标签耗时耗力（如NGA的7.08亿美元数据标注合同），而现有自动化方法难以满足规模化、语义对齐的需求。  </li>
+<li>目前的挑战包括：(1) 现有方法（规则-based、优化、深度学习）难以灵活整合<strong>人类可读的制图指南</strong>（如NGA的文本规范）；(2) 无法有效适应上下文（如相邻地标对标签位置的影响）；(3) 缺乏<strong>公开的基准数据集</strong>用于ALP算法评估。</li>
+</ol>
+<h1 id="_2">研究背景</h1>
+<p><strong>background</strong></p>
+<ol>
+<li>前人研究成果：  <ul>
+<li>规则-based方法：如QGIS的PAL引擎、Esri的Maplex，基于制图规则（如标签 proximity、无重叠）放置标签。  </li>
+<li>优化方法：如整数规划、遗传算法，将ALP转化为约束优化问题（最大化覆盖、最小化冲突）。  </li>
+<li>深度学习方法：如GAN（生成标签布局）、图Transformer（建模地标语义关系）、强化学习（多代理优化标签位置）。  </li>
+</ul>
+</li>
+<li>现有方法的优缺点：  <ul>
+<li>优点：规则-based方法可控性强；优化方法能找到全局最优解；深度学习能学习复杂模式。  </li>
+<li>局限性：规则-based方法缺乏灵活性（需手动调整规则）；优化方法仅考虑几何约束，忽略语义；深度学习需要大量标注数据，且难以整合文本指南。  </li>
+</ul>
+</li>
+<li>当前技术水平：能处理简单的几何约束（如无重叠、 proximity），但无法满足<strong>语义对齐</strong>（如符合制图指南）和<strong>上下文适应</strong>（如相邻地标影响）的需求，且没有公开的ALP基准数据集。</li>
+</ol>
+<h1 id="_3">创新来源</h1>
+<p><strong>idea_source</strong></p>
+<ol>
+<li>核心思路来自<strong>大语言模型（LLM）的文本理解与推理能力</strong>，以及<strong>检索增强生成（RAG）的外部知识整合能力</strong>。作者意识到，现有ALP方法无法处理文本指南，而LLM擅长理解文本，RAG能高效检索相关指南，因此将两者结合用于ALP。  </li>
+<li>灵感来自<strong>自然语言处理（NLP）领域的RAG技术</strong>（如用于知识密集型任务）和<strong>计算机视觉（CV）领域的布局生成</strong>（如LayoutGPT用LLM生成网页布局）。  </li>
+<li>作者通过分析现有ALP方法的局限性（无法整合文本指南），结合LLM的优势（文本推理），提出了“用RAG检索指南+LLM生成标签坐标”的创新思路。</li>
+</ol>
+<h1 id="_4">解决方案</h1>
+<p><strong>solution</strong></p>
+<ol>
+<li>具体技术方案：提出<strong>RAG+LLM的ALP框架</strong>，核心流程为：(1) 用RAG检索与目标地标相关的制图指南；(2) 将指南与地标信息（名称、类型、坐标）整合为prompt；(3) 用LLM生成标签坐标；(4) 可选：用LoRA/QLoRA微调LLM以提升性能。  </li>
+<li>关键技术细节：  <ul>
+<li>向量数据库构建：将NGA制图指南按section分割，用nomic-embed-text编码为向量，存储于向量数据库（如Pinecone）。  </li>
+<li>检索策略：用地标<strong>类型</strong>（如“shop”）和<strong>名称</strong>（如“North Beach Branch Library”）作为查询，检索top k相关指南（如“shop类型的标签应放置在入口附近”）。  </li>
+<li>Prompt设计：包含检索到的指南、地标信息（名称、类型）、坐标格式（如List：[(x1,y1), (x2,y2)]），要求LLM输出标签的(x,y)坐标。  </li>
+<li>微调策略：用QLoRA（量化低秩适应）微调LLM（如Llama3.1、Gemma2），输入为prompt，输出为ground truth标签坐标（centroid），训练5 epochs，学习率1e-5。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_5">实验验证</h1>
+<p><strong>experiment</strong></p>
+<ol>
+<li>实验设计：  <ul>
+<li>数据集：作者构建的<strong>MAPLE数据集</strong>（100张地图，来自洛杉矶、旧金山、西雅图，1276个地标，7类地标类型：Tourism、Shop、Amenity等），按80/10/20 split为训练/验证/测试集。  </li>
+<li>模型：测试4个开源LLM：Llama3.1（8B）、Gemma2（9B）、Qwen3（8B）、Phi-4（14B），比较<strong>有无微调</strong>、<strong>不同坐标格式</strong>（List、CSS、JSON、XML）、<strong>有无邻居上下文</strong>（相邻50px内的地标信息）的性能。  </li>
+</ul>
+</li>
+<li>评估指标：<strong>RMSE</strong>（预测标签坐标与ground truth centroid的距离），衡量预测准确性。  </li>
+<li>实验结果：  <ul>
+<li>微调显著提升性能：如Phi-4微调后RMSE从81.2降至28.4（下降65%）；Gemma2微调后从96.1降至32.3（下降66%）。  </li>
+<li>坐标格式影响性能：List格式最优（如微调后Phi-4的List格式RMSE为28.4，CSS为35.3），CSS格式最差。  </li>
+<li>邻居上下文无明显帮助：大部分情况下，添加邻居信息后RMSE略有上升（如Llama3.1微调后从32.8升至36.9）。<br />
+  实验结果有效证明了<strong>RAG+LLM框架的可行性</strong>，尤其是微调后的LLM能显著提升ALP性能。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_6">研究结论</h1>
+<p><strong>conclusion</strong></p>
+<ol>
+<li>重要结论：  <ul>
+<li>LLM结合RAG和微调能有效解决ALP问题，尤其是<strong>整合文本制图指南</strong>的需求。  </li>
+<li>微调是提升LLM性能的关键（比零样本学习性能提升60%以上）。  </li>
+<li>坐标格式（如List）对LLM的输出有显著影响，需选择适合的格式。  </li>
+</ul>
+</li>
+<li>主要贡献：  <ul>
+<li>构建了<strong>首个公开的ALP基准数据集MAPLE</strong>（100张地图，1276个地标）。  </li>
+<li>提出了<strong>RAG+LLM的ALP框架</strong>，实现了文本指南的灵活整合。  </li>
+<li>系统评估了4个开源LLM在ALP任务上的性能，为后续研究提供了基准。  </li>
+</ul>
+</li>
+<li>意义：  <ul>
+<li>为ALP提供了<strong>灵活、可扩展的解决方案</strong>，能适应不同的制图指南和上下文。  </li>
+<li>展示了LLM在<strong>结构化数据编辑</strong>（如地图标签放置）中的潜力，为其他领域（如文档布局、图表标注）提供了参考。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_7">未来展望</h1>
+<p><strong>future_work</strong></p>
+<ol>
+<li>局限性：  <ul>
+<li>邻居上下文的处理不够有效（添加邻居信息后性能未提升）。  </li>
+<li>微调数据量有限（MAPLE数据集仅1276个地标），可能影响LLM的泛化能力。  </li>
+<li>未结合<strong>视觉信息</strong>（如地图图像），LLM仅依赖坐标和文本信息。  </li>
+</ul>
+</li>
+<li>改进方向：  <ul>
+<li>优化邻居上下文的整合方式（如用图神经网络建模相邻地标关系）。  </li>
+<li>扩大微调数据集（如增加更多地图和地标类型），提升LLM的泛化能力。  </li>
+<li>结合<strong>视觉语言模型（VLM）</strong>（如GPT-4V、Gemini Vision），让LLM同时理解地图图像和文本指南。  </li>
+</ul>
+</li>
+<li>深入探索的问题：  <ul>
+<li>多语言制图指南的处理（如支持不同国家的制图规范）。  </li>
+<li>实时ALP（如动态调整标签位置以适应地图缩放）。  </li>
+<li>用户交互式ALP（如允许用户调整标签位置，LLM学习用户偏好）。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_8">核心算法</h1>
+<p>pseudocode: |</p>
+<div class="codehilite"><pre><span></span><code>  <span class="c1"># 预处理：构建制图指南向量数据库</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">build_guideline_database</span><span class="p">(</span><span class="n">guidelines</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">VectorDatabase</span><span class="p">:</span>
+      <span class="c1"># 将指南分割为section（每个section对应一种地标类型的规范）</span>
+      <span class="n">sections</span> <span class="o">=</span> <span class="n">split_guidelines_by_section</span><span class="p">(</span><span class="n">guidelines</span><span class="p">)</span>
+      <span class="c1"># 用nomic-embed-text编码每个section为向量</span>
+      <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="n">encode</span><span class="p">(</span><span class="n">section</span><span class="p">)</span> <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">sections</span><span class="p">]</span>
+      <span class="c1"># 存储向量到数据库（如Pinecone）</span>
+      <span class="n">db</span> <span class="o">=</span> <span class="n">VectorDatabase</span><span class="p">()</span>
+      <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">sections</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">db</span>
+
+  <span class="c1"># 核心流程：为单个地标生成标签坐标</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">generate_label_coordinate</span><span class="p">(</span><span class="n">landmark</span><span class="p">:</span> <span class="n">Landmark</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">VectorDatabase</span><span class="p">,</span> <span class="n">llm</span><span class="p">:</span> <span class="n">LLM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+      <span class="c1"># 步骤1：检索相关制图指南</span>
+      <span class="c1"># 用landmark的类型（如“shop”）和名称（如“North Beach Branch Library”）作为查询</span>
+      <span class="n">query</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Landmark type: </span><span class="si">{</span><span class="n">landmark</span><span class="o">.</span><span class="n">type</span><span class="si">}</span><span class="s2">, name: </span><span class="si">{</span><span class="n">landmark</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span>
+      <span class="c1"># 检索top k相关指南（k=3）</span>
+      <span class="n">relevant_guidelines</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">retrieve</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+      <span class="c1"># 步骤2：构建prompt</span>
+      <span class="c1"># 坐标格式选择List（如[(x1,y1), (x2,y2)]）</span>
+      <span class="n">coordinate_format</span> <span class="o">=</span> <span class="s2">&quot;List&quot;</span>
+      <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">      制图指南：</span><span class="si">{</span><span class="n">relevant_guidelines</span><span class="si">}</span>
+<span class="s2">      地标信息：</span>
+<span class="s2">      - 名称：</span><span class="si">{</span><span class="n">landmark</span><span class="o">.</span><span class="n">name</span><span class="si">}</span>
+<span class="s2">      - 类型：</span><span class="si">{</span><span class="n">landmark</span><span class="o">.</span><span class="n">type</span><span class="si">}</span>
+<span class="s2">      - 坐标（</span><span class="si">{</span><span class="n">coordinate_format</span><span class="si">}</span><span class="s2">）：</span><span class="si">{</span><span class="n">landmark</span><span class="o">.</span><span class="n">coordinates</span><span class="si">}</span>
+<span class="s2">      任务：根据指南，生成该地标标签的中心坐标（x, y），格式为（x, y）。</span>
+<span class="s2">      &quot;&quot;&quot;</span>
+
+      <span class="c1"># 步骤3：用LLM生成坐标</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+      <span class="c1"># 解析LLM输出，提取（x, y）</span>
+      <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">parse_response</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span>
+
+  <span class="c1"># 微调流程：用QLoRA训练LLM</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">fine_tune_llm</span><span class="p">(</span><span class="n">train_data</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Prompt</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]]],</span> <span class="n">llm</span><span class="p">:</span> <span class="n">LLM</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">LLM</span><span class="p">:</span>
+      <span class="c1"># 初始化QLoRA适配器（低秩矩阵）</span>
+      <span class="n">lora_adapter</span> <span class="o">=</span> <span class="n">LoRA</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">rank</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+      <span class="c1"># 定义损失函数（MSE，预测坐标与ground truth的距离）</span>
+      <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">MSELoss</span><span class="p">()</span>
+      <span class="c1"># 优化器（AdamW）</span>
+      <span class="n">optimizer</span> <span class="o">=</span> <span class="n">AdamW</span><span class="p">(</span><span class="n">lora_adapter</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">)</span>
+
+      <span class="c1"># 训练5 epochs</span>
+      <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+          <span class="k">for</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">ground_truth</span> <span class="ow">in</span> <span class="n">train_data</span><span class="p">:</span>
+              <span class="c1"># 前向传播：生成预测坐标</span>
+              <span class="n">predicted</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+              <span class="c1"># 计算损失</span>
+              <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">predicted</span><span class="p">,</span> <span class="n">ground_truth</span><span class="p">)</span>
+              <span class="c1"># 反向传播更新LoRA适配器权重</span>
+              <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+              <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+              <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+      <span class="c1"># 合并LoRA权重到LLM</span>
+      <span class="n">llm</span> <span class="o">=</span> <span class="n">merge_lora</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">lora_adapter</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">llm</span>
+</code></pre></div>
+            </div>
+            
+            <div class="paper-links">
+                <a href="http://arxiv.org/abs/2507.22952" target="_blank">arXiv原文</a>
+                <a href="http://arxiv.org/pdf/2507.22952" target="_blank">PDF下载</a>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>Generated by Daily Paper Processing System | Template: V2</p>
+        <p>数据来源: arXiv | 分析引擎: Large Language Model</p>
+    </footer>
+</body>
+</html>
