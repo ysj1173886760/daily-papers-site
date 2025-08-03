@@ -1,0 +1,73 @@
+{
+  "posts": [
+    {
+      "title": "2025-08-03 NLP Papers (2篇)",
+      "date": "2025-08-03",
+      "date_formatted": "2025-08-03",
+      "category": "NLP",
+      "papers_count": 2,
+      "url": "/posts/2025-08-03-nlp.html",
+      "filename": "2025-08-03-nlp.html",
+      "excerpt": "今日NLP领域精选论文 2 篇，包含详细分析和关键洞察。",
+      "tags": [
+        "NLP",
+        "AI Research",
+        "arXiv"
+      ],
+      "content": "<h2>NLP 领域论文汇总</h2><p>本期为您精选了 2 篇 NLP 领域的优质论文，每篇都经过详细的结构化分析。</p>"
+    },
+    {
+      "title": "2025-08-03 CV Papers (1篇)",
+      "date": "2025-08-03",
+      "date_formatted": "2025-08-03",
+      "category": "CV",
+      "papers_count": 1,
+      "url": "/posts/2025-08-03-cv.html",
+      "filename": "2025-08-03-cv.html",
+      "excerpt": "今日CV领域精选论文 1 篇，包含详细分析和关键洞察。",
+      "tags": [
+        "CV",
+        "AI Research",
+        "arXiv"
+      ],
+      "content": "<h2>CV 领域论文汇总</h2><p>本期为您精选了 1 篇 CV 领域的优质论文，每篇都经过详细的结构化分析。</p>"
+    },
+    {
+      "title": "2025-08-03 General Papers (1篇)",
+      "date": "2025-08-03",
+      "date_formatted": "2025-08-03",
+      "category": "General",
+      "papers_count": 1,
+      "url": "/posts/2025-08-03-general.html",
+      "filename": "2025-08-03-general.html",
+      "excerpt": "今日General领域精选论文 1 篇，包含详细分析和关键洞察。",
+      "tags": [
+        "General",
+        "AI Research",
+        "arXiv"
+      ],
+      "content": "<h2>General 领域论文汇总</h2><p>本期为您精选了 1 篇 General 领域的优质论文，每篇都经过详细的结构化分析。</p>"
+    },
+    {
+      "title": "2025-08-03 AI Papers (1篇)",
+      "date": "2025-08-03",
+      "date_formatted": "2025-08-03",
+      "category": "AI",
+      "papers_count": 1,
+      "url": "/posts/2025-08-03-ai.html",
+      "filename": "2025-08-03-ai.html",
+      "excerpt": "今日AI领域精选论文 1 篇，包含详细分析和关键洞察。",
+      "tags": [
+        "AI",
+        "AI Research",
+        "arXiv"
+      ],
+      "content": "<h2>AI 领域论文汇总</h2><p>本期为您精选了 1 篇 AI 领域的优质论文，每篇都经过详细的结构化分析。</p>"
+    }
+  ],
+  "stats": {
+    "total_papers": 5,
+    "categories_count": 4,
+    "days_active": 1
+  }
+}
