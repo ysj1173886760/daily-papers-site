@@ -392,55 +392,63 @@
 </li>
 </ol>
 <h1 id="_8">核心算法</h1>
-<p><strong>pseudocode</strong></p>
-<p>## 伪TOC生成算法（Algorithm 1）<br />
-  输入：文档页 P = {p1, p2, ..., pn}；参数：初始 chunk 大小 k=5，最小页数 m=3，最大页数 M=15<br />
-  输出：Sections S = {s1, s2, ..., sj}</p>
-<p>### Phase 1: 初始分割<br />
-  1. 将文档分为大小为 k 的 chunks；<br />
-  2. 初始化 boundaries = {0}；<br />
-  3. 对每个 chunk i（从1到|chunks|-1）：<br />
-     a. 提取 chunk i-1 的最后500字符（end_text）和 chunk i 的前500字符（start_text）；<br />
-     b. 用 prompt 让LLM判断是否为新 topic（输出0/1）；<br />
-     c. 如果是新 topic（isnewtopic=1），将 i×k 添加到 boundaries；<br />
-  4. 根据 boundaries 将文档分为初始 sections S'。</p>
-<p>### Phase 2: 大小约束合并<br />
-  1. 对每个 section si ∈ S'：<br />
-     a. 如果 |si| &lt; m（太小），计算 si 与相邻 sections（si-1、si+1）的内容嵌入相似度；<br />
-     b. 将 si 合并到相似度更高的相邻 section（simprev &gt; simnext 则合并到 si-1，否则合并到 si+1）；<br />
-  2. 得到合并后的 sections S''。</p>
-<p>### Phase 3: 标题生成<br />
-  1. 对每个 section s ∈ S''：<br />
-     a. 采样 section 的代表性内容（如开头段落）；<br />
-     b. 用 prompt 让LLM生成 concise 标题；<br />
-     c. 将标题赋值给 s.title；<br />
-  2. 输出最终 sections S。</p>
-<p>## 分层检索流程<br />
-  输入：query q；文档 sections S = {s1, s2, ..., sj}；每个 section 的 chunks Cs<br />
-  输出：top-k chunks</p>
-<p>### 1. 粗搜（Section 级）<br />
-  a. 计算 query 嵌入 eq = DualEmbed(q)；<br />
-  b. 对每个 section s：<br />
-     i. 计算标题嵌入 etitle = DualEmbed(s.title)；<br />
-     ii. 计算内容嵌入 econtent = 平均所有 chunk 嵌入；<br />
-     iii. 计算相似度 ssection = β·cos(eq, etitle) + (1-β)·cos(eq, econtent)（β=0.3）；<br />
-  c. 选择 top-k1 sections（如k1=5）。</p>
-<p>### 2. 细搜（Chunk 级）<br />
-  a. 对 top-k1 sections 中的每个 chunk c：<br />
-     i. 计算 chunk 嵌入 ec = DualEmbed(c.content)；<br />
-     ii. 计算相似度 schunk = cos(eq, ec)；<br />
-  b. 选择 top-k2 chunks（如k2=10）。</p>
-<p>### 3. 结果返回<br />
-  返回 top-k2 chunks，并附上 section 级引用。</p>
-<p>## 双嵌入生成<br />
-  输入：文本 t；模型1（BGE-M3）；模型2（Multilingual-E5-Large）<br />
-  输出：合并嵌入 ecombined</p>
-<ol>
-<li>用模型1生成嵌入 e1 = BGE-M3.encode(t)；</li>
-<li>用模型2生成嵌入 e2 = Multilingual-E5-Large.encode(t)；</li>
-<li>合并嵌入：ecombined = L2_normalize(concatenate(e1, e2))；</li>
-<li>返回 ecombined。</li>
-</ol>
+<p>pseudocode: |</p>
+<div class="codehilite"><pre><span></span><code>  <span class="c1">## 伪TOC生成算法（Algorithm 1）</span>
+  <span class="n">输入</span><span class="err">：</span><span class="n">文档页</span> <span class="n">P</span> <span class="o">=</span> <span class="p">{</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">pn</span><span class="p">}</span><span class="err">；</span><span class="n">参数</span><span class="err">：</span><span class="n">初始</span> <span class="n">chunk</span> <span class="n">大小</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="err">，</span><span class="n">最小页数</span> <span class="n">m</span><span class="o">=</span><span class="mi">3</span><span class="err">，</span><span class="n">最大页数</span> <span class="n">M</span><span class="o">=</span><span class="mi">15</span>
+  <span class="n">输出</span><span class="err">：</span><span class="n">Sections</span> <span class="n">S</span> <span class="o">=</span> <span class="p">{</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">sj</span><span class="p">}</span>
+
+  <span class="c1">### Phase 1: 初始分割</span>
+  <span class="mf">1.</span> <span class="n">将文档分为大小为</span> <span class="n">k</span> <span class="n">的</span> <span class="n">chunks</span><span class="err">；</span>
+  <span class="mf">2.</span> <span class="n">初始化</span> <span class="n">boundaries</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">}</span><span class="err">；</span>
+  <span class="mf">3.</span> <span class="n">对每个</span> <span class="n">chunk</span> <span class="n">i</span><span class="err">（</span><span class="n">从1到chunks</span><span class="o">-</span><span class="mi">1</span><span class="err">）：</span>
+     <span class="n">a</span><span class="o">.</span> <span class="n">提取</span> <span class="n">chunk</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span> <span class="n">的最后500字符</span><span class="err">（</span><span class="n">end_text</span><span class="err">）</span><span class="n">和</span> <span class="n">chunk</span> <span class="n">i</span> <span class="n">的前500字符</span><span class="err">（</span><span class="n">start_text</span><span class="err">）；</span>
+     <span class="n">b</span><span class="o">.</span> <span class="n">用</span> <span class="n">prompt</span> <span class="n">让LLM判断是否为新</span> <span class="n">topic</span><span class="err">（</span><span class="n">输出0</span><span class="o">/</span><span class="mi">1</span><span class="err">）；</span>
+     <span class="n">c</span><span class="o">.</span> <span class="n">如果是新</span> <span class="n">topic</span><span class="err">（</span><span class="n">isnewtopic</span><span class="o">=</span><span class="mi">1</span><span class="err">），</span><span class="n">将</span> <span class="n">i</span><span class="err">×</span><span class="n">k</span> <span class="n">添加到</span> <span class="n">boundaries</span><span class="err">；</span>
+  <span class="mf">4.</span> <span class="n">根据</span> <span class="n">boundaries</span> <span class="n">将文档分为初始</span> <span class="n">sections</span> <span class="n">S</span><span class="s1">&#39;。</span>
+
+  <span class="c1">### Phase 2: 大小约束合并</span>
+  <span class="mf">1.</span> <span class="n">对每个</span> <span class="n">section</span> <span class="n">si</span> <span class="err">∈</span> <span class="n">S</span><span class="s1">&#39;：</span>
+     <span class="n">a</span><span class="o">.</span> <span class="n">如果si</span> <span class="o">&lt;</span> <span class="n">m</span><span class="err">（</span><span class="n">太小</span><span class="err">），</span><span class="n">计算</span> <span class="n">si</span> <span class="n">与相邻</span> <span class="n">sections</span><span class="err">（</span><span class="n">si</span><span class="o">-</span><span class="mi">1</span><span class="err">、</span><span class="n">si</span><span class="o">+</span><span class="mi">1</span><span class="err">）</span><span class="n">的内容嵌入相似度</span><span class="err">；</span>
+     <span class="n">b</span><span class="o">.</span> <span class="n">将</span> <span class="n">si</span> <span class="n">合并到相似度更高的相邻</span> <span class="n">section</span><span class="err">（</span><span class="n">simprev</span> <span class="o">&gt;</span> <span class="n">simnext</span> <span class="n">则合并到</span> <span class="n">si</span><span class="o">-</span><span class="mi">1</span><span class="err">，</span><span class="n">否则合并到</span> <span class="n">si</span><span class="o">+</span><span class="mi">1</span><span class="err">）；</span>
+  <span class="mf">2.</span> <span class="n">得到合并后的</span> <span class="n">sections</span> <span class="n">S</span><span class="s1">&#39;&#39;</span><span class="err">。</span>
+
+  <span class="c1">### Phase 3: 标题生成</span>
+  <span class="mf">1.</span> <span class="n">对每个</span> <span class="n">section</span> <span class="n">s</span> <span class="err">∈</span> <span class="n">S</span><span class="s1">&#39;&#39;</span><span class="err">：</span>
+     <span class="n">a</span><span class="o">.</span> <span class="n">采样</span> <span class="n">section</span> <span class="n">的代表性内容</span><span class="err">（</span><span class="n">如开头段落</span><span class="err">）；</span>
+     <span class="n">b</span><span class="o">.</span> <span class="n">用</span> <span class="n">prompt</span> <span class="n">让LLM生成</span> <span class="n">concise</span> <span class="n">标题</span><span class="err">；</span>
+     <span class="n">c</span><span class="o">.</span> <span class="n">将标题赋值给</span> <span class="n">s</span><span class="o">.</span><span class="n">title</span><span class="err">；</span>
+  <span class="mf">2.</span> <span class="n">输出最终</span> <span class="n">sections</span> <span class="n">S</span><span class="err">。</span>
+
+  <span class="c1">## 分层检索流程</span>
+  <span class="n">输入</span><span class="err">：</span><span class="n">query</span> <span class="n">q</span><span class="err">；</span><span class="n">文档</span> <span class="n">sections</span> <span class="n">S</span> <span class="o">=</span> <span class="p">{</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">sj</span><span class="p">}</span><span class="err">；</span><span class="n">每个</span> <span class="n">section</span> <span class="n">的</span> <span class="n">chunks</span> <span class="n">Cs</span>
+  <span class="n">输出</span><span class="err">：</span><span class="n">top</span><span class="o">-</span><span class="n">k</span> <span class="n">chunks</span>
+
+  <span class="c1">### 1. 粗搜（Section 级）</span>
+  <span class="n">a</span><span class="o">.</span> <span class="n">计算</span> <span class="n">query</span> <span class="n">嵌入</span> <span class="n">eq</span> <span class="o">=</span> <span class="n">DualEmbed</span><span class="p">(</span><span class="n">q</span><span class="p">)</span><span class="err">；</span>
+  <span class="n">b</span><span class="o">.</span> <span class="n">对每个</span> <span class="n">section</span> <span class="n">s</span><span class="err">：</span>
+     <span class="n">i</span><span class="o">.</span> <span class="n">计算标题嵌入</span> <span class="n">etitle</span> <span class="o">=</span> <span class="n">DualEmbed</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">title</span><span class="p">)</span><span class="err">；</span>
+     <span class="n">ii</span><span class="o">.</span> <span class="n">计算内容嵌入</span> <span class="n">econtent</span> <span class="o">=</span> <span class="n">平均所有</span> <span class="n">chunk</span> <span class="n">嵌入</span><span class="err">；</span>
+     <span class="n">iii</span><span class="o">.</span> <span class="n">计算相似度</span> <span class="n">ssection</span> <span class="o">=</span> <span class="n">β·cos</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">etitle</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">β</span><span class="p">)</span><span class="err">·</span><span class="n">cos</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">econtent</span><span class="p">)</span><span class="err">（</span><span class="n">β</span><span class="o">=</span><span class="mf">0.3</span><span class="err">）；</span>
+  <span class="n">c</span><span class="o">.</span> <span class="n">选择</span> <span class="n">top</span><span class="o">-</span><span class="n">k1</span> <span class="n">sections</span><span class="err">（</span><span class="n">如k1</span><span class="o">=</span><span class="mi">5</span><span class="err">）。</span>
+
+  <span class="c1">### 2. 细搜（Chunk 级）</span>
+  <span class="n">a</span><span class="o">.</span> <span class="n">对</span> <span class="n">top</span><span class="o">-</span><span class="n">k1</span> <span class="n">sections</span> <span class="n">中的每个</span> <span class="n">chunk</span> <span class="n">c</span><span class="err">：</span>
+     <span class="n">i</span><span class="o">.</span> <span class="n">计算</span> <span class="n">chunk</span> <span class="n">嵌入</span> <span class="n">ec</span> <span class="o">=</span> <span class="n">DualEmbed</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">content</span><span class="p">)</span><span class="err">；</span>
+     <span class="n">ii</span><span class="o">.</span> <span class="n">计算相似度</span> <span class="n">schunk</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">eq</span><span class="p">,</span> <span class="n">ec</span><span class="p">)</span><span class="err">；</span>
+  <span class="n">b</span><span class="o">.</span> <span class="n">选择</span> <span class="n">top</span><span class="o">-</span><span class="n">k2</span> <span class="n">chunks</span><span class="err">（</span><span class="n">如k2</span><span class="o">=</span><span class="mi">10</span><span class="err">）。</span>
+
+  <span class="c1">### 3. 结果返回</span>
+  <span class="n">返回</span> <span class="n">top</span><span class="o">-</span><span class="n">k2</span> <span class="n">chunks</span><span class="err">，</span><span class="n">并附上</span> <span class="n">section</span> <span class="n">级引用</span><span class="err">。</span>
+
+  <span class="c1">## 双嵌入生成</span>
+  <span class="n">输入</span><span class="err">：</span><span class="n">文本</span> <span class="n">t</span><span class="err">；</span><span class="n">模型1</span><span class="err">（</span><span class="n">BGE</span><span class="o">-</span><span class="n">M3</span><span class="err">）；</span><span class="n">模型2</span><span class="err">（</span><span class="n">Multilingual</span><span class="o">-</span><span class="n">E5</span><span class="o">-</span><span class="n">Large</span><span class="err">）</span>
+  <span class="n">输出</span><span class="err">：</span><span class="n">合并嵌入</span> <span class="n">ecombined</span>
+
+  <span class="mf">1.</span> <span class="n">用模型1生成嵌入</span> <span class="n">e1</span> <span class="o">=</span> <span class="n">BGE</span><span class="o">-</span><span class="n">M3</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="err">；</span>
+  <span class="mf">2.</span> <span class="n">用模型2生成嵌入</span> <span class="n">e2</span> <span class="o">=</span> <span class="n">Multilingual</span><span class="o">-</span><span class="n">E5</span><span class="o">-</span><span class="n">Large</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="err">；</span>
+  <span class="mf">3.</span> <span class="n">合并嵌入</span><span class="err">：</span><span class="n">ecombined</span> <span class="o">=</span> <span class="n">L2_normalize</span><span class="p">(</span><span class="n">concatenate</span><span class="p">(</span><span class="n">e1</span><span class="p">,</span> <span class="n">e2</span><span class="p">))</span><span class="err">；</span>
+  <span class="mf">4.</span> <span class="n">返回</span> <span class="n">ecombined</span><span class="err">。</span>
+</code></pre></div>
             </div>
             
             <div class="paper-links">
