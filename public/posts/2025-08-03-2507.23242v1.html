@@ -67,16 +67,77 @@
         }
         .paper-summary {
             color: #444;
-            line-height: 1.7;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        .paper-summary h1 {
+            color: #667eea;
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            padding: 0.8rem 1rem;
+            background: linear-gradient(90deg, #f8f9ff 0%, #ffffff 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
         }
         .paper-summary h2 {
-            color: #667eea;
-            border-bottom: 2px solid #f0f0f0;
+            color: #5a67d8;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.8rem 0;
             padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
         }
         .paper-summary h3 {
-            color: #555;
-            margin-top: 1.5rem;
+            color: #4a5568;
+            font-size: 1.1rem;
+            margin: 1.2rem 0 0.6rem 0;
+        }
+        .paper-summary p {
+            margin: 1rem 0;
+            text-align: justify;
+        }
+        .paper-summary ul, .paper-summary ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .paper-summary li {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+        .paper-summary strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        .paper-summary em {
+            color: #4a5568;
+            font-style: italic;
+        }
+        .paper-summary blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary code {
+            background: #edf2f7;
+            color: #2d3748;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+        }
+        .paper-summary pre {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .paper-summary pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
         }
         .paper-links {
             margin-top: 1rem;
@@ -128,69 +189,83 @@
             <h2 class="paper-title">Generalized Reinforcement Learning for Retriever-Specific Query Rewriter with Unstructured Real-World Documents</h2>
             
             <div class="paper-summary">
-                <h1>问题定义</h1>
-<p>problem: |
-  1. 论文要解决的具体问题是：在Retrieval-Augmented Generation (RAG)系统中，针对不同类型的检索器（ lexical、语义、混合、多模态），如何实现无需人工标注的查询重写优化，以提升非结构化真实世界文档的检索性能。
-  2. 这个问题的重要性体现在：查询重写是RAG系统的核心组件，直接影响检索结果的相关性和生成质量；而现有方法依赖人工标注，难以扩展到真实世界的非结构化数据（如PDF、幻灯片等），且无法适应不同检索器的特性（如lexical依赖关键词，语义依赖上下文）。
-  3. 目前存在的挑战或困难：(1) 现有查询重写方法需要大量人工标注数据，成本高且难以规模化；(2) 难以适应不同检索器的特性（如lexical vs 语义检索器的查询需求差异）；(3) 多模态文档（如图像化文档）的查询重写缺乏有效解决方案；(4) 语义和混合检索器的查询重写效果差，训练目标与检索器特性不匹配。</p>
-<h1>研究背景</h1>
-<p>background: |
-  1. 前人在这个领域的研究成果包括：(1) RAG框架的提出（Lewis et al. 2020），将检索与生成结合；(2) 传统查询重写方法（如 heuristic扩展、统计方法）；(3) 近年来的学习型查询重写方法（如 neural network、强化学习（RL）），例如Wang et al. 2025用显式反馈训练重写器，Jin et al. 2025用RL优化查询以提升最终答案质量。
-  2. 现有方法的优点和局限性：(1) 传统方法（如 heuristic）简单易实现，但依赖人工经验，难以适应复杂场景；(2) 学习型方法（如 supervised learning）在结构化数据上有效，但需要大量标注数据，难以扩展到真实世界非结构化数据；(3) 现有RL方法（如 Jin et al. 2025）关注最终答案质量，但未针对检索器特性优化，难以适应不同检索器。
-  3. 当前技术水平：查询重写在结构化文本数据（如新闻、维基百科）上已取得较好效果，但在非结构化真实世界文档（如工业PDF、幻灯片）和多模态数据（如图像化文档）上仍存在性能瓶颈；针对不同检索器的个性化查询重写方法尚未成熟。</p>
-<h1>创新来源</h1>
-<p>idea_source: |
-  1. 核心思路来自于：用强化学习（RL）解决查询重写的个性化问题，无需人工标注，通过合成数据训练针对特定检索器的重写器。
-  2. 灵感来自于：(1) RL在NLP生成任务中的成功应用（如文本摘要、机器翻译），其通过奖励函数优化生成结果；(2) 大模型（LLM）在数据合成中的能力，可自动生成场景-问题对，替代人工标注。
-  3. 作者产生创新想法的过程：观察到现有查询重写方法依赖人工标注，难以适应不同检索器和真实世界数据，因此提出用LLM合成场景-问题对（替代人工标注），并用RL针对特定检索器优化重写器（匹配检索器的表示空间）。</p>
-<h1>解决方案</h1>
-<p>solution: |
-  1. 论文提出的具体技术方案是：Generalized Reinforcement Learning for Retriever-Specific Query Rewriter (RL-QR)，分为两步：(1) 用大模型合成场景-问题对（模拟真实用户的长查询）；(2) 用强化学习（GRPO算法）训练针对特定检索器的查询重写器，优化目标是提升检索性能（NDCG@3）并保证格式正确性。
-  2. 关键技术细节和实现要点：(1) 场景-问题合成：用LLM（如Qwen2.5-VL-72B、Qwen3-32B）解析原始文档（多模态或文本），生成场景、问题和答案，合并场景和问题作为查询；(2) RL训练：针对不同检索器（多模态、 lexical、语义、混合）训练不同的重写器，用GRPO算法优化，奖励函数结合检索奖励（NDCG@3）和格式惩罚（如冗余内容扣分）；(3) 模块化设计：重写器与检索器解耦，支持不同检索器和模态（多模态、文本）。</p>
-<h1>实验验证</h1>
-<p>experiment: |
-  1. 实验设计和安排：实现了两个RAG系统（多模态RAG、文本-based RAG），分别测试针对多模态检索器（ColQwen2.5-3B）、lexical检索器（ixi-RAG lexical）、语义检索器（ixi-RAG semantic）、混合检索器（ixi-RAG hybrid）的重写器性能。
-  2. 使用的数据集、基准和评估指标：(1) 数据集：2145篇工业内部非结构化文档（PDF、Word、幻灯片），合成了多模态训练数据Dmm（1609条）和文本训练数据Dtm（2980条）；(2) 基准：原始查询、Qwen3-4B（无监督重写）、其他检索器的重写器（如RL-QRlexical用于语义检索器）；(3) 评估指标：NDCG@3（衡量检索结果的相关性和排序质量）。
-  3. 实验结果：(1) 多模态RAG：RL-QRmulti-modal的NDCG@3为82.10，比原始查询（73.84）提升11%；(2) 文本-based RAG（lexical检索器）：RL-QRlexical的NDCG@3为79.66，比原始查询（72.90）提升9%；(3) 语义和混合检索器：RL-QRsemantic和RL-QRhybrid的性能未提升（甚至下降），说明训练目标与检索器特性不匹配。实验结果有效证明了方案在多模态和lexical检索器上的可行性，但语义和混合检索器仍需改进。</p>
-<h1>研究结论</h1>
-<p>conclusion: |
-  1. 重要结论：(1) RL-QR无需人工标注，可有效提升多模态和lexical检索器的检索性能；(2) 针对特定检索器的个性化重写器优于通用重写器（如Qwen3-4B）；(3) 语义和混合检索器的查询重写需优化训练目标（如结合推理型检索器）。
-  2. 主要贡献和成果：(1) 提出了通用的RL查询重写框架（RL-QR），支持不同检索器和模态；(2) 实现了无需人工标注的查询重写，适应真实世界非结构化数据；(3) 在工业RAG系统（ixi-RAG）上验证了有效性，多模态和lexical检索器性能显著提升。
-  3. 对领域发展的意义：推动了RAG系统在真实世界的应用，降低了查询重写的成本（无需人工标注），提升了系统的模块化和可维护性（重写器与检索器解耦）。</p>
-<h1>未来展望</h1>
-<p>future_work: |
-  1. 当前工作的局限性：(1) 语义和混合检索器的性能未提升，训练目标与检索器特性不匹配；(2) 训练数据量小（几千样本，单 epoch），可能导致过拟合或泛化能力差；(3) 重写查询长度过长（平均500+字符），可能影响检索效率。
-  2. 未来可能的改进方向：(1) 优化语义检索器的训练目标，结合推理型检索器（如ReasonIR）的特性；(2) 增加训练数据量（如扩大合成数据规模），采用多 epoch训练；(3) 改进奖励函数，增加查询长度惩罚，控制重写查询的简洁性；(4) 探索更先进的RL算法（如PPO的变种），提升训练稳定性。
-  3. 值得深入探索的问题：(1) 多模态查询重写的进一步优化（如图像化文档的语义理解）；(2) 查询重写与检索器的联合训练（如重写器适应检索器的表示空间）；(3) 真实用户查询的自适应重写（如根据用户反馈动态调整重写策略）。</p>
-<h1>核心算法</h1>
-<p>pseudocode: |
-  # 步骤1：合成场景-问题对（模拟真实用户长查询）
-  function synthesize_queries(DB_raw: List[Document], parser: Parser, llm: LLM, prompt_template: str) -&gt; List[Tuple[DocumentIndex, str]]:
-      """
-      输入：原始文档集合、文档解析器（多模态/文本）、大模型、提示模板
-      输出：合成查询集合（关联文档索引）
-      """
-      parsed_docs = [parser.parse(d) for d in DB_raw]  # 解析文档（多模态：图像嵌入；文本：文本 chunk）
-      synthetic_queries = []
-      for doc in parsed_docs:
-          # 用大模型生成场景、问题、答案
-          llm_output = llm.generate(prompt_template.format(document=doc))
-          scenario = llm_output.get("scenario")
-          question = llm_output.get("question")
-          if scenario and question:
-              # 合并场景和问题作为查询（模拟真实用户的长查询）
-              query = f"{scenario} {question}"
-              synthetic_queries.append((doc.index, query))
+                <h1 id="_1">问题定义</h1>
+<p><strong>problem</strong></p>
+<ol>
+<li>论文要解决的具体问题是：在Retrieval-Augmented Generation (RAG)系统中，针对不同类型的检索器（ lexical、语义、混合、多模态），如何实现无需人工标注的查询重写优化，以提升非结构化真实世界文档的检索性能。</li>
+<li>这个问题的重要性体现在：查询重写是RAG系统的核心组件，直接影响检索结果的相关性和生成质量；而现有方法依赖人工标注，难以扩展到真实世界的非结构化数据（如PDF、幻灯片等），且无法适应不同检索器的特性（如lexical依赖关键词，语义依赖上下文）。</li>
+<li>目前存在的挑战或困难：(1) 现有查询重写方法需要大量人工标注数据，成本高且难以规模化；(2) 难以适应不同检索器的特性（如lexical vs 语义检索器的查询需求差异）；(3) 多模态文档（如图像化文档）的查询重写缺乏有效解决方案；(4) 语义和混合检索器的查询重写效果差，训练目标与检索器特性不匹配。</li>
+</ol>
+<h1 id="_2">研究背景</h1>
+<p><strong>background</strong></p>
+<ol>
+<li>前人在这个领域的研究成果包括：(1) RAG框架的提出（Lewis et al. 2020），将检索与生成结合；(2) 传统查询重写方法（如 heuristic扩展、统计方法）；(3) 近年来的学习型查询重写方法（如 neural network、强化学习（RL）），例如Wang et al. 2025用显式反馈训练重写器，Jin et al. 2025用RL优化查询以提升最终答案质量。</li>
+<li>现有方法的优点和局限性：(1) 传统方法（如 heuristic）简单易实现，但依赖人工经验，难以适应复杂场景；(2) 学习型方法（如 supervised learning）在结构化数据上有效，但需要大量标注数据，难以扩展到真实世界非结构化数据；(3) 现有RL方法（如 Jin et al. 2025）关注最终答案质量，但未针对检索器特性优化，难以适应不同检索器。</li>
+<li>当前技术水平：查询重写在结构化文本数据（如新闻、维基百科）上已取得较好效果，但在非结构化真实世界文档（如工业PDF、幻灯片）和多模态数据（如图像化文档）上仍存在性能瓶颈；针对不同检索器的个性化查询重写方法尚未成熟。</li>
+</ol>
+<h1 id="_3">创新来源</h1>
+<p><strong>idea_source</strong></p>
+<ol>
+<li>核心思路来自于：用强化学习（RL）解决查询重写的个性化问题，无需人工标注，通过合成数据训练针对特定检索器的重写器。</li>
+<li>灵感来自于：(1) RL在NLP生成任务中的成功应用（如文本摘要、机器翻译），其通过奖励函数优化生成结果；(2) 大模型（LLM）在数据合成中的能力，可自动生成场景-问题对，替代人工标注。</li>
+<li>作者产生创新想法的过程：观察到现有查询重写方法依赖人工标注，难以适应不同检索器和真实世界数据，因此提出用LLM合成场景-问题对（替代人工标注），并用RL针对特定检索器优化重写器（匹配检索器的表示空间）。</li>
+</ol>
+<h1 id="_4">解决方案</h1>
+<p><strong>solution</strong></p>
+<ol>
+<li>论文提出的具体技术方案是：Generalized Reinforcement Learning for Retriever-Specific Query Rewriter (RL-QR)，分为两步：(1) 用大模型合成场景-问题对（模拟真实用户的长查询）；(2) 用强化学习（GRPO算法）训练针对特定检索器的查询重写器，优化目标是提升检索性能（NDCG@3）并保证格式正确性。</li>
+<li>关键技术细节和实现要点：(1) 场景-问题合成：用LLM（如Qwen2.5-VL-72B、Qwen3-32B）解析原始文档（多模态或文本），生成场景、问题和答案，合并场景和问题作为查询；(2) RL训练：针对不同检索器（多模态、 lexical、语义、混合）训练不同的重写器，用GRPO算法优化，奖励函数结合检索奖励（NDCG@3）和格式惩罚（如冗余内容扣分）；(3) 模块化设计：重写器与检索器解耦，支持不同检索器和模态（多模态、文本）。</li>
+</ol>
+<h1 id="_5">实验验证</h1>
+<p><strong>experiment</strong></p>
+<ol>
+<li>实验设计和安排：实现了两个RAG系统（多模态RAG、文本-based RAG），分别测试针对多模态检索器（ColQwen2.5-3B）、lexical检索器（ixi-RAG lexical）、语义检索器（ixi-RAG semantic）、混合检索器（ixi-RAG hybrid）的重写器性能。</li>
+<li>使用的数据集、基准和评估指标：(1) 数据集：2145篇工业内部非结构化文档（PDF、Word、幻灯片），合成了多模态训练数据Dmm（1609条）和文本训练数据Dtm（2980条）；(2) 基准：原始查询、Qwen3-4B（无监督重写）、其他检索器的重写器（如RL-QRlexical用于语义检索器）；(3) 评估指标：NDCG@3（衡量检索结果的相关性和排序质量）。</li>
+<li>实验结果：(1) 多模态RAG：RL-QRmulti-modal的NDCG@3为82.10，比原始查询（73.84）提升11%；(2) 文本-based RAG（lexical检索器）：RL-QRlexical的NDCG@3为79.66，比原始查询（72.90）提升9%；(3) 语义和混合检索器：RL-QRsemantic和RL-QRhybrid的性能未提升（甚至下降），说明训练目标与检索器特性不匹配。实验结果有效证明了方案在多模态和lexical检索器上的可行性，但语义和混合检索器仍需改进。</li>
+</ol>
+<h1 id="_6">研究结论</h1>
+<p><strong>conclusion</strong></p>
+<ol>
+<li>重要结论：(1) RL-QR无需人工标注，可有效提升多模态和lexical检索器的检索性能；(2) 针对特定检索器的个性化重写器优于通用重写器（如Qwen3-4B）；(3) 语义和混合检索器的查询重写需优化训练目标（如结合推理型检索器）。</li>
+<li>主要贡献和成果：(1) 提出了通用的RL查询重写框架（RL-QR），支持不同检索器和模态；(2) 实现了无需人工标注的查询重写，适应真实世界非结构化数据；(3) 在工业RAG系统（ixi-RAG）上验证了有效性，多模态和lexical检索器性能显著提升。</li>
+<li>对领域发展的意义：推动了RAG系统在真实世界的应用，降低了查询重写的成本（无需人工标注），提升了系统的模块化和可维护性（重写器与检索器解耦）。</li>
+</ol>
+<h1 id="_7">未来展望</h1>
+<p><strong>future_work</strong></p>
+<ol>
+<li>当前工作的局限性：(1) 语义和混合检索器的性能未提升，训练目标与检索器特性不匹配；(2) 训练数据量小（几千样本，单 epoch），可能导致过拟合或泛化能力差；(3) 重写查询长度过长（平均500+字符），可能影响检索效率。</li>
+<li>未来可能的改进方向：(1) 优化语义检索器的训练目标，结合推理型检索器（如ReasonIR）的特性；(2) 增加训练数据量（如扩大合成数据规模），采用多 epoch训练；(3) 改进奖励函数，增加查询长度惩罚，控制重写查询的简洁性；(4) 探索更先进的RL算法（如PPO的变种），提升训练稳定性。</li>
+<li>值得深入探索的问题：(1) 多模态查询重写的进一步优化（如图像化文档的语义理解）；(2) 查询重写与检索器的联合训练（如重写器适应检索器的表示空间）；(3) 真实用户查询的自适应重写（如根据用户反馈动态调整重写策略）。</li>
+</ol>
+<h1 id="_8">核心算法</h1>
+<p><strong>pseudocode</strong></p>
+<p># 步骤1：合成场景-问题对（模拟真实用户长查询）<br />
+  function synthesize_queries(DB_raw: List[Document], parser: Parser, llm: LLM, prompt_template: str) -&gt; List[Tuple[DocumentIndex, str]]:<br />
+      """<br />
+      输入：原始文档集合、文档解析器（多模态/文本）、大模型、提示模板<br />
+      输出：合成查询集合（关联文档索引）<br />
+      """<br />
+      parsed_docs = [parser.parse(d) for d in DB_raw]  # 解析文档（多模态：图像嵌入；文本：文本 chunk）<br />
+      synthetic_queries = []<br />
+      for doc in parsed_docs:<br />
+          # 用大模型生成场景、问题、答案<br />
+          llm_output = llm.generate(prompt_template.format(document=doc))<br />
+          scenario = llm_output.get("scenario")<br />
+          question = llm_output.get("question")<br />
+          if scenario and question:<br />
+              # 合并场景和问题作为查询（模拟真实用户的长查询）<br />
+              query = f"{scenario} {question}"<br />
+              synthetic_queries.append((doc.index, query))<br />
       return synthetic_queries</p>
-<p># 步骤2：用GRPO训练针对特定检索器的查询重写器
-  function train_query_rewriter(synthetic_data: List[Tuple[DocumentIndex, str]], retriever: Retriever, initial_model: Model, lambda1: float, lambda2: float, grpo_hyperparams: Dict) -&gt; Model:
-      """
-      输入：合成数据（文档索引+查询）、检索器、初始重写器模型、奖励权重、GRPO超参数
-      输出：训练后的重写器模型
-      """
-      model = initial_model
-      optimizer = grpo_hyperparams.get("optimizer", AdamW(model.parameters()))
-      epsilon = grpo_hyperparams.get("epsilon", 0.2)  # GRPO的剪辑参数
+<p># 步骤2：用GRPO训练针对特定检索器的查询重写器<br />
+  function train_query_rewriter(synthetic_data: List[Tuple[DocumentIndex, str]], retriever: Retriever, initial_model: Model, lambda1: float, lambda2: float, grpo_hyperparams: Dict) -&gt; Model:<br />
+      """<br />
+      输入：合成数据（文档索引+查询）、检索器、初始重写器模型、奖励权重、GRPO超参数<br />
+      输出：训练后的重写器模型<br />
+      """<br />
+      model = initial_model<br />
+      optimizer = grpo_hyperparams.get("optimizer", AdamW(model.parameters()))<br />
+      epsilon = grpo_hyperparams.get("epsilon", 0.2)  # GRPO的剪辑参数<br />
       group_size = grpo_hyperparams.get("group_size", 8)  # 每组采样的查询数量</p>
 <div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="n">batch</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">DataLoader</span><span class="p">(</span><span class="n">synthetic_data</span><span class="p">,</span><span class="w"> </span><span class="n">batch_size</span><span class="o">=</span><span class="n">grpo_hyperparams</span><span class="p">[</span><span class="s">&quot;batch_size&quot;</span><span class="p">])</span><span class="o">:</span>
 <span class="w">      </span><span class="n">doc_indices</span><span class="p">,</span><span class="w"> </span><span class="n">original_queries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">zip</span><span class="p">(</span><span class="o">*</span><span class="n">batch</span><span class="p">)</span>
@@ -234,31 +309,31 @@
 <span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">model</span>
 </code></pre></div>
 
-<p># 辅助函数：计算NDCG@3
-  function compute_ndcg(retrieved_docs: List[Document], target_doc_index: str) -&gt; float:
-      """
-      输入：检索到的文档列表（前3篇）、目标文档索引
-      输出：NDCG@3分数
-      """
-      # 构建相关性判断：目标文档为1，其他为0
-      relevance = [1.0 if doc.index == target_doc_index else 0.0 for doc in retrieved_docs]
-      # 计算DCG@3
-      dcg = relevance[0] + (relevance[1] / log2(2)) + (relevance[2] / log2(3))
-      # 计算理想DCG@3（目标文档排在第一位）
-      ideal_relevance = [1.0, 0.0, 0.0]
-      ideal_dcg = ideal_relevance[0] + (ideal_relevance[1] / log2(2)) + (ideal_relevance[2] / log2(3))
-      # 避免除以零
-      ndcg = dcg / ideal_dcg if ideal_dcg &gt; 0 else 0.0
+<p># 辅助函数：计算NDCG@3<br />
+  function compute_ndcg(retrieved_docs: List[Document], target_doc_index: str) -&gt; float:<br />
+      """<br />
+      输入：检索到的文档列表（前3篇）、目标文档索引<br />
+      输出：NDCG@3分数<br />
+      """<br />
+      # 构建相关性判断：目标文档为1，其他为0<br />
+      relevance = [1.0 if doc.index == target_doc_index else 0.0 for doc in retrieved_docs]<br />
+      # 计算DCG@3<br />
+      dcg = relevance[0] + (relevance[1] / log2(2)) + (relevance[2] / log2(3))<br />
+      # 计算理想DCG@3（目标文档排在第一位）<br />
+      ideal_relevance = [1.0, 0.0, 0.0]<br />
+      ideal_dcg = ideal_relevance[0] + (ideal_relevance[1] / log2(2)) + (ideal_relevance[2] / log2(3))<br />
+      # 避免除以零<br />
+      ndcg = dcg / ideal_dcg if ideal_dcg &gt; 0 else 0.0<br />
       return ndcg</p>
-<p># 辅助函数：GRPO的损失计算（简化版）
-  function grpo_loss(model: Model, rewritten_queries: List[List[str]], advantages: List[List[float]], epsilon: float) -&gt; Tensor:
-      """
-      输入：模型、重写查询组、优势函数值、剪辑参数
-      输出：GRPO损失
-      """
-      loss = 0.0
-      for i in range(len(rewritten_queries)):
-          group_queries = rewritten_queries[i]
+<p># 辅助函数：GRPO的损失计算（简化版）<br />
+  function grpo_loss(model: Model, rewritten_queries: List[List[str]], advantages: List[List[float]], epsilon: float) -&gt; Tensor:<br />
+      """<br />
+      输入：模型、重写查询组、优势函数值、剪辑参数<br />
+      输出：GRPO损失<br />
+      """<br />
+      loss = 0.0<br />
+      for i in range(len(rewritten_queries)):<br />
+          group_queries = rewritten_queries[i]<br />
           group_advantages = advantages[i]</p>
 <div class="codehilite"><pre><span></span><code>      # 计算每个查询的概率（模型生成该查询的概率）
       probs = [model.compute_probability(q) for q in group_queries]
