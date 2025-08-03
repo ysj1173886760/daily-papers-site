@@ -8,32 +8,58 @@
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>python-feedgen</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 03 Aug 2025 02:17:45 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 03 Aug 2025 02:27:59 +0000</lastBuildDate>
     <managingEditor>ai-research@example.com (AI Research Team)</managingEditor>
     <webMaster>webmaster@example.com (Webmaster)</webMaster>
     <item>
-      <title>2025-08-03 RAG_test Papers (5篇)</title>
-      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-rag_test.html</link>
-      <description>今日RAG_test领域精选论文 5 篇，包含详细分析和关键洞察。</description>
-      <content:encoded><![CDATA[<h2>RAG_test 领域论文汇总</h2>
-<p>本期为您精选了 5 篇 RAG_test 领域的优质论文，每篇都经过详细的结构化分析。</p>
-
-<h3>主要内容包括：</h3>
-<ul>
-    <li>📊 问题定义与研究动机</li>
-    <li>🔍 技术方案与创新点</li>
-    <li>⚡ 实验验证与结果分析</li>
-    <li>💡 应用前景与未来展望</li>
-</ul>
-
-<p><a href="https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-rag_test.html">点击查看完整分析</a></p>
-
-<hr>
-<p><em>由 Daily Paper Processing System 自动生成 | 数据来源: arXiv</em></p>]]></content:encoded>
-      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-rag_test.html</guid>
+      <title>Zero-Shot Document Understanding using Pseudo Table of Contents-Guided Retrieval-Augmented Generation</title>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23217v1.html</link>
+      <description>RAG_test 论文: Zero-Shot Document Understanding using Pseudo Table of Contents-Guided Retrieval-Augmented Generation</description>
+      <content:encoded><![CDATA[<h2>Zero-Shot Document Understanding using Pseudo Table of Contents-Guided Retrieval-Augmented Generation</h2><p>查看完整的论文分析和摘要。</p><p><a href="https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23217v1.html">阅读全文</a></p>]]></content:encoded>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23217v1.html</guid>
       <category>RAG_test</category>
       <category>AI Research</category>
-      <pubDate>Sun, 03 Aug 2025 12:00:00 +0000</pubDate>
+      <pubDate>Sun, 03 Aug 2025 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Fine-Grained Privacy Extraction from Retrieval-Augmented Generation Systems via Knowledge Asymmetry Exploitation</title>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23229v1.html</link>
+      <description>RAG_test 论文: Fine-Grained Privacy Extraction from Retrieval-Augmented Generation Systems via Knowledge Asymmetry Exploitation</description>
+      <content:encoded><![CDATA[<h2>Fine-Grained Privacy Extraction from Retrieval-Augmented Generation Systems via Knowledge Asymmetry Exploitation</h2><p>查看完整的论文分析和摘要。</p><p><a href="https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23229v1.html">阅读全文</a></p>]]></content:encoded>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23229v1.html</guid>
+      <category>RAG_test</category>
+      <category>AI Research</category>
+      <pubDate>Sun, 03 Aug 2025 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Generalized Reinforcement Learning for Retriever-Specific Query Rewriter with Unstructured Real-World Documents</title>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23242v1.html</link>
+      <description>RAG_test 论文: Generalized Reinforcement Learning for Retriever-Specific Query Rewriter with Unstructured Real-World Documents</description>
+      <content:encoded><![CDATA[<h2>Generalized Reinforcement Learning for Retriever-Specific Query Rewriter with Unstructured Real-World Documents</h2><p>查看完整的论文分析和摘要。</p><p><a href="https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23242v1.html">阅读全文</a></p>]]></content:encoded>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23242v1.html</guid>
+      <category>RAG_test</category>
+      <category>AI Research</category>
+      <pubDate>Sun, 03 Aug 2025 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>MUST-RAG: MUSical Text Question Answering with Retrieval Augmented Generation</title>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23334v1.html</link>
+      <description>RAG_test 论文: MUST-RAG: MUSical Text Question Answering with Retrieval Augmented Generation</description>
+      <content:encoded><![CDATA[<h2>MUST-RAG: MUSical Text Question Answering with Retrieval Augmented Generation</h2><p>查看完整的论文分析和摘要。</p><p><a href="https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23334v1.html">阅读全文</a></p>]]></content:encoded>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23334v1.html</guid>
+      <category>RAG_test</category>
+      <category>AI Research</category>
+      <pubDate>Sun, 03 Aug 2025 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>DiffLoRA: Differential Low-Rank Adapters for Large Language Models</title>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23588v1.html</link>
+      <description>RAG_test 论文: DiffLoRA: Differential Low-Rank Adapters for Large Language Models</description>
+      <content:encoded><![CDATA[<h2>DiffLoRA: Differential Low-Rank Adapters for Large Language Models</h2><p>查看完整的论文分析和摘要。</p><p><a href="https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23588v1.html">阅读全文</a></p>]]></content:encoded>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-2507.23588v1.html</guid>
+      <category>RAG_test</category>
+      <category>AI Research</category>
+      <pubDate>Sun, 03 Aug 2025 00:00:00 +0000</pubDate>
     </item>
   </channel>
 </rss>
