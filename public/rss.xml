@@ -1,19 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
   <channel>
-    <title>Daily AI Papers</title>
-    <link>https://your-username.github.io/daily-papers-site/rss.xml</link>
-    <description>Latest papers in AI research - RAG, Knowledge Graph, and more</description>
-    <atom:link href="https://your-username.github.io/daily-papers-site/rss.xml" rel="self"/>
+    <title>Daily RAG Papers</title>
+    <link>https://ysj1173886760.github.io/daily-papers-site/rss.xml</link>
+    <description>Latest papers in Retrieval-Augmented Generation research</description>
+    <atom:link href="https://ysj1173886760.github.io/daily-papers-site/rss.xml" rel="self"/>
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>python-feedgen</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 03 Aug 2025 01:55:23 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 03 Aug 2025 02:05:04 +0000</lastBuildDate>
     <managingEditor>ai-research@example.com (AI Research Team)</managingEditor>
     <webMaster>webmaster@example.com (Webmaster)</webMaster>
     <item>
       <title>2025-08-03 AI Papers (1篇)</title>
-      <link>https://your-username.github.io/daily-papers-site/posts/2025-08-03-ai.html</link>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-ai.html</link>
       <description>今日AI领域精选论文 1 篇，包含详细分析和关键洞察。</description>
       <content:encoded><![CDATA[<h2>AI 领域论文汇总</h2>
 <p>本期为您精选了 1 篇 AI 领域的优质论文，每篇都经过详细的结构化分析。</p>
@@ -26,18 +26,18 @@
     <li>💡 应用前景与未来展望</li>
 </ul>
 
-<p><a href="https://your-username.github.io/daily-papers-site/posts/2025-08-03-ai.html">点击查看完整分析</a></p>
+<p><a href="https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-ai.html">点击查看完整分析</a></p>
 
 <hr>
 <p><em>由 Daily Paper Processing System 自动生成 | 数据来源: arXiv</em></p>]]></content:encoded>
-      <guid isPermaLink="false">https://your-username.github.io/daily-papers-site/posts/2025-08-03-ai.html</guid>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-ai.html</guid>
       <category>AI</category>
       <category>AI Research</category>
       <pubDate>Sun, 03 Aug 2025 12:00:00 +0000</pubDate>
     </item>
     <item>
       <title>2025-08-03 General Papers (1篇)</title>
-      <link>https://your-username.github.io/daily-papers-site/posts/2025-08-03-general.html</link>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-general.html</link>
       <description>今日General领域精选论文 1 篇，包含详细分析和关键洞察。</description>
       <content:encoded><![CDATA[<h2>General 领域论文汇总</h2>
 <p>本期为您精选了 1 篇 General 领域的优质论文，每篇都经过详细的结构化分析。</p>
@@ -50,18 +50,18 @@
     <li>💡 应用前景与未来展望</li>
 </ul>
 
-<p><a href="https://your-username.github.io/daily-papers-site/posts/2025-08-03-general.html">点击查看完整分析</a></p>
+<p><a href="https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-general.html">点击查看完整分析</a></p>
 
 <hr>
 <p><em>由 Daily Paper Processing System 自动生成 | 数据来源: arXiv</em></p>]]></content:encoded>
-      <guid isPermaLink="false">https://your-username.github.io/daily-papers-site/posts/2025-08-03-general.html</guid>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-general.html</guid>
       <category>General</category>
       <category>AI Research</category>
       <pubDate>Sun, 03 Aug 2025 12:00:00 +0000</pubDate>
     </item>
     <item>
       <title>2025-08-03 CV Papers (1篇)</title>
-      <link>https://your-username.github.io/daily-papers-site/posts/2025-08-03-cv.html</link>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-cv.html</link>
       <description>今日CV领域精选论文 1 篇，包含详细分析和关键洞察。</description>
       <content:encoded><![CDATA[<h2>CV 领域论文汇总</h2>
 <p>本期为您精选了 1 篇 CV 领域的优质论文，每篇都经过详细的结构化分析。</p>
@@ -74,18 +74,18 @@
     <li>💡 应用前景与未来展望</li>
 </ul>
 
-<p><a href="https://your-username.github.io/daily-papers-site/posts/2025-08-03-cv.html">点击查看完整分析</a></p>
+<p><a href="https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-cv.html">点击查看完整分析</a></p>
 
 <hr>
 <p><em>由 Daily Paper Processing System 自动生成 | 数据来源: arXiv</em></p>]]></content:encoded>
-      <guid isPermaLink="false">https://your-username.github.io/daily-papers-site/posts/2025-08-03-cv.html</guid>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-cv.html</guid>
       <category>CV</category>
       <category>AI Research</category>
       <pubDate>Sun, 03 Aug 2025 12:00:00 +0000</pubDate>
     </item>
     <item>
       <title>2025-08-03 NLP Papers (2篇)</title>
-      <link>https://your-username.github.io/daily-papers-site/posts/2025-08-03-nlp.html</link>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-nlp.html</link>
       <description>今日NLP领域精选论文 2 篇，包含详细分析和关键洞察。</description>
       <content:encoded><![CDATA[<h2>NLP 领域论文汇总</h2>
 <p>本期为您精选了 2 篇 NLP 领域的优质论文，每篇都经过详细的结构化分析。</p>
@@ -98,11 +98,11 @@
     <li>💡 应用前景与未来展望</li>
 </ul>
 
-<p><a href="https://your-username.github.io/daily-papers-site/posts/2025-08-03-nlp.html">点击查看完整分析</a></p>
+<p><a href="https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-nlp.html">点击查看完整分析</a></p>
 
 <hr>
 <p><em>由 Daily Paper Processing System 自动生成 | 数据来源: arXiv</em></p>]]></content:encoded>
-      <guid isPermaLink="false">https://your-username.github.io/daily-papers-site/posts/2025-08-03-nlp.html</guid>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-08-03-nlp.html</guid>
       <category>NLP</category>
       <category>AI Research</category>
       <pubDate>Sun, 03 Aug 2025 12:00:00 +0000</pubDate>
