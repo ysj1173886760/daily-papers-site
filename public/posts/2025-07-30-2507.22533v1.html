@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CliCARE: Grounding Large Language Models in Clinical Guidelines for Decision Support over Longitudinal Cancer Electronic Health Records - Daily AI Papers</title>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/highlight.css">
+    <link rel="alternate" type="application/rss+xml" title="Daily AI Papers" href="/rss.xml">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+        nav {
+            margin-top: 1rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+        nav a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .paper-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        .paper-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .paper-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .paper-summary {
+            color: #444;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        .paper-summary h1 {
+            color: #667eea;
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            padding: 0.8rem 1rem;
+            background: linear-gradient(90deg, #f8f9ff 0%, #ffffff 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary h2 {
+            color: #5a67d8;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.8rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .paper-summary h3 {
+            color: #4a5568;
+            font-size: 1.1rem;
+            margin: 1.2rem 0 0.6rem 0;
+        }
+        .paper-summary p {
+            margin: 1rem 0;
+            text-align: justify;
+        }
+        .paper-summary ul, .paper-summary ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .paper-summary li {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+        .paper-summary strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        .paper-summary em {
+            color: #4a5568;
+            font-style: italic;
+        }
+        .paper-summary blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary code {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+        }
+        .paper-summary pre {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid #334155;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .paper-summary pre::before {
+            content: 'Python';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 0 8px 0 8px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .paper-summary pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            border: none;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .paper-summary .codehilite {
+            margin: 1.5rem 0;
+        }
+        .paper-summary .codehilite pre {
+            margin: 0;
+        }
+        /* 语法高亮颜色 */
+        .paper-summary .codehilite .c { color: #6b7280; } /* 注释 */
+        .paper-summary .codehilite .k { color: #8b5cf6; } /* 关键字 */
+        .paper-summary .codehilite .s { color: #10b981; } /* 字符串 */
+        .paper-summary .codehilite .n { color: #f8fafc; } /* 变量名 */
+        .paper-summary .codehilite .o { color: #f59e0b; } /* 操作符 */
+        .paper-summary .codehilite .p { color: #94a3b8; } /* 标点 */
+        .paper-summary .codehilite .m { color: #ef4444; } /* 数字 */
+        .paper-summary .codehilite .nf { color: #06b6d4; } /* 函数名 */
+        .paper-links {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        .paper-links a {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+        .paper-links a:hover {
+            background: #5a6fd8;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Daily AI Papers</h1>
+        <p>2025年08月03日 - RAG_test 论文</p>
+        <nav>
+            <a href="/">首页</a>
+            <a href="/rss.xml">RSS订阅</a>
+            <a href="/about.html">关于</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="paper-card">
+            <div class="paper-meta">
+                <span>发布: 2025-07-30</span> | 
+                <span>更新: 2025-07-30</span> |
+                <span>分类: cs.CL</span> |
+                <span>arXiv ID: 2507.22533v1</span>
+            </div>
+            
+            <h2 class="paper-title">CliCARE: Grounding Large Language Models in Clinical Guidelines for Decision Support over Longitudinal Cancer Electronic Health Records</h2>
+            
+            <div class="paper-summary">
+                <h1 id="_1">问题定义</h1>
+<p><strong>problem</strong></p>
+<ol>
+<li>论文要解决的具体问题是：如何让大语言模型（LLMs）在处理<strong>长纵向癌症电子健康记录（EHRs）</strong>时，结合<strong>临床指南</strong>提供<strong>可靠的临床决策支持</strong>，具体包括生成准确的临床摘要（TCS）和可操作的治疗推荐（TCR）。</li>
+<li>问题的重要性体现在：癌症EHRs通常包含多 years 的长文本、多语言（如中文+英文）、时间依赖的临床事件（如诊断、治疗、 biomarker 变化），医生需要整合这些信息做出决策，但手动处理会导致 burnout；而LLMs虽能处理文本，但在长上下文时间推理、临床幻觉（事实错误）、可靠评估方面存在缺陷，直接影响患者安全和临床信任。</li>
+<li>目前的挑战包括：<ul>
+<li>长上下文时间推理困难：癌症EHRs可达20000+ tokens，LLMs易出现“lost-in-the-middle”问题，无法捕捉时间依赖（如治疗顺序、病情进展）；</li>
+<li>临床幻觉风险高：现有RAG方法仅检索碎片文本，无法结合临床指南的<strong>流程性知识</strong>（如治疗路径），导致事实错误；</li>
+<li>可靠评估缺乏：传统NLP指标（如BLEU、ROUGE）无法反映临床真实性，而专家评估成本高、 scalability差。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_2">研究背景</h1>
+<p><strong>background</strong></p>
+<ol>
+<li>前人研究成果：<ul>
+<li>长文本EHR处理：用Longformer等模型做提取式摘要（如Shist_p = MLF(Dhist_p)），减少上下文长度；</li>
+<li>知识增强LLMs：提出KG-enhanced RAG（如MedRAG、GNN-RAG），用知识图谱（KG）补充LLMs的知识，减少幻觉；</li>
+<li>评估方法：尝试用LLM-as-a-Judge评估临床生成任务，但存在 positional bias、verbosity 等问题。</li>
+</ul>
+</li>
+<li>现有方法的优点和局限性：<ul>
+<li>优点：Longformer能处理长文本，KG-enhanced RAG能减少幻觉，LLM-as-a-Judge能 scalable 评估；</li>
+<li>局限性：Longformer的摘要可能丢失时间信息，KG-enhanced RAG的检索未捕捉临床流程的顺序依赖，LLM-as-a-Judge的评估结果不可靠（未与专家验证）。</li>
+</ul>
+</li>
+<li>当前技术水平：LLMs在标准化临床基准（如MedQA）上表现优异，但在<strong>真实长纵向癌症EHRs</strong>上的决策支持仍不可靠，主要问题是时间推理、幻觉和评估。</li>
+</ol>
+<h1 id="_3">创新来源</h1>
+<p><strong>idea_source</strong></p>
+<ol>
+<li>核心思路来自：解决LLMs处理长纵向癌症EHRs的三个挑战，即<strong>长上下文时间推理</strong>、<strong>临床幻觉</strong>、<strong>可靠评估</strong>，需要结合<strong>时间知识图谱（TKG）</strong>和<strong>临床指南</strong>。</li>
+<li>灵感来自：<ul>
+<li>时间知识图谱（TKG）在序列数据处理中的应用（如捕捉时间依赖）；</li>
+<li>知识图谱与LLMs对齐的研究（如KG-LLM Alignment）；</li>
+<li>临床指南的流程性知识（如NCCN指南的治疗路径）。</li>
+</ul>
+</li>
+<li>作者产生创新想法的过程：<ul>
+<li>观察到现有LLMs处理长EHRs时，无法有效捕捉时间依赖（如治疗顺序），导致摘要不完整；</li>
+<li>发现现有RAG方法仅检索碎片文本，无法结合临床指南的流程性知识，导致幻觉；</li>
+<li>意识到传统评估指标无法反映临床真实性，需要可靠的评估方法；</li>
+<li>因此提出：将EHRs转换为TKG（捕捉时间依赖），与指南KG对齐（结合流程性知识），用Human-validated LLM-as-a-Judge评估（可靠）。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_4">解决方案</h1>
+<p><strong>solution</strong></p>
+<ol>
+<li>具体技术方案：提出<strong>CliCARE框架</strong>，分为三个核心模块：<ul>
+<li><strong>EHR-to-TKG转换</strong>：将长纵向EHRs转换为患者特定的TKG，捕捉时间依赖；</li>
+<li><strong>轨迹-指南对齐</strong>：将患者TKG与临床指南KG对齐，结合流程性知识；</li>
+<li><strong>生成与评估</strong>：用对齐后的KG作为上下文，生成临床摘要和推荐，用Human-validated LLM-as-a-Judge评估。</li>
+</ul>
+</li>
+<li>关键技术细节和实现要点：<ul>
+<li><strong>EHR-to-TKG转换</strong>：</li>
+<li>用Longformer（MLF）处理历史EHRs，生成摘要（Shist_p），结合最新临床笔记（dτn），提取关键临床事件（如诊断、治疗、 biomarker 变化）；</li>
+<li>将事件组织为TKG（Gt = (Et, Rt, T)），其中Et是实体（如“乳腺癌”），Rt是关系（如“接受化疗”），T是时间戳。</li>
+<li><strong>轨迹-指南对齐</strong>：</li>
+<li><strong>知识形式化</strong>：构建指南KG（Gg = (Eg, Rg)），其中Eg是指南概念（如“Cancer”、“Treatment”），Rt是推荐关系（如“术后化疗”）；</li>
+<li><strong>语义匹配</strong>：用BERT计算患者轨迹（Trp）与指南路径（Pak）的语义相似性（Score = Σmax(cossim(fBERT(desc(sj)), fBERT(desc(ei))))）；</li>
+<li><strong>LLM重排序</strong>：用LLM（如GPT-4）对候选路径重排序，选择临床最合理的路径；</li>
+<li><strong>对齐扩展</strong>：用BootEA算法迭代扩展对齐，结合语义相似性和邻居相似性（Sweighted = α·Ssem + (1−α)·Shood）。</li>
+<li><strong>生成与评估</strong>：</li>
+<li>用对齐后的KG作为上下文，输入LLM生成临床摘要（TCS）和推荐（TCR）；</li>
+<li>用<strong>Human-validated LLM-as-a-Judge</strong>评估：用三个LLM（GPT-4.1、Claude 4.0 Sonnet、Gemini 2.5 Pro）的平均得分，评估四个维度（事实准确性、完整性、临床合理性、可操作性），并通过Spearman相关性验证与专家评估的一致性。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_5">实验验证</h1>
+<p><strong>experiment</strong></p>
+<ol>
+<li>实验设计和安排：<ul>
+<li><strong>对比实验</strong>：将CliCARE与标准RAG、BriefContext、MedRAG、KG2RAG、GNN-RAG等基线对比，验证其性能；</li>
+<li><strong>消融研究</strong>：去除CliCARE的核心模块（如对齐扩展、LLM重排序、TKG压缩），验证各模块的作用；</li>
+<li><strong>敏感性分析</strong>：测试不同上下文长度（2k、8k、20k tokens）对性能的影响；</li>
+<li><strong>评估验证</strong>：用三个专家的评估结果验证LLM-as-a-Judge的可靠性。</li>
+</ul>
+</li>
+<li>使用的数据集、基准和评估指标：<ul>
+<li><strong>数据集</strong>：</li>
+<li>私有中文CancerEHR：2000例癌症患者的长纵向EHRs（最长20000 tokens）；</li>
+<li>公开英文MIMIC-Cancer：2000例癌症患者的EHRs（来自MIMIC-IV）。</li>
+<li><strong>基准</strong>：</li>
+<li>模型：Qwen-3-8B、Gemini 2.5 Pro、GPT-4.1等；</li>
+<li>方法：标准RAG、BriefContext、MedRAG、KG2RAG、GNN-RAG等。</li>
+<li><strong>评估指标</strong>：</li>
+<li><strong>Human-validated LLM-as-a-Judge</strong>：四个维度的得分（1-5分）；</li>
+<li><strong>Spearman相关性</strong>：验证LLM-as-a-Judge与专家评估的一致性。</li>
+</ul>
+</li>
+<li>实验结果：<ul>
+<li><strong>对比实验</strong>：CliCARE在两个数据集上显著优于基线，如Gemini 2.5 Pro结合CliCARE在CancerEHR的TCS（临床摘要）得分为4.976，TCR（治疗推荐）得分为4.965，远高于标准RAG（2.735、2.818）和MedRAG（4.470、4.576）；</li>
+<li><strong>消融研究</strong>：去除任何一个模块都会导致性能下降，如去除对齐扩展（w/o Exp.），Gemini 2.5 Pro的TCS得分从4.976下降到4.619；</li>
+<li><strong>评估验证</strong>：LLM-as-a-Judge与专家评估的Spearman相关性为0.7，说明其可靠；</li>
+<li><strong>敏感性分析</strong>：上下文长度越长，性能越好，如Qwen-3-8B在20k tokens时的TCS得分（2.976）高于2k tokens（3.228？不，原实验中Qwen-3-8B在短文本（0-33%）的TCS得分是3.228，长文本（66-100%）是2.976，可能因为Qwen-3-8B的长上下文处理能力有限，而Gemini 2.5 Pro在长文本时性能更好（4.988）。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_6">研究结论</h1>
+<p><strong>conclusion</strong></p>
+<ol>
+<li>重要结论：<ul>
+<li>CliCARE框架通过<strong>TKG转换</strong>和<strong>指南对齐</strong>，有效解决了LLMs处理长纵向癌症EHRs的三个挑战（长上下文时间推理、临床幻觉、可靠评估）；</li>
+<li>Human-validated LLM-as-a-Judge是一种<strong>可靠且可扩展</strong>的评估方法，能替代专家评估；</li>
+<li>CliCARE在<strong>真实癌症EHRs</strong>上的性能显著优于现有方法，能为医生提供准确的临床摘要和可操作的治疗推荐。</li>
+</ul>
+</li>
+<li>主要贡献和成果：<ul>
+<li><strong>方法创新</strong>：提出CliCARE框架，结合TKG和临床指南对齐，提高LLMs的时间推理能力和知识 grounding；</li>
+<li><strong>评估创新</strong>：提出Human-validated LLM-as-a-Judge，解决了临床生成任务的评估问题；</li>
+<li><strong>实验验证</strong>：在两个数据集（中文+英文）上的实验，验证了CliCARE的有效性，为真实临床场景的应用奠定了基础。</li>
+</ul>
+</li>
+<li>对领域发展的意义：<ul>
+<li>为LLMs在<strong>长纵向临床数据</strong>中的应用提供了一种<strong>可靠的框架</strong>，减少幻觉，提高时间推理能力；</li>
+<li>提供了一种<strong>可扩展的评估方法</strong>，解决了临床生成任务的评估瓶颈；</li>
+<li>为<strong>临床决策支持系统</strong>的开发提供了新的思路，促进LLMs在真实临床场景的应用。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_7">未来展望</h1>
+<p><strong>future_work</strong></p>
+<ol>
+<li>当前工作的局限性：<ul>
+<li><strong>TKG构建</strong>：依赖于事件提取的准确性，若EHRs存在OCR错误或文本质量差，会影响TKG的准确性；</li>
+<li><strong>指南KG构建</strong>：需要人工整理临床指南（如NCCN）， scalability不足；</li>
+<li><strong>数据覆盖</strong>：当前实验主要用了<strong>癌症数据</strong>，需要扩展到其他疾病（如糖尿病、心血管疾病）；</li>
+<li><strong>模型依赖</strong>：部分模型（如Gemini 2.5 Pro）是闭源的，可能影响可重复性。</li>
+</ul>
+</li>
+<li>未来改进方向：<ul>
+<li><strong>优化事件提取</strong>：用更先进的事件提取模型（如LLM-based事件提取），提高准确性；</li>
+<li><strong>自动化指南KG构建</strong>：用LLMs从临床指南中自动提取KG（如用GPT-4从NCCN指南中提取治疗路径），提高 scalability；</li>
+<li><strong>扩展数据覆盖</strong>：将CliCARE应用到更多疾病（如糖尿病、心血管疾病）和语言（如日文、西班牙文）；</li>
+<li><strong>优化模型依赖</strong>：用开源模型（如Llama 3）替代闭源模型，提高可重复性。</li>
+</ul>
+</li>
+<li>值得深入探索的问题：<ul>
+<li><strong>LLMs与临床工作流程的整合</strong>：如何将CliCARE与医生的工作流程（如电子病历系统）深度整合，实现实时决策支持；</li>
+<li><strong>多模态EHRs处理</strong>：如何处理多模态EHRs（如影像、实验室数据、病理报告），结合文本、图像、数值数据生成决策支持；</li>
+<li><strong>实时决策支持</strong>：如何实现<strong>实时</strong>的临床决策支持，比如在患者就诊时，快速生成摘要和推荐；</li>
+<li><strong>伦理和法律问题</strong>：如何确保CliCARE的推荐符合伦理和法律要求（如患者隐私、知情同意）。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_8">核心算法</h1>
+<p>pseudocode: |</p>
+<div class="codehilite"><pre><span></span><code>  <span class="c1"># 论文中的核心算法是**轨迹-指南对齐算法**（Algorithm 1），以下是简化的伪代码：</span>
+
+  <span class="c1"># 输入：临床指南（Dg）、患者EHRs（Dp）、预训练BERT（fBERT）、LLM（fLLM）、迭代次数（I）、置信阈值（θ）、权重因子（α）</span>
+  <span class="c1"># 输出：对齐后的知识图谱（Galigned）</span>
+
+  <span class="c1"># 步骤1：提取KG和TKG</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">extract_kgs</span><span class="p">(</span><span class="n">Dg</span><span class="p">,</span> <span class="n">Dp</span><span class="p">,</span> <span class="n">fLLM</span><span class="p">):</span>
+      <span class="c1"># 从临床指南中提取静态KG（Gg）</span>
+      <span class="n">Gg</span> <span class="o">=</span> <span class="n">fLLM</span><span class="o">.</span><span class="n">extract_kg</span><span class="p">(</span><span class="n">Dg</span><span class="p">)</span>  <span class="c1"># 例如，从NCCN指南中提取“Cancer→Treatment”关系</span>
+      <span class="c1"># 从患者EHRs中提取 temporal TKG（Gt）</span>
+      <span class="n">Gt</span> <span class="o">=</span> <span class="n">fLLM</span><span class="o">.</span><span class="n">extract_tkg</span><span class="p">(</span><span class="n">Dp</span><span class="p">)</span>  <span class="c1"># 例如，从患者记录中提取“2023-01-01: 诊断乳腺癌；2023-02-01: 接受化疗”</span>
+      <span class="k">return</span> <span class="n">Gg</span><span class="p">,</span> <span class="n">Gt</span>
+
+  <span class="c1"># 步骤2：初始语义对齐（用BERT计算相似性）</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">initial_alignment</span><span class="p">(</span><span class="n">Gt</span><span class="p">,</span> <span class="n">Gg</span><span class="p">,</span> <span class="n">fBERT</span><span class="p">):</span>
+      <span class="n">Ainitial</span> <span class="o">=</span> <span class="p">[]</span>
+      <span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">Gt</span><span class="o">.</span><span class="n">entities</span><span class="p">:</span>  <span class="c1"># ep: 患者TKG中的实体（如“乳腺癌”）</span>
+          <span class="k">for</span> <span class="n">eg</span> <span class="ow">in</span> <span class="n">Gg</span><span class="o">.</span><span class="n">entities</span><span class="p">:</span>  <span class="c1"># eg: 指南KG中的实体（如“Cancer”）</span>
+              <span class="c1"># 计算语义相似性</span>
+              <span class="n">sim</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">fBERT</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">description</span><span class="p">),</span> <span class="n">fBERT</span><span class="p">(</span><span class="n">eg</span><span class="o">.</span><span class="n">description</span><span class="p">))</span>
+              <span class="n">Ainitial</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ep</span><span class="p">,</span> <span class="n">eg</span><span class="p">,</span> <span class="n">sim</span><span class="p">))</span>
+      <span class="k">return</span> <span class="n">Ainitial</span>
+
+  <span class="c1"># 步骤3：LLM重排序（选择临床最合理的对齐）</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">llm_reranking</span><span class="p">(</span><span class="n">Ainitial</span><span class="p">,</span> <span class="n">fLLM</span><span class="p">):</span>
+      <span class="c1"># 用LLM重排序候选对齐</span>
+      <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;请根据临床合理性，对以下候选对齐进行重排序：</span><span class="si">{</span><span class="n">Ainitial</span><span class="si">}</span><span class="s2">&quot;</span>
+      <span class="n">Areranked</span> <span class="o">=</span> <span class="n">fLLM</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+      <span class="c1"># 过滤高置信度的对齐（如sim &gt; 0.7）</span>
+      <span class="n">Aseed</span> <span class="o">=</span> <span class="p">[</span><span class="n">pair</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">Areranked</span> <span class="k">if</span> <span class="n">pair</span><span class="o">.</span><span class="n">sim</span> <span class="o">&gt;</span> <span class="mf">0.7</span><span class="p">]</span>
+      <span class="k">return</span> <span class="n">Aseed</span>
+
+  <span class="c1"># 步骤4：迭代Bootstrapping扩展（扩展对齐）</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">bootstrapping_expansion</span><span class="p">(</span><span class="n">Aseed</span><span class="p">,</span> <span class="n">Gt</span><span class="p">,</span> <span class="n">Gg</span><span class="p">,</span> <span class="n">fBERT</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">α</span><span class="p">):</span>
+      <span class="n">Afinal</span> <span class="o">=</span> <span class="n">Aseed</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+      <span class="n">U</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">Gt</span><span class="o">.</span><span class="n">entities</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">pair</span><span class="o">.</span><span class="n">ep</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">Afinal</span><span class="p">)</span>  <span class="c1"># 未对齐的患者实体</span>
+      <span class="n">V</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">Gg</span><span class="o">.</span><span class="n">entities</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">pair</span><span class="o">.</span><span class="n">eg</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">Afinal</span><span class="p">)</span>  <span class="c1"># 未对齐的指南实体</span>
+
+      <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">I</span><span class="p">):</span>
+          <span class="n">Anew</span> <span class="o">=</span> <span class="p">[]</span>
+          <span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">U</span><span class="p">:</span>
+              <span class="k">for</span> <span class="n">eg</span> <span class="ow">in</span> <span class="n">V</span><span class="p">:</span>
+                  <span class="c1"># 计算语义相似性</span>
+                  <span class="n">Ssem</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">fBERT</span><span class="p">(</span><span class="n">ep</span><span class="o">.</span><span class="n">description</span><span class="p">),</span> <span class="n">fBERT</span><span class="p">(</span><span class="n">eg</span><span class="o">.</span><span class="n">description</span><span class="p">))</span>
+                  <span class="c1"># 计算邻居相似性（已对齐的邻居）</span>
+                  <span class="n">Shood</span> <span class="o">=</span> <span class="n">calculate_neighborhood_similarity</span><span class="p">(</span><span class="n">ep</span><span class="p">,</span> <span class="n">eg</span><span class="p">,</span> <span class="n">Afinal</span><span class="p">)</span>
+                  <span class="c1"># 加权得分</span>
+                  <span class="n">Sweighted</span> <span class="o">=</span> <span class="n">α</span> <span class="o">*</span> <span class="n">Ssem</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">α</span><span class="p">)</span> <span class="o">*</span> <span class="n">Shood</span>
+                  <span class="c1"># 如果得分超过阈值，加入新对齐</span>
+                  <span class="k">if</span> <span class="n">Sweighted</span> <span class="o">&gt;</span> <span class="n">θ</span><span class="p">:</span>
+                      <span class="n">Anew</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ep</span><span class="p">,</span> <span class="n">eg</span><span class="p">))</span>
+          <span class="c1"># 更新对齐集合和未对齐实体</span>
+          <span class="n">Afinal</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Anew</span><span class="p">)</span>
+          <span class="n">U</span> <span class="o">=</span> <span class="n">U</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">pair</span><span class="o">.</span><span class="n">ep</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">Anew</span><span class="p">)</span>
+          <span class="n">V</span> <span class="o">=</span> <span class="n">V</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">pair</span><span class="o">.</span><span class="n">eg</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">Anew</span><span class="p">)</span>
+          <span class="c1"># 如果没有新对齐，停止迭代</span>
+          <span class="k">if</span> <span class="ow">not</span> <span class="n">Anew</span><span class="p">:</span>
+              <span class="k">break</span>
+      <span class="k">return</span> <span class="n">Afinal</span>
+
+  <span class="c1"># 步骤5：合并KG（生成对齐后的KG）</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">merge_kgs</span><span class="p">(</span><span class="n">Gt</span><span class="p">,</span> <span class="n">Gg</span><span class="p">,</span> <span class="n">Afinal</span><span class="p">):</span>
+      <span class="n">Galigned</span> <span class="o">=</span> <span class="n">Gt</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+      <span class="k">for</span> <span class="p">(</span><span class="n">ep</span><span class="p">,</span> <span class="n">eg</span><span class="p">)</span> <span class="ow">in</span> <span class="n">Afinal</span><span class="p">:</span>
+          <span class="c1"># 将指南KG中的实体和关系合并到患者TKG中</span>
+          <span class="n">Galigned</span><span class="o">.</span><span class="n">entities</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">eg</span><span class="p">)</span>
+          <span class="k">for</span> <span class="n">rel</span> <span class="ow">in</span> <span class="n">Gg</span><span class="o">.</span><span class="n">relations</span><span class="p">(</span><span class="n">eg</span><span class="p">):</span>
+              <span class="n">Galigned</span><span class="o">.</span><span class="n">relations</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rel</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">Galigned</span>
+
+  <span class="c1"># 主函数</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">clicare_align</span><span class="p">(</span><span class="n">Dg</span><span class="p">,</span> <span class="n">Dp</span><span class="p">,</span> <span class="n">fBERT</span><span class="p">,</span> <span class="n">fLLM</span><span class="p">,</span> <span class="n">I</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">θ</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">α</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+      <span class="c1"># 提取KG和TKG</span>
+      <span class="n">Gg</span><span class="p">,</span> <span class="n">Gt</span> <span class="o">=</span> <span class="n">extract_kgs</span><span class="p">(</span><span class="n">Dg</span><span class="p">,</span> <span class="n">Dp</span><span class="p">,</span> <span class="n">fLLM</span><span class="p">)</span>
+      <span class="c1"># 初始语义对齐</span>
+      <span class="n">Ainitial</span> <span class="o">=</span> <span class="n">initial_alignment</span><span class="p">(</span><span class="n">Gt</span><span class="p">,</span> <span class="n">Gg</span><span class="p">,</span> <span class="n">fBERT</span><span class="p">)</span>
+      <span class="c1"># LLM重排序</span>
+      <span class="n">Aseed</span> <span class="o">=</span> <span class="n">llm_reranking</span><span class="p">(</span><span class="n">Ainitial</span><span class="p">,</span> <span class="n">fLLM</span><span class="p">)</span>
+      <span class="c1"># 迭代扩展</span>
+      <span class="n">Afinal</span> <span class="o">=</span> <span class="n">bootstrapping_expansion</span><span class="p">(</span><span class="n">Aseed</span><span class="p">,</span> <span class="n">Gt</span><span class="p">,</span> <span class="n">Gg</span><span class="p">,</span> <span class="n">fBERT</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">θ</span><span class="p">,</span> <span class="n">α</span><span class="p">)</span>
+      <span class="c1"># 合并KG</span>
+      <span class="n">Galigned</span> <span class="o">=</span> <span class="n">merge_kgs</span><span class="p">(</span><span class="n">Gt</span><span class="p">,</span> <span class="n">Gg</span><span class="p">,</span> <span class="n">Afinal</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">Galigned</span>
+</code></pre></div>
+            </div>
+            
+            <div class="paper-links">
+                <a href="http://arxiv.org/abs/2507.22533" target="_blank">arXiv原文</a>
+                <a href="http://arxiv.org/pdf/2507.22533" target="_blank">PDF下载</a>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>Generated by Daily Paper Processing System | Template: V2</p>
+        <p>数据来源: arXiv | 分析引擎: Large Language Model</p>
+    </footer>
+</body>
+</html>
