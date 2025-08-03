@@ -43,19 +43,21 @@ jobs:
       run: |
         pip install -r requirements.txt
     
-    - name: Process papers data
+    - name: Check for content
       run: |
-        # 如果有传入的论文数据，处理它们
-        if [ -n "${{ github.event.client_payload.papers_data }}" ]; then
-          echo "Processing papers data from API call"
-          python scripts/process_papers.py --data='${{ github.event.client_payload.papers_data }}'
+        echo "Checking for content..."
+        if [ -d "public" ]; then
+          echo "✓ Found public/ directory"
+          ls -la public/ || true
+          if [ -f "public/rss.xml" ]; then
+            echo "✓ Found RSS file"
+            echo "RSS file size: $(wc -l < public/rss.xml) lines"
+          fi
         else
-          echo "No papers data provided, using existing content"
+          echo "No public/ directory found, creating empty one for Pages"
+          mkdir -p public
+          echo "<h1>Site building...</h1>" > public/index.html
         fi
-    
-    - name: Build site
-      run: |
-        python scripts/build_site.py
     
     - name: Setup Pages
       uses: actions/configure-pages@v4

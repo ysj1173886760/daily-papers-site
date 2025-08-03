@@ -28,17 +28,29 @@ def process_papers_data(data_str):
         # 处理新的论文数据
         new_posts = []
         for file_info in incoming_data.get("html_files", []):
+            # 尝试从file_info中获取date，如果没有则使用incoming_data的date
+            post_date = file_info.get('date') or incoming_data.get('date')
+            if not post_date:
+                post_date = datetime.now().strftime('%Y-%m-%d')
+            
+            # 确保date格式正确
+            try:
+                parsed_date = datetime.strptime(post_date, "%Y-%m-%d")
+                formatted_date = parsed_date.strftime("%Y年%m月%d日")
+            except:
+                formatted_date = post_date
+            
             post = {
-                "title": f"{file_info['date']} {file_info['category']} Papers ({file_info['papers_count']}篇)",
-                "date": file_info['date'],
-                "date_formatted": datetime.strptime(file_info['date'], "%Y-%m-%d").strftime("%Y年%m月%d日"),
+                "title": f"{post_date} {file_info['category']} Papers ({file_info['papers_count']}篇)",
+                "date": post_date,
+                "date_formatted": formatted_date,
                 "category": file_info['category'],
                 "papers_count": file_info['papers_count'],
                 "url": file_info['url'],
                 "filename": file_info['filename'],
                 "excerpt": f"今日{file_info['category']}领域精选论文 {file_info['papers_count']} 篇，包含详细分析和关键洞察。",
                 "tags": [file_info['category'], "AI Research", "arXiv"],
-                "content": ""  # 这里可以添加处理后的内容
+                "content": f"<h2>{file_info['category']} 领域论文汇总</h2><p>本期为您精选了 {file_info['papers_count']} 篇 {file_info['category']} 领域的优质论文，每篇都经过详细的结构化分析。</p>"
             }
             new_posts.append(post)
         
