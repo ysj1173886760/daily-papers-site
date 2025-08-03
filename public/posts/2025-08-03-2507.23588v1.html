@@ -353,37 +353,38 @@
 </li>
 </ol>
 <h1 id="_8">核心算法</h1>
-<p><strong>pseudocode</strong></p>
-<p># DiffLoRA的核心算法流程（每个注意力层）<br />
-  function DiffLoRA_Attention(X, WQ1, WK1, V, r, λ, trainable_params):<br />
-      # 输入：X（输入序列，shape=[batch_size, seq_len, hidden_size]）<br />
-      #       WQ1、WK1（预训练的查询、键权重，shape=[hidden_size, hidden_size]）<br />
-      #       V（预训练的价值权重，shape=[hidden_size, hidden_size]）<br />
-      #       r（适配器秩）<br />
-      #       λ（去噪系数）<br />
-      #       trainable_params（可训练参数：BQ1、AQ1、BK1、AK1、BQ2、AQ2、BK2、AK2）</p>
-<div class="codehilite"><pre><span></span><code>  # 1. 计算正注意力项（Q1、K1）：预训练权重 + LoRA适配器
-  BQ1, AQ1 = trainable_params[&quot;BQ1&quot;], trainable_params[&quot;AQ1&quot;]  # BQ1.shape=[hidden_size, r], AQ1.shape=[r, hidden_size]
-  BK1, AK1 = trainable_params[&quot;BK1&quot;], trainable_params[&quot;AK1&quot;]  # BK1.shape=[hidden_size, r], AK1.shape=[r, hidden_size]
-  Q1 = X @ (WQ1 + BQ1 @ AQ1)  # shape=[batch_size, seq_len, hidden_size]
-  K1 = X @ (WK1 + BK1 @ AK1)  # shape=[batch_size, seq_len, hidden_size]
+<p>pseudocode: |</p>
+<div class="codehilite"><pre><span></span><code>  <span class="c1"># DiffLoRA的核心算法流程（每个注意力层）</span>
+  <span class="n">function</span> <span class="n">DiffLoRA_Attention</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">WQ1</span><span class="p">,</span> <span class="n">WK1</span><span class="p">,</span> <span class="n">V</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">λ</span><span class="p">,</span> <span class="n">trainable_params</span><span class="p">):</span>
+      <span class="c1"># 输入：X（输入序列，shape=[batch_size, seq_len, hidden_size]）</span>
+      <span class="c1">#       WQ1、WK1（预训练的查询、键权重，shape=[hidden_size, hidden_size]）</span>
+      <span class="c1">#       V（预训练的价值权重，shape=[hidden_size, hidden_size]）</span>
+      <span class="c1">#       r（适配器秩）</span>
+      <span class="c1">#       λ（去噪系数）</span>
+      <span class="c1">#       trainable_params（可训练参数：BQ1、AQ1、BK1、AK1、BQ2、AQ2、BK2、AK2）</span>
 
-  # 2. 计算负注意力项（Q2、K2）：LoRA适配器（无预训练权重）
-  BQ2, AQ2 = trainable_params[&quot;BQ2&quot;], trainable_params[&quot;AQ2&quot;]  # BQ2.shape=[hidden_size, r], AQ2.shape=[r, hidden_size]
-  BK2, AK2 = trainable_params[&quot;BK2&quot;], trainable_params[&quot;AK2&quot;]  # BK2.shape=[hidden_size, r], AK2.shape=[r, hidden_size]
-  Q2 = X @ (BQ2 @ AQ2)  # shape=[batch_size, seq_len, hidden_size]
-  K2 = X @ (BK2 @ AK2)  # shape=[batch_size, seq_len, hidden_size]
+      <span class="c1"># 1. 计算正注意力项（Q1、K1）：预训练权重 + LoRA适配器</span>
+      <span class="n">BQ1</span><span class="p">,</span> <span class="n">AQ1</span> <span class="o">=</span> <span class="n">trainable_params</span><span class="p">[</span><span class="s2">&quot;BQ1&quot;</span><span class="p">],</span> <span class="n">trainable_params</span><span class="p">[</span><span class="s2">&quot;AQ1&quot;</span><span class="p">]</span>  <span class="c1"># BQ1.shape=[hidden_size, r], AQ1.shape=[r, hidden_size]</span>
+      <span class="n">BK1</span><span class="p">,</span> <span class="n">AK1</span> <span class="o">=</span> <span class="n">trainable_params</span><span class="p">[</span><span class="s2">&quot;BK1&quot;</span><span class="p">],</span> <span class="n">trainable_params</span><span class="p">[</span><span class="s2">&quot;AK1&quot;</span><span class="p">]</span>  <span class="c1"># BK1.shape=[hidden_size, r], AK1.shape=[r, hidden_size]</span>
+      <span class="n">Q1</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="p">(</span><span class="n">WQ1</span> <span class="o">+</span> <span class="n">BQ1</span> <span class="o">@</span> <span class="n">AQ1</span><span class="p">)</span>  <span class="c1"># shape=[batch_size, seq_len, hidden_size]</span>
+      <span class="n">K1</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="p">(</span><span class="n">WK1</span> <span class="o">+</span> <span class="n">BK1</span> <span class="o">@</span> <span class="n">AK1</span><span class="p">)</span>  <span class="c1"># shape=[batch_size, seq_len, hidden_size]</span>
 
-  # 3. 计算差分注意力
-  d = hidden_size  # 隐藏层维度
-  attn_pos = softmax(Q1 @ K1.transpose(-2, -1) / sqrt(d))  # 正注意力分布，shape=[batch_size, seq_len, seq_len]
-  attn_neg = softmax(Q2 @ K2.transpose(-2, -1) / sqrt(d))  # 负注意力分布，shape=[batch_size, seq_len, seq_len]
-  attn_diff = attn_pos - λ * attn_neg  # 差分注意力分布，shape=[batch_size, seq_len, seq_len]
+      <span class="c1"># 2. 计算负注意力项（Q2、K2）：LoRA适配器（无预训练权重）</span>
+      <span class="n">BQ2</span><span class="p">,</span> <span class="n">AQ2</span> <span class="o">=</span> <span class="n">trainable_params</span><span class="p">[</span><span class="s2">&quot;BQ2&quot;</span><span class="p">],</span> <span class="n">trainable_params</span><span class="p">[</span><span class="s2">&quot;AQ2&quot;</span><span class="p">]</span>  <span class="c1"># BQ2.shape=[hidden_size, r], AQ2.shape=[r, hidden_size]</span>
+      <span class="n">BK2</span><span class="p">,</span> <span class="n">AK2</span> <span class="o">=</span> <span class="n">trainable_params</span><span class="p">[</span><span class="s2">&quot;BK2&quot;</span><span class="p">],</span> <span class="n">trainable_params</span><span class="p">[</span><span class="s2">&quot;AK2&quot;</span><span class="p">]</span>  <span class="c1"># BK2.shape=[hidden_size, r], AK2.shape=[r, hidden_size]</span>
+      <span class="n">Q2</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="p">(</span><span class="n">BQ2</span> <span class="o">@</span> <span class="n">AQ2</span><span class="p">)</span>  <span class="c1"># shape=[batch_size, seq_len, hidden_size]</span>
+      <span class="n">K2</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="p">(</span><span class="n">BK2</span> <span class="o">@</span> <span class="n">AK2</span><span class="p">)</span>  <span class="c1"># shape=[batch_size, seq_len, hidden_size]</span>
 
-  # 4. 计算输出（与预训练的V相乘）
-  output = attn_diff @ (X @ V)  # shape=[batch_size, seq_len, hidden_size]
+      <span class="c1"># 3. 计算差分注意力</span>
+      <span class="n">d</span> <span class="o">=</span> <span class="n">hidden_size</span>  <span class="c1"># 隐藏层维度</span>
+      <span class="n">attn_pos</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">Q1</span> <span class="o">@</span> <span class="n">K1</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>  <span class="c1"># 正注意力分布，shape=[batch_size, seq_len, seq_len]</span>
+      <span class="n">attn_neg</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">Q2</span> <span class="o">@</span> <span class="n">K2</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>  <span class="c1"># 负注意力分布，shape=[batch_size, seq_len, seq_len]</span>
+      <span class="n">attn_diff</span> <span class="o">=</span> <span class="n">attn_pos</span> <span class="o">-</span> <span class="n">λ</span> <span class="o">*</span> <span class="n">attn_neg</span>  <span class="c1"># 差分注意力分布，shape=[batch_size, seq_len, seq_len]</span>
 
-  return output
+      <span class="c1"># 4. 计算输出（与预训练的V相乘）</span>
+      <span class="n">output</span> <span class="o">=</span> <span class="n">attn_diff</span> <span class="o">@</span> <span class="p">(</span><span class="n">X</span> <span class="o">@</span> <span class="n">V</span><span class="p">)</span>  <span class="c1"># shape=[batch_size, seq_len, hidden_size]</span>
+
+      <span class="k">return</span> <span class="n">output</span>
 </code></pre></div>
             </div>
             
