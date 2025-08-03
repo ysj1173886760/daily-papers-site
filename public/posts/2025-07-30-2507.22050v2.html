@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSieve: Information Sieving via LLM-as-a-Knowledge-Router - Daily AI Papers</title>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/highlight.css">
+    <link rel="alternate" type="application/rss+xml" title="Daily AI Papers" href="/rss.xml">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+        nav {
+            margin-top: 1rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+        nav a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .paper-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        .paper-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .paper-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .paper-summary {
+            color: #444;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        .paper-summary h1 {
+            color: #667eea;
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            padding: 0.8rem 1rem;
+            background: linear-gradient(90deg, #f8f9ff 0%, #ffffff 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary h2 {
+            color: #5a67d8;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.8rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .paper-summary h3 {
+            color: #4a5568;
+            font-size: 1.1rem;
+            margin: 1.2rem 0 0.6rem 0;
+        }
+        .paper-summary p {
+            margin: 1rem 0;
+            text-align: justify;
+        }
+        .paper-summary ul, .paper-summary ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .paper-summary li {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+        .paper-summary strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        .paper-summary em {
+            color: #4a5568;
+            font-style: italic;
+        }
+        .paper-summary blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary code {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+        }
+        .paper-summary pre {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid #334155;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .paper-summary pre::before {
+            content: 'Python';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 0 8px 0 8px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .paper-summary pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            border: none;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .paper-summary .codehilite {
+            margin: 1.5rem 0;
+        }
+        .paper-summary .codehilite pre {
+            margin: 0;
+        }
+        /* 语法高亮颜色 */
+        .paper-summary .codehilite .c { color: #6b7280; } /* 注释 */
+        .paper-summary .codehilite .k { color: #8b5cf6; } /* 关键字 */
+        .paper-summary .codehilite .s { color: #10b981; } /* 字符串 */
+        .paper-summary .codehilite .n { color: #f8fafc; } /* 变量名 */
+        .paper-summary .codehilite .o { color: #f59e0b; } /* 操作符 */
+        .paper-summary .codehilite .p { color: #94a3b8; } /* 标点 */
+        .paper-summary .codehilite .m { color: #ef4444; } /* 数字 */
+        .paper-summary .codehilite .nf { color: #06b6d4; } /* 函数名 */
+        .paper-links {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        .paper-links a {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+        .paper-links a:hover {
+            background: #5a6fd8;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Daily AI Papers</h1>
+        <p>2025年08月03日 - RAG_test 论文</p>
+        <nav>
+            <a href="/">首页</a>
+            <a href="/rss.xml">RSS订阅</a>
+            <a href="/about.html">关于</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="paper-card">
+            <div class="paper-meta">
+                <span>发布: 2025-07-29</span> | 
+                <span>更新: 2025-07-30</span> |
+                <span>分类: cs.CL</span> |
+                <span>arXiv ID: 2507.22050v2</span>
+            </div>
+            
+            <h2 class="paper-title">DeepSieve: Information Sieving via LLM-as-a-Knowledge-Router</h2>
+            
+            <div class="paper-summary">
+                <h1 id="_1">问题定义</h1>
+<p><strong>problem</strong></p>
+<ol>
+<li>论文要解决的具体问题是传统Retrieval-Augmented Generation (RAG)方法在处理<strong>复合查询</strong>（如多跳推理、嵌套结构）和<strong>异质知识源</strong>（如结构化数据库、非结构化文本、外部API、半结构化日志）时的不足，具体包括：(1) 查询侧：将复杂查询视为原子单位，未分解为结构化子查询，导致无法隔离关键子目标或推理步骤；(2) 源侧：对异质知识源（格式、领域、访问方式不同）采用flat检索，未考虑源的异质性，导致检索噪声、无关内容和不必要的计算成本；(3) 缺乏细粒度的信息筛选机制，导致推理浅、适应性差。</li>
+<li>该问题的重要性体现在：现实世界中的知识源往往是异质的（如企业内部SQL数据库、公开Wikipedia文本、实时Google API），且用户查询多为复合结构（如“谁是创立尼日利亚飞行医生服务的女性的丈夫？”）。传统RAG无法有效处理这些场景，导致答案幻觉、检索精度低、推理不透明等问题，限制了其在实际应用中的实用性（如企业QA、医疗咨询、实时信息查询）。</li>
+<li>目前存在的挑战或困难：(1) 复合查询的结构化分解：如何将嵌套、多跳的查询分解为可独立处理的子查询，同时保留推理依赖关系；(2) 异质知识源的精准路由：如何根据子查询的语义和源的特性（如领域、格式、访问权限），动态选择最合适的源（如SQL vs RAG vs API）；(3) 多阶段信息筛选：如何在检索后评估信息的充分性，并通过反思机制修正错误（如重新路由、调整子查询）；(4) 异质源的融合：如何将来自不同源的子答案（如SQL结果、文本检索结果）聚合为一致、连贯的最终答案。</li>
+</ol>
+<h1 id="_2">研究背景</h1>
+<p><strong>background</strong></p>
+<ol>
+<li>前人的研究成果：(1) RAG变体：如GraphRAG（结构化检索）、HippoRAG（神经-inspired长期记忆）、RAPTOR（递归抽象检索），增强了LLM的知识访问能力；(2) Agentic方法：如ReAct（推理与工具调用结合）、ReWOO（分解推理与观察）、Reflexion（迭代反思），提升了LLM的推理能力；(3) 查询分解：如Decomposed Prompting（模块化分解）、IRCoT（ interleaving检索与推理），尝试将复杂查询分解为子查询。</li>
+<li>现有方法的优点和局限性：(1) 优点：RAG通过外部知识减少幻觉，agentic方法通过工具调用增强推理，查询分解方法提升了多跳推理能力；(2) 局限性：① 查询处理：未充分考虑复合查询的结构化分解，如ReAct仍将查询视为整体，未分解为子查询；② 源选择：传统RAG采用flat检索（如合并所有源为一个索引），未考虑异质源的特性，如HippoRAG仍基于统一 corpus；③ 信息筛选：缺乏细粒度的源路由和反思机制，如Probing-RAG仅在单一 corpus 内反思，未涉及异质源；④ 异质源融合：现有方法多针对单一源（如文本），未有效处理结构化（SQL）与非结构化（RAG）源的融合。</li>
+<li>当前技术水平：RAG能处理简单的知识密集型任务（如单跳事实查询），但对于复合查询（如多跳推理）和异质源（如SQL+RAG）的处理效果不佳；agentic方法能处理工具调用，但源选择不够精准，且未充分利用异质源的特性；查询分解方法能提升多跳推理，但未结合源路由和反思机制。</li>
+</ol>
+<h1 id="_3">创新来源</h1>
+<p><strong>idea_source</strong></p>
+<ol>
+<li>核心思路来自对现有RAG方法局限性的<strong>针对性解决</strong>：作者观察到传统RAG在查询分解、源选择和信息筛选上的不足，提出“信息筛选（Information Sieving）”理念，即通过多阶段的查询分解、源路由、反思和融合，逐步筛选出相关信息。</li>
+<li>灵感来自<strong>agentic方法</strong>（如ReAct的工具调用）和<strong>数据库查询优化</strong>（如分解查询到不同表）：(1) agentic方法的工具调用思路：用LLM作为控制器，动态选择工具（源）；(2) 数据库查询优化：将复杂查询分解为子查询，分别处理后聚合结果。作者将这两个思路结合，提出“LLM-as-a-Knowledge-Router”，即让LLM分解查询并路由到合适的源。</li>
+<li>作者产生创新想法的过程：通过分析现有方法的局限性（如传统RAG的flat检索、agentic方法的源选择不精准），结合实际应用中的异质源场景（如企业内部SQL数据库与公开文本的结合），提出“多阶段信息筛选”框架，即先分解查询，再路由到合适的源，然后反思检索结果，最后融合答案。</li>
+</ol>
+<h1 id="_4">解决方案</h1>
+<p><strong>solution</strong></p>
+<ol>
+<li>具体技术方案：提出DeepSieve框架，包含四个核心阶段：(1) 查询分解（Query Decomposition）：用LLM将复杂查询分解为结构化子查询DAG（有向无环图），保留推理依赖关系；(2) 知识路由（Knowledge Routing）：用LLM作为路由器，根据子查询的语义和源的profile（如“PersonnelDB用于内部员工信息”“Wikipedia用于 general知识”），选择最合适的（工具， corpus）对（如SQL+PersonnelDB、RAG+Wikipedia）；(3) 观察与反思（Observation &amp; Reflexion）：检索后评估答案的充分性（如是否完整、相关），若失败则记录失败历史，重新路由或调整子查询；(4) 答案融合（Answer Fusion）：根据子查询DAG的依赖关系，将来自不同源的子答案聚合为连贯的最终答案。</li>
+<li>关键技术细节和实现要点：(1) 查询分解：用prompt引导LLM生成原子子查询（如“Who founded Flying Doctors?”“Who is her husband?”），并构建DAG表示依赖关系；(2) 知识路由：将源的profile（如“PersonnelDB是结构化SQL数据库，存储员工信息”）注入prompt，让LLM选择源；(3) 反思机制：用记忆模块记录失败的（子查询，源，结果），若检索失败，LLM根据失败历史重新选择源；(4) 融合机制：用LLM根据子查询DAG的依赖关系，整合子答案（如先合并“Montebello在纽约”和“纽约在美国”，得到“Montebello在美国”）；(5) 模块化设计：支持plug-and-play的源（如SQL、RAG、API），每个源用（工具， corpus）对表示，便于扩展。</li>
+</ol>
+<h1 id="_5">实验验证</h1>
+<p><strong>experiment</strong></p>
+<ol>
+<li>实验设计：(1) 基准比较：与传统RAG（如Naive RAG、GraphRAG）、agentic方法（如ReAct、ReWOO、Reflexion）、复合推理方法（如IRCoT、HippoRAG）在多跳QA基准上比较；(2)  ablation研究：验证查询分解、知识路由、反思机制的贡献；(3) 适应性测试：测试DeepSieve在不同检索后端（Naive RAG、GraphRAG）和源配置（SQL+RAG、API+RAG）下的性能。</li>
+<li>数据集、基准和评估指标：(1) 数据集：三个多跳QA基准——MuSiQue（复合推理）、2WikiMultiHopQA（实体链接）、HotpotQA（桥接与比较问题）；(2) 基准：传统RAG（Naive RAG、GraphRAG、HippoRAG）、agentic方法（ReAct、ReWOO、Reflexion）、复合推理（IRCoT、RAPTOR）；(3) 评估指标：答案准确性（F1、EM）、推理成本（token数量）、检索精度（相关文档比例）。</li>
+<li>实验结果：(1) 主性能比较：DeepSieve（Naive RAG）在MuSiQue上F1为46.8（比IRCoT+HippoRAG高13.4），在2WikiMultiHopQA上F1为68.4（比IRCoT+HippoRAG高5.3），平均F1为58.9，超过所有基准；(2) 效率比较：DeepSieve在HotpotQA上用3.9K token（比Reflexion的37.9K少），同时F1为49.0（比Reflexion的46.7高）；(3) ablation研究：移除反思机制导致2WikiMultiHopQA的F1从68.4下降到15.4，移除查询分解导致MuSiQue的F1从46.8下降到28.6，说明这两个模块的重要性；(4) 适应性测试：DeepSieve在GraphRAG后端下的平均F1为50.7，在SQL+RAG源配置下的F1为61.6（比Naive RAG高），说明其适应性。</li>
+</ol>
+<h1 id="_6">研究结论</h1>
+<p><strong>conclusion</strong></p>
+<ol>
+<li>重要结论：(1) DeepSieve通过查询分解、知识路由和反思机制，有效处理了复合查询和异质知识源的问题，提升了RAG的性能和适应性；(2) 查询分解和反思机制是提升多跳推理性能的关键，知识路由是处理异质源的核心；(3) 模块化设计使DeepSieve能适应不同的检索后端和源配置，具有良好的扩展性。</li>
+<li>主要贡献：(1) 提出“信息筛选”理念，用多阶段的查询分解、源路由和反思，解决传统RAG的不足；(2) 提出LLM-as-a-Knowledge-Router，动态选择异质源，为处理异质知识源提供了新框架；(3) 设计了模块化、可扩展的DeepSieve框架，支持plug-and-play的源和检索后端，便于实际应用。</li>
+<li>对领域发展的意义：(1) 为处理现实中的异质知识源（如企业内部数据库与公开文本）提供了可行的解决方案；(2) 提升了RAG的推理深度和透明度（如子查询分解和源路由的可解释性）；(3) 为未来RAG架构的设计提供了模块化的 backbone（如支持多模态源、实时知识更新）。</li>
+</ol>
+<h1 id="_7">未来展望</h1>
+<p><strong>future_work</strong></p>
+<ol>
+<li>当前工作的局限性：(1) 路由粒度不够细：仅选择（工具， corpus）对，未考虑工具参数（如检索深度、温度）；(2) 缺乏个性化适应：未考虑用户的个性化知识需求（如不同用户的偏好源）；(3) 实时知识更新：未处理源的动态变化（如Wikipedia的实时更新）。</li>
+<li>未来改进方向：(1) 细粒度路由：支持工具参数的选择（如“用SQL检索时，设置limit=10”）；(2) 个性化模块：学习用户的偏好源（如用户经常查询企业内部信息，优先选择PersonnelDB）；(3) 实时知识整合：结合实时API（如Google Search）处理动态知识（如当前事件）；(4) 多模态源处理：支持图像、音频等多模态源的融合（如结合图片中的文字和文本检索结果）。</li>
+<li>值得深入探索的问题：(1) 异质源的冲突解决：如何处理来自不同源的矛盾信息（如SQL结果显示“员工A在上海”，但API结果显示“员工A在北京”）；(2) 低资源源的处理：如何在源数据不足的情况下，提升路由和检索性能；(3) 推理效率优化：如何减少LLM的token使用（如优化prompt、缓存常用子查询结果）。</li>
+</ol>
+<h1 id="_8">核心算法</h1>
+<p>pseudocode: |</p>
+<div class="codehilite"><pre><span></span><code>  <span class="n">输入</span><span class="p">:</span> <span class="n">查询Q</span><span class="p">,</span> <span class="n">源集合S</span><span class="err">（</span><span class="n">每个源为</span><span class="p">(</span><span class="n">工具</span><span class="p">,</span> <span class="n">corpus</span><span class="p">)</span><span class="n">对</span><span class="err">）</span><span class="p">,</span> <span class="n">配置C</span><span class="err">（</span><span class="n">是否分解</span><span class="err">、</span><span class="n">是否路由</span><span class="err">、</span><span class="n">反思次数</span><span class="err">）</span>
+  <span class="n">输出</span><span class="p">:</span> <span class="n">最终答案A_hat</span>
+
+  <span class="n">初始化内存M</span><span class="err">（</span><span class="n">记录成功和失败的结果</span><span class="err">）</span>
+  <span class="k">if</span> <span class="n">C</span><span class="o">.</span><span class="n">decompose</span><span class="p">:</span>
+      <span class="n">子查询集合</span><span class="p">{</span><span class="n">q_i</span><span class="p">}</span> <span class="o">=</span> <span class="n">分解查询</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>  <span class="o">//</span> <span class="n">用LLM生成子查询DAG</span>
+  <span class="k">else</span><span class="p">:</span>
+      <span class="n">子查询集合</span><span class="p">{</span><span class="n">q_i</span><span class="p">}</span> <span class="o">=</span> <span class="p">{</span><span class="n">Q</span><span class="p">}</span>  <span class="o">//</span> <span class="n">RAG</span><span class="o">-</span><span class="n">only设置</span>
+
+  <span class="n">遍历每个子查询q_i</span><span class="err">（</span><span class="n">按DAG的执行顺序</span><span class="err">）</span><span class="p">:</span>
+      <span class="n">q_actual</span> <span class="o">=</span> <span class="n">替换变量</span><span class="p">(</span><span class="n">q_i</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>  <span class="o">//</span> <span class="n">用内存中的结果替换子查询中的变量</span><span class="err">（</span><span class="n">如将</span><span class="err">“</span><span class="n">她的丈夫</span><span class="err">”</span><span class="n">替换为</span><span class="err">“</span><span class="n">Dr</span><span class="o">.</span> <span class="n">Ola</span> <span class="n">Orekunrin的丈夫</span><span class="err">”）</span>
+      <span class="n">ai</span> <span class="o">=</span> <span class="n">null</span>
+      <span class="n">is_success</span> <span class="o">=</span> <span class="kc">False</span>
+      <span class="n">尝试次数j</span> <span class="o">=</span> <span class="mi">0</span>
+      <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">C</span><span class="o">.</span><span class="n">max_reflexion_attempts</span> <span class="n">且</span> <span class="ow">not</span> <span class="n">is_success</span><span class="p">:</span>
+          <span class="k">if</span> <span class="n">C</span><span class="o">.</span><span class="n">use_routing</span><span class="p">:</span>
+              <span class="n">源s_i</span> <span class="o">=</span> <span class="n">路由</span><span class="p">(</span><span class="n">q_actual</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">failures</span><span class="p">)</span>  <span class="o">//</span> <span class="n">用LLM选择源</span><span class="err">（</span><span class="n">如SQL</span><span class="o">+</span><span class="n">PersonnelDB</span><span class="err">）</span>
+          <span class="k">else</span><span class="p">:</span>
+              <span class="n">源s_i</span> <span class="o">=</span> <span class="n">合并的源</span><span class="err">（</span><span class="n">如Naive</span> <span class="n">RAG的flat</span> <span class="n">corpus</span><span class="err">）</span>
+          <span class="n">候选答案acandidate</span> <span class="o">=</span> <span class="n">s_i</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">q_actual</span><span class="p">)</span>  <span class="o">//</span> <span class="n">执行检索或工具调用</span><span class="err">（</span><span class="n">如SQL查询</span><span class="err">）</span>
+          <span class="n">ai</span><span class="p">,</span> <span class="n">is_success</span> <span class="o">=</span> <span class="n">提取答案</span><span class="p">(</span><span class="n">acandidate</span><span class="p">)</span>  <span class="o">//</span> <span class="n">用LLM提取答案</span><span class="err">（</span><span class="n">如从SQL结果中提取</span><span class="err">“</span><span class="n">Dr</span><span class="o">.</span> <span class="n">Ola</span> <span class="n">Orekunrin</span><span class="err">”）</span>
+          <span class="k">if</span> <span class="ow">not</span> <span class="n">is_success</span> <span class="n">且</span> <span class="n">C</span><span class="o">.</span><span class="n">use_reflexion</span><span class="p">:</span>
+              <span class="n">M</span><span class="o">.</span><span class="n">log_failure</span><span class="p">(</span><span class="n">q_actual</span><span class="p">,</span> <span class="n">s_i</span><span class="p">)</span>  <span class="o">//</span> <span class="n">记录失败历史</span>
+              <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="n">M</span><span class="o">.</span><span class="n">log_success</span><span class="p">(</span><span class="n">q_i</span><span class="p">,</span> <span class="n">ai</span><span class="p">)</span>  <span class="o">//</span> <span class="n">记录成功的子答案</span>
+
+  <span class="n">最终答案A_hat</span> <span class="o">=</span> <span class="n">融合答案</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>  <span class="o">//</span> <span class="n">用LLM根据子查询DAG融合子答案</span><span class="err">（</span><span class="n">如合并</span><span class="err">“</span><span class="n">Montebello在纽约</span><span class="err">”</span><span class="n">和</span><span class="err">“</span><span class="n">纽约在美国</span><span class="err">”）</span>
+  <span class="n">返回A_hat</span>
+</code></pre></div>
+            </div>
+            
+            <div class="paper-links">
+                <a href="http://arxiv.org/abs/2507.22050" target="_blank">arXiv原文</a>
+                <a href="http://arxiv.org/pdf/2507.22050" target="_blank">PDF下载</a>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>Generated by Daily Paper Processing System | Template: V2</p>
+        <p>数据来源: arXiv | 分析引擎: Large Language Model</p>
+    </footer>
+</body>
+</html>
