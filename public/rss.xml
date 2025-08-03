@@ -8,9 +8,59 @@
     <docs>http://www.rssboard.org/rss-specification</docs>
     <generator>python-feedgen</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 03 Aug 2025 07:57:36 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 03 Aug 2025 08:06:04 +0000</lastBuildDate>
     <managingEditor>ai-research@example.com (AI Research Team)</managingEditor>
     <webMaster>webmaster@example.com (Webmaster)</webMaster>
+    <item>
+      <title>Culinary Crossroads: A RAG Framework for Enhancing Diversity in Cross-Cultural Recipe Adaptation</title>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-07-29-2507.21934v1.html</link>
+      <description>RAG_test 论文: Culinary Crossroads: A RAG Framework for Enhancing Diversity in Cross-Cultural Recipe Adaptation</description>
+      <content:encoded><![CDATA[<h2>Culinary Crossroads: A RAG Framework for Enhancing Diversity in Cross-Cultural Recipe Adaptation</h2><p>查看完整的论文分析和摘要。</p><p><a href="/posts/2025-07-29-2507.21934v1.html">阅读全文</a></p>]]></content:encoded>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-07-29-2507.21934v1.html</guid>
+      <category>RAG_test</category>
+      <category>AI Research</category>
+      <pubDate>Tue, 29 Jul 2025 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Automated Label Placement on Maps via Large Language Models</title>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-07-29-2507.22952v1.html</link>
+      <description>RAG_test 论文: Automated Label Placement on Maps via Large Language Models</description>
+      <content:encoded><![CDATA[<h2>Automated Label Placement on Maps via Large Language Models</h2><p>查看完整的论文分析和摘要。</p><p><a href="/posts/2025-07-29-2507.22952v1.html">阅读全文</a></p>]]></content:encoded>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-07-29-2507.22952v1.html</guid>
+      <category>RAG_test</category>
+      <category>AI Research</category>
+      <pubDate>Tue, 29 Jul 2025 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>DeepSieve: Information Sieving via LLM-as-a-Knowledge-Router</title>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-07-30-2507.22050v2.html</link>
+      <description>RAG_test 论文: DeepSieve: Information Sieving via LLM-as-a-Knowledge-Router</description>
+      <content:encoded><![CDATA[<h2>DeepSieve: Information Sieving via LLM-as-a-Knowledge-Router</h2><p>查看完整的论文分析和摘要。</p><p><a href="/posts/2025-07-30-2507.22050v2.html">阅读全文</a></p>]]></content:encoded>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-07-30-2507.22050v2.html</guid>
+      <category>RAG_test</category>
+      <category>AI Research</category>
+      <pubDate>Wed, 30 Jul 2025 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>CliCARE: Grounding Large Language Models in Clinical Guidelines for Decision Support over Longitudinal Cancer Electronic Health Records</title>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-07-30-2507.22533v1.html</link>
+      <description>RAG_test 论文: CliCARE: Grounding Large Language Models in Clinical Guidelines for Decision Support over Longitudinal Cancer Electronic Health Records</description>
+      <content:encoded><![CDATA[<h2>CliCARE: Grounding Large Language Models in Clinical Guidelines for Decision Support over Longitudinal Cancer Electronic Health Records</h2><p>查看完整的论文分析和摘要。</p><p><a href="/posts/2025-07-30-2507.22533v1.html">阅读全文</a></p>]]></content:encoded>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-07-30-2507.22533v1.html</guid>
+      <category>RAG_test</category>
+      <category>AI Research</category>
+      <pubDate>Wed, 30 Jul 2025 00:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>From Sufficiency to Reflection: Reinforcement-Guided Thinking Quality in Retrieval-Augmented Reasoning for LLMs</title>
+      <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-07-30-2507.22716v1.html</link>
+      <description>RAG_test 论文: From Sufficiency to Reflection: Reinforcement-Guided Thinking Quality in Retrieval-Augmented Reasoning for LLMs</description>
+      <content:encoded><![CDATA[<h2>From Sufficiency to Reflection: Reinforcement-Guided Thinking Quality in Retrieval-Augmented Reasoning for LLMs</h2><p>查看完整的论文分析和摘要。</p><p><a href="/posts/2025-07-30-2507.22716v1.html">阅读全文</a></p>]]></content:encoded>
+      <guid isPermaLink="false">https://ysj1173886760.github.io/daily-papers-site/posts/2025-07-30-2507.22716v1.html</guid>
+      <category>RAG_test</category>
+      <category>AI Research</category>
+      <pubDate>Wed, 30 Jul 2025 00:00:00 +0000</pubDate>
+    </item>
     <item>
       <title>Zero-Shot Document Understanding using Pseudo Table of Contents-Guided Retrieval-Augmented Generation</title>
       <link>https://ysj1173886760.github.io/daily-papers-site/posts/2025-07-31-2507.23217v1.html</link>
