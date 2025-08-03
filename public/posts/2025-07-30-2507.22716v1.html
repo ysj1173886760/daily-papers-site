@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Sufficiency to Reflection: Reinforcement-Guided Thinking Quality in Retrieval-Augmented Reasoning for LLMs - Daily AI Papers</title>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/highlight.css">
+    <link rel="alternate" type="application/rss+xml" title="Daily AI Papers" href="/rss.xml">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+        nav {
+            margin-top: 1rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+        nav a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .paper-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        .paper-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .paper-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .paper-summary {
+            color: #444;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        .paper-summary h1 {
+            color: #667eea;
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            padding: 0.8rem 1rem;
+            background: linear-gradient(90deg, #f8f9ff 0%, #ffffff 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary h2 {
+            color: #5a67d8;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.8rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .paper-summary h3 {
+            color: #4a5568;
+            font-size: 1.1rem;
+            margin: 1.2rem 0 0.6rem 0;
+        }
+        .paper-summary p {
+            margin: 1rem 0;
+            text-align: justify;
+        }
+        .paper-summary ul, .paper-summary ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .paper-summary li {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+        .paper-summary strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        .paper-summary em {
+            color: #4a5568;
+            font-style: italic;
+        }
+        .paper-summary blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary code {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+        }
+        .paper-summary pre {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid #334155;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .paper-summary pre::before {
+            content: 'Python';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 0 8px 0 8px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .paper-summary pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            border: none;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .paper-summary .codehilite {
+            margin: 1.5rem 0;
+        }
+        .paper-summary .codehilite pre {
+            margin: 0;
+        }
+        /* 语法高亮颜色 */
+        .paper-summary .codehilite .c { color: #6b7280; } /* 注释 */
+        .paper-summary .codehilite .k { color: #8b5cf6; } /* 关键字 */
+        .paper-summary .codehilite .s { color: #10b981; } /* 字符串 */
+        .paper-summary .codehilite .n { color: #f8fafc; } /* 变量名 */
+        .paper-summary .codehilite .o { color: #f59e0b; } /* 操作符 */
+        .paper-summary .codehilite .p { color: #94a3b8; } /* 标点 */
+        .paper-summary .codehilite .m { color: #ef4444; } /* 数字 */
+        .paper-summary .codehilite .nf { color: #06b6d4; } /* 函数名 */
+        .paper-links {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        .paper-links a {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+        .paper-links a:hover {
+            background: #5a6fd8;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Daily AI Papers</h1>
+        <p>2025年08月03日 - RAG_test 论文</p>
+        <nav>
+            <a href="/">首页</a>
+            <a href="/rss.xml">RSS订阅</a>
+            <a href="/about.html">关于</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="paper-card">
+            <div class="paper-meta">
+                <span>发布: 2025-07-30</span> | 
+                <span>更新: 2025-07-30</span> |
+                <span>分类: cs.CL</span> |
+                <span>arXiv ID: 2507.22716v1</span>
+            </div>
+            
+            <h2 class="paper-title">From Sufficiency to Reflection: Reinforcement-Guided Thinking Quality in Retrieval-Augmented Reasoning for LLMs</h2>
+            
+            <div class="paper-summary">
+                <h1 id="_1">问题定义</h1>
+<p><strong>problem</strong></p>
+<ol>
+<li>论文要解决的具体问题是：现有基于强化学习（RL）的检索增强生成（RAG）模型在多跳推理任务中，因过度依赖最终答案奖励而忽略中间推理步骤质量，导致的三个主要失败模式——信息不足（未检索到足够支持信息）、推理错误（逻辑或内容缺陷）、答案-推理不一致（推理链正确但答案错误）。</li>
+<li>这个问题的重要性体现在：RAG是提升大语言模型（LLM）事实性和可靠性的关键框架，但中间推理步骤的质量直接影响答案的准确性和可解释性。忽略中间步骤会导致模型生成错误答案（即使检索到足够信息）、推理中断（未充分检索）或答案与推理矛盾，严重限制了RAG在复杂任务中的应用。</li>
+<li>目前的挑战或困难包括：（1）现有RL-based RAG模型仅用最终答案奖励，无法引导中间推理质量；（2）中间推理步骤的质量难以量化（如逻辑连贯性、信息充足性）；（3）训练稳定性问题（如“全对”或“全错”样本引入噪声）。</li>
+</ol>
+<h1 id="_2">研究背景</h1>
+<p><strong>background</strong></p>
+<ol>
+<li>前人研究成果：（1）RAG基础工作（Lewis et al., 2020）提出检索-生成 pipeline，提升事实性；（2）RL在RAG中的应用（如Search-R1、R1-Searcher）用最终答案奖励优化检索策略；（3）过程奖励尝试（如LeTS）结合步骤奖励与答案奖励，但未充分关注信息充足性和推理连贯性。</li>
+<li>现有方法的优点：（1）RAG结合RL提升了多跳推理的事实性；（2）过程奖励方法（如LeTS）开始关注中间步骤。局限性：（1）过度依赖最终答案奖励，忽略中间推理质量；（2）未有效量化信息充足性和推理连贯性；（3）训练稳定性差（如“全对”/“全错”样本引入噪声）。</li>
+<li>当前技术水平：RAG模型能通过RL优化检索策略，在多跳QA任务中取得较好性能，但中间推理步骤的质量控制仍不足，导致推理不连贯、答案与推理矛盾等问题。</li>
+</ol>
+<h1 id="_3">创新来源</h1>
+<p><strong>idea_source</strong></p>
+<ol>
+<li>核心思路来自对现有RL-based RAG模型的错误分析：通过人工和LLM评估，发现模型在多跳推理中存在“信息不足”“推理错误”“答案-推理不一致”三大失败模式，意识到需要关注中间步骤的质量（如信息充足性、推理连贯性）。</li>
+<li>灵感来自认知科学中的“反思”过程（think-retrieve-reflect）：模拟人类思考-检索-反思的认知流程，允许模型在生成答案后反思并修正。</li>
+<li>作者通过分析错误案例（如Table 1、Table 2），发现现有模型因忽略中间步骤奖励而导致推理质量差，从而提出“多维度奖励”（充足性、推理质量、反思）和“困难感知优化”（过滤噪声样本、重加权困难样本）的创新想法。</li>
+</ol>
+<h1 id="_4">解决方案</h1>
+<p><strong>solution</strong></p>
+<ol>
+<li>具体技术方案：提出TIRESRAG-R1，一个结合“think-retrieve-reflect”流程、多维度奖励系统和困难感知优化的RL-based RAG框架。流程包括：（1）Think：生成推理步骤，触发检索；（2）Retrieve：根据检索 query 获取文档；（3）Reflect：生成答案后，反思并修正（可选）。</li>
+<li>关键技术细节：（1）多维度奖励：包括答案奖励（F1）、充足性奖励（LLM评估检索信息是否足够）、推理质量奖励（LLM评估逻辑连贯性、上下文对齐等）、反思奖励（修正错误答案得正奖励，反之得负奖励）；（2）动态权重调度：早期训练（t &lt; 0.9T）关注过程奖励（充足性、推理质量），后期（t ≥ 0.9T）关注答案奖励；（3）困难感知优化：① 样本过滤：过滤“全对”或“全错”的噪声样本；② 优势重加权：根据样本难度（平均充足性奖励）调整优势权重，重点优化困难样本；（4）反思机制：允许模型在生成答案后，通过额外的think-retrieve步骤修正答案，提升答案准确性。</li>
+</ol>
+<h1 id="_5">实验验证</h1>
+<p><strong>experiment</strong></p>
+<ol>
+<li>实验设计：（1）在四个多跳QA数据集（HotpotQA、2WikiMultiHopQA、Musique、Bamboogle）上评估，涵盖in-domain和out-of-domain场景；（2）与14个基准方法比较，包括naive prompt（Direct、COT）、retrieval-augmented prompt（Naive RAG、Sure）、SFT（SimpleDeepSearcher）、RL-based（Search-R1、R1-Searcher、LeTS）；（3）使用EM、F1、LLM-as-Judge（GPT-4o评估语义正确性）、CEM（覆盖精确匹配）等指标。</li>
+<li>数据集与基准：（1）数据集：多跳QA（HotpotQA、2Wiki、Musique、Bamboogle）、单跳QA（NQ、PopQA、TriviaQA）；（2）基准：14个，涵盖不同类型的RAG和推理方法；（3）评估指标：EM（精确匹配）、F1（部分匹配）、LLM-as-Judge（语义正确性）、CEM（答案覆盖）。</li>
+<li>实验结果：（1）TIRESRAG-R1在所有多跳数据集上优于所有基准，平均EM提升5.8%（如HotpotQA的EM从37.4%提升到41.0%）；（2）在单跳数据集上泛化性能好（如TriviaQA的EM从58.4%提升到60.0%）；（3） ablation研究验证了各模块的有效性（如过滤模块使EM提升22.2%，反思模块使EM提升7.2%）。结果有效证明了方案的可行性。</li>
+</ol>
+<h1 id="_6">研究结论</h1>
+<p><strong>conclusion</strong></p>
+<ol>
+<li>重要结论：（1）多维度奖励（充足性、推理质量、反思）能有效提升RAG模型的中间推理质量，减少信息不足、推理错误和答案-推理不一致问题；（2）“think-retrieve-reflect”流程和反思机制能提升答案准确性；（3）困难感知优化（样本过滤、优势重加权）能提升训练稳定性和模型性能。</li>
+<li>主要贡献：（1）定义了RAG中的“过思考”（Overthinking）和“欠思考”（Underthinking），并分析了其对推理的影响；（2）提出TIRESRAG-R1，一个结合多维度奖励和反思机制的RL-based RAG框架；（3）提出困难感知的优势重加权和样本过滤机制，提升训练稳定性。</li>
+<li>意义：推动了RAG模型从“最终答案导向”向“中间步骤质量导向”的转变，提升了RAG的可靠性和可解释性，为复杂推理任务中的RAG应用提供了新的思路。</li>
+</ol>
+<h1 id="_7">未来展望</h1>
+<p><strong>future_work</strong></p>
+<ol>
+<li>局限性：（1）模型规模：仅使用Qwen-2.5-3B模型，未验证更大模型（如7B、13B）的性能；（2）奖励模型：使用Qwen-3B评估推理质量和充足性，可能不如更强大的模型（如GPT-4o）准确；（3）反思信号稀疏：训练数据中需要反思的样本较少，导致反思模块的学习信号不足。</li>
+<li>改进方向：（1）验证更大模型的性能，探索模型规模对方案的影响；（2）使用更强大的奖励模型（如GPT-4o或微调的奖励模型），提升奖励评估的准确性；（3）合成反思数据（如人工生成需要反思的案例），增加反思模块的学习信号。</li>
+<li>值得探索的问题：（1）更有效的过程奖励设计（如结合逻辑推理链的结构奖励）；（2）跨领域泛化（如医疗、法律等专业领域的RAG应用）；（3）实时反思机制（如在推理过程中动态调整检索策略）。</li>
+</ol>
+<h1 id="_8">核心算法</h1>
+<p>pseudocode: |</p>
+<div class="codehilite"><pre><span></span><code>  <span class="n">算法1</span> <span class="n">TIRESRAG</span><span class="o">-</span><span class="n">R1训练流程</span><span class="err">（</span><span class="n">基于GRPO和多维度奖励</span><span class="err">）</span>
+  <span class="n">输入</span><span class="err">：</span><span class="n">政策模型πθ</span><span class="err">，</span><span class="n">参考模型πθ_old</span><span class="err">，</span><span class="n">数据集D</span><span class="err">，</span><span class="n">检索模型π_ret</span><span class="err">，</span><span class="n">权重w_think</span><span class="err">、</span><span class="n">w_suff</span><span class="err">、</span><span class="n">w_reflect</span><span class="err">，</span><span class="n">KL</span> <span class="n">penalty</span> <span class="n">β</span><span class="err">，</span><span class="n">迭代次数T</span><span class="err">，</span><span class="n">每</span> <span class="n">query</span> <span class="n">rollout</span> <span class="n">数G</span><span class="err">，</span><span class="n">缓冲区B</span><span class="err">，</span><span class="n">动态权重dw</span>
+  <span class="n">输出</span><span class="err">：</span><span class="n">更新后的政策模型πθ</span>
+
+  <span class="k">for</span> <span class="n">t从1到T</span> <span class="n">do</span>
+      <span class="n">计算动态权重</span><span class="err">：</span><span class="n">at</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">exp</span><span class="p">((</span><span class="n">T</span> <span class="o">-</span> <span class="mf">0.9</span><span class="o">*</span><span class="n">t</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">))</span>  <span class="c1"># 后期增加答案奖励权重</span>
+      <span class="n">从D中采样批次Q</span>
+      <span class="n">for每个q</span><span class="err">∈</span><span class="n">Q</span> <span class="n">do</span>
+          <span class="n">生成G个rollout</span><span class="err">：</span><span class="p">{</span><span class="n">y_i</span><span class="p">}</span><span class="o">^</span><span class="n">G_</span><span class="p">{</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">}</span> <span class="o">~</span> <span class="n">πθ</span><span class="p">(</span><span class="err">·</span><span class="n">q</span><span class="p">)</span>
+          <span class="n">for每个i</span><span class="o">=</span><span class="mi">1</span><span class="n">到G</span> <span class="n">do</span>
+              <span class="n">从y_i中提取推理轨迹RD_i和预测答案a_i</span>
+              <span class="n">计算答案奖励</span><span class="err">：</span><span class="n">RA_i</span> <span class="o">=</span> <span class="n">F1</span><span class="p">(</span><span class="n">a_i</span><span class="p">,</span> <span class="n">a</span><span class="o">*</span><span class="p">)</span>  <span class="c1"># a*是q的黄金答案</span>
+              <span class="n">计算充足性奖励</span><span class="err">：</span><span class="n">RS_i</span> <span class="o">=</span> <span class="n">LLM评估</span><span class="p">(</span><span class="n">RD_i是否足够推导a</span><span class="o">*</span><span class="p">)</span>  <span class="c1"># 1表示足够，0表示不足</span>
+              <span class="n">计算推理质量奖励</span><span class="err">：</span><span class="n">RT_i</span> <span class="o">=</span> <span class="n">LLM评估</span><span class="p">(</span><span class="n">RD_i的逻辑</span><span class="err">、</span><span class="n">对齐等</span><span class="p">)</span>  <span class="c1"># 0-1之间</span>
+              <span class="n">计算反思奖励</span><span class="err">：</span><span class="n">RR_i</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="p">(</span><span class="n">a_1错误且a_2正确</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="p">(</span><span class="n">a_1正确且a_2错误</span><span class="p">)</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># a_1是第一次答案，a_2是反思后答案</span>
+              <span class="n">组合奖励</span><span class="err">：</span><span class="n">R_sum_i</span> <span class="o">=</span> <span class="n">at</span> <span class="o">*</span> <span class="p">(</span><span class="n">w_think</span><span class="o">*</span><span class="n">RT_i</span> <span class="o">+</span> <span class="n">w_suff</span><span class="o">*</span><span class="n">RS_i</span> <span class="o">+</span> <span class="n">w_reflect</span><span class="o">*</span><span class="n">RR_i</span><span class="p">)</span> <span class="o">+</span> <span class="n">RA_i</span>
+          <span class="n">end</span> <span class="k">for</span>
+          <span class="c1"># 过滤“全对”或“全错”的样本（优势为0）</span>
+          <span class="k">if</span> <span class="n">所有rollout的R_sum_i都不在</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span><span class="n">之间</span> <span class="n">then</span>
+              <span class="n">跳过该q</span>
+          <span class="n">end</span> <span class="k">if</span>
+          <span class="c1"># 计算优势（group normalization）</span>
+          <span class="n">计算批次奖励均值</span><span class="err">：</span><span class="n">mean_R</span> <span class="o">=</span> <span class="n">mean</span><span class="p">({</span><span class="n">R_sum_i</span><span class="p">}</span><span class="o">^</span><span class="n">G_</span><span class="p">{</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">})</span>
+          <span class="n">计算批次奖励标准差</span><span class="err">：</span><span class="n">std_R</span> <span class="o">=</span> <span class="n">std</span><span class="p">({</span><span class="n">R_sum_i</span><span class="p">}</span><span class="o">^</span><span class="n">G_</span><span class="p">{</span><span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">})</span>
+          <span class="n">for每个i</span><span class="o">=</span><span class="mi">1</span><span class="n">到G</span> <span class="n">do</span>
+              <span class="n">优势A_i</span> <span class="o">=</span> <span class="p">(</span><span class="n">R_sum_i</span> <span class="o">-</span> <span class="n">mean_R</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">std_R</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span>  <span class="c1"># 标准化优势</span>
+              <span class="n">计算一致性惩罚</span><span class="err">：</span><span class="n">AP_i</span> <span class="o">=</span> <span class="o">-</span><span class="n">λ_p</span> <span class="o">*</span> <span class="n">A_think_i</span> <span class="o">*</span> <span class="n">A_answer_i</span><span class="err">（</span><span class="n">如果A_think_i与A_answer_i符号相反</span><span class="err">）</span>
+              <span class="n">计算困难感知权重</span><span class="err">：</span><span class="n">W</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">+</span> <span class="p">(</span><span class="mf">1.5</span><span class="o">-</span><span class="mf">0.4</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">exp</span><span class="p">(</span><span class="mi">10</span><span class="o">*</span><span class="p">(</span><span class="n">mean_RS</span> <span class="o">-</span> <span class="mf">0.75</span><span class="p">)))</span>  <span class="c1"># mean_RS是该q的平均充足性奖励</span>
+              <span class="n">调整优势</span><span class="err">：</span><span class="n">A</span><span class="s1">&#39;_i = (A_i - AP_i) * W  # 结合惩罚和困难权重</span>
+              <span class="n">将</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">y_i</span><span class="p">,</span> <span class="n">A</span><span class="s1">&#39;_i)加入缓冲区B</span>
+          <span class="n">end</span> <span class="k">for</span>
+      <span class="n">end</span> <span class="k">for</span>
+      <span class="c1"># 更新政策模型（使用GRPO）</span>
+      <span class="n">从B中采样批次样本</span><span class="err">，</span><span class="n">计算损失</span><span class="err">：</span><span class="n">L</span> <span class="o">=</span> <span class="o">-</span><span class="n">E</span><span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">πθ</span><span class="p">(</span><span class="n">yq</span><span class="p">)</span><span class="o">/</span><span class="n">πθ_old</span><span class="p">(</span><span class="n">yq</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span><span class="s1">&#39;_i, clip(πθ(yq)/πθ_old(yq), 1-ε, 1+ε) * A&#39;</span><span class="n">_i</span><span class="p">)</span> <span class="o">+</span> <span class="n">β</span><span class="o">*</span><span class="n">KL</span><span class="p">(</span><span class="n">πθπθ_old</span><span class="p">)]</span>
+      <span class="n">反向传播更新πθ</span>
+      <span class="n">更新参考模型</span><span class="err">：</span><span class="n">πθ_old</span> <span class="o">=</span> <span class="n">πθ</span><span class="err">（</span><span class="n">每隔一定迭代</span><span class="err">）</span>
+  <span class="n">end</span> <span class="k">for</span>
+  <span class="n">返回πθ</span>
+</code></pre></div>
+            </div>
+            
+            <div class="paper-links">
+                <a href="http://arxiv.org/abs/2507.22716" target="_blank">arXiv原文</a>
+                <a href="http://arxiv.org/pdf/2507.22716" target="_blank">PDF下载</a>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>Generated by Daily Paper Processing System | Template: V2</p>
+        <p>数据来源: arXiv | 分析引擎: Large Language Model</p>
+    </footer>
+</body>
+</html>
