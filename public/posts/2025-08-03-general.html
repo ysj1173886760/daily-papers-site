@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025-08-03 General Papers - Daily AI Papers</title>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/highlight.css">
+    <link rel="alternate" type="application/rss+xml" title="Daily AI Papers" href="/rss.xml">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+        nav {
+            margin-top: 1rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+        nav a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .paper-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        .paper-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .paper-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .paper-summary {
+            color: #444;
+            line-height: 1.7;
+        }
+        .paper-summary h2 {
+            color: #667eea;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 0.5rem;
+        }
+        .paper-summary h3 {
+            color: #555;
+            margin-top: 1.5rem;
+        }
+        .paper-links {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        .paper-links a {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+        .paper-links a:hover {
+            background: #5a6fd8;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Daily AI Papers</h1>
+        <p>2025年08月03日 - General 领域论文汇总</p>
+        <nav>
+            <a href="/">首页</a>
+            <a href="/rss.xml">RSS订阅</a>
+            <a href="/about.html">关于</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="summary-info">
+            <p>今日共收录 1 篇 General 领域的优质论文，使用 V2 模板进行分析。</p>
+        </div>
+
+        
+        <article class="paper-card">
+            <div class="paper-meta">
+                <span>论文 #1</span> | 
+                <span>发布: 2025-07-31</span> | 
+                <span>更新: 2025-07-31</span> |
+                <span>分类: cs.CR</span>
+            </div>
+            
+            <h2 class="paper-title">Fine-Grained Privacy Extraction from Retrieval-Augmented Generation Systems via Knowledge Asymmetry Exploitation</h2>
+            
+            <div class="paper-summary">
+                <h1>问题定义</h1>
+<p>problem: |
+  1. 论文要解决的具体问题是：在检索增强生成（RAG）系统中，如何实现细粒度的隐私信息提取，即精准定位RAG响应中来自外部知识库的敏感句子，同时解决现有方法在跨域场景下鲁棒性差的问题。
+  2. 问题的重要性体现在：RAG系统广泛应用于医疗、金融、法律等敏感领域（如医生-患者对话、企业内部文档），其输出融合了外部知识库的私有信息和LLM预训练内容，若无法区分两者，会导致隐私泄露无法精准定位，增加数据泄露风险；而现有方法多为粗粒度检测（仅判断是否存在隐私），无法满足实际场景中精准防护的需求。
+  3. 目前存在的挑战或困难：
+     - 信息混合问题：RAG响应融合了知识库内容与LLM预训练知识，无法直接区分来源；
+     - 跨域适应性差：现有方法依赖预定义的域知识（如医疗术语），在多域场景（如混合医疗、法律、金融数据）中效果显著下降；
+     - 黑盒设置限制：无法访问RAG系统内部组件（如知识库、检索器），只能通过输入输出推断，增加了隐私提取的难度。</p>
+<h1>研究背景</h1>
+<p>background: |
+  1. 前人研究成果：
+     -  membership inference attacks：通过分析响应模式判断文档是否存在于知识库（如Liu et al. 2024的掩码方法），但需要 exact 文档副本，不实用；
+     -  privacy extraction attacks：通过 adversarial 提示诱导RAG泄露隐私（如Qi et al. 2024的复合查询），但仅能检测隐私存在，无法定位具体句子；
+     -  poisoning attacks：向知识库注入恶意内容破坏RAG输出（如Zou et al. 2024的PoisonRAG），但需要访问知识库，不适用于黑盒场景。
+  2. 现有方法的优点和局限性：
+     - 优点：能检测RAG系统中的隐私泄露，部分方法（如LLM-based判断）利用了知识来源差异；
+     - 局限性：① 细粒度不足：无法定位响应中具体的敏感句子；② 跨域效果差：依赖域特定特征（如医疗中的诊断术语），多域场景下性能骤降；③ 稳定性不足：LLM-based方法依赖 prompt 设计，输出波动大。
+  3. 当前技术水平：
+     - 能检测RAG响应中是否存在隐私信息，但无法精准定位敏感句子；
+     - 单域场景下（如医疗）效果较好，但跨域场景（如混合医疗、法律）中，现有方法（如content-based）的提取成功率可降至20%以下。</p>
+<h1>创新来源</h1>
+<p>idea_source: |
+  1. 核心思路来自<strong>知识不对称</strong>：RAG系统的响应依赖外部知识库（TQ）和LLM参数（θ），而标准LLM仅依赖θ，因此两者响应存在可测量的内容差异（δQ）。这种差异是RAG输出中知识库内容的独特标识，可用于定位敏感句子。
+  2. 灵感可能来自<strong>对比学习</strong>和<strong>差异分析</strong>：通过对比RAG与标准LLM的响应，捕捉知识库带来的独特信息，类似对比学习中通过正负样本差异提取特征。
+  3. 作者通过<strong>实验观察</strong>产生创新想法：论文附录B中的例子显示，RAG响应包含知识库中的具体细节（如患者症状、企业内部邮件），而标准LLM输出通用内容，这种差异具有一致性（跨医疗、企业、多域场景），因此可利用这种差异定位知识库内容。</p>
+<h1>解决方案</h1>
+<p>solution: |
+  1. 具体技术方案：提出一种黑盒攻击框架，通过<strong>知识不对称 exploitation</strong>实现细粒度隐私提取，分为四个步骤：
+     - ① Adversarial Query 生成：将查询拆分为q1（开放-ended，包含知识库关键词）和q2（要求基于检索内容生成上下文），最大化RAG与标准LLM的响应差异；
+     - ② 相似性特征计算：对RAG响应（RL）和标准LLM响应（AL）进行句子分割，计算句子级余弦相似度，并通过自然语言推理（NLI）模型调整相似度得分（解决语义歧义，如“安全”与“不安全”的高相似度问题）；
+     - ③ 隐私句子分类：用DNN分类器对调整后的相似性特征进行分类，定位RL中来自知识库的敏感句子；
+     - ④ 隐私保护响应生成：通过链式思维（CoT）提示，引导RAG系统重构响应（替换敏感细节、泛化具体信息），实现隐私保护。
+  2. 关键技术细节和实现要点：
+     - <strong>Adversarial Query 优化</strong>：多域场景下，通过迭代优化q1（基于初始查询的响应结果，调整关键词），避免依赖预定义知识；
+     - <strong>NLI调整相似性得分</strong>：对每个RL句子，找到AL中最相似的句子，用NLI模型判断语义关系（矛盾、中性、蕴含），调整余弦相似度（如矛盾关系减去置信度，蕴含关系加上置信度）；
+     - <strong>句子级分类</strong>：将RL句子与知识库检索内容对比，标注是否为知识库来源（1为是，0为否），用标注数据训练DNN分类器（输入为调整后的相似性得分，输出为隐私标签）；
+     - <strong>CoT引导隐私保护</strong>：通过设计CoT提示（如替换个人标识符、泛化医疗指标），引导RAG系统生成不包含敏感信息的响应，同时保持语义连贯性。</p>
+<h1>实验验证</h1>
+<p>experiment: |
+  1. 实验设计和安排：
+     - 场景覆盖：单域（医疗：HealthCareMagic，企业：Enron Email）、多域（NQ-train_pairs，包含法律、金融、医疗等）；
+     - 变量控制：测试不同LLM（LLaMA2-7B、Qwen2-7B、GPT-4o）、不同检索器（bge-large-en、e5-large-v2、gte-large）、不同温度（0.3-0.9）对结果的影响；
+     - 基线对比：与两种基线方法对比——① content-based（依赖显式特征，如医疗术语）；② LLM-based（对比RAG与标准LLM响应，用LLM判断差异）。
+  2. 数据集、基准和评估指标：
+     - 数据集：HealthCareMagic（10万+医生-患者对话）、Enron Email（50万+企业邮件）、NQ-train_pairs（3万+多域问题-答案对）；
+     - 基准：content-based（用GPT-4o检测显式隐私特征）、LLM-based（用GPT-4o分析RAG与标准LLM的响应差异）；
+     - 评估指标：提取成功率（ESR，正确提取的隐私句子占比）、F1-score（平衡 precision 和 recall）、AUC（分类器区分能力）。
+  3. 实验结果：
+     - 单域场景：HealthCareMagic的ESR为93.33%，Enron Email为91.67%，均优于基线（content-based的ESR分别为58.82%、36.00%）；
+     - 多域场景：NQ-train_pairs的ESR为83.33%，优于基线（content-based的18.75%）；
+     - 鲁棒性：不同LLM、检索器、温度下，ESR均保持在80%以上（如GPT-4o的ESR为85.71%，温度0.9时ESR为89%）；
+     - 隐私保护效果：CoT引导后，隐私数据比例（PDR）从48.27%降至9.37%（HealthCareMagic），减少了80.59%的隐私暴露。</p>
+<h1>研究结论</h1>
+<p>conclusion: |
+  1. 重要结论：
+     - 知识不对称是定位RAG系统中知识库内容的有效信号，可实现细粒度隐私提取；
+     - 提出的框架能在黑盒设置下，精准定位RAG响应中的敏感句子（单域ESR&gt;91%，多域&gt;83%）；
+     - CoT引导的隐私保护策略能有效减少隐私泄露（PDR降低65%以上），同时保持响应的语义连贯性。
+  2. 主要贡献和成果：
+     - ① 提出了第一个<strong>细粒度隐私定位</strong>框架，解决了RAG响应中知识库内容与LLM预训练内容的区分问题；
+     - ② 提出<strong>跨域迭代查询优化</strong>策略，无需预定义域知识，实现多域场景下的鲁棒隐私提取；
+     - ③ 构建了<strong>攻击-防御统一 pipeline</strong>：不仅能提取隐私信息，还能通过CoT引导生成隐私保护响应；
+     - ④  extensive 实验验证：在三个数据集、多种配置下，结果优于现有基线，证明方案的可行性和鲁棒性。
+  3. 对领域发展的意义：
+     - 填补了RAG隐私攻击的<strong>细粒度</strong>和<strong>跨域</strong>空白，为RAG系统的隐私防护提供了精准定位工具；
+     - 为后续研究提供了<strong>知识不对称</strong>这一新的研究视角，可用于RAG系统的其他安全问题（如 hallucination 检测）；
+     - 对实际应用的指导意义：帮助企业和机构识别RAG系统中的隐私泄露风险，制定更有效的防护策略（如CoT提示优化）。</p>
+<h1>未来展望</h1>
+<p>future_work: |
+  1. 当前工作的局限性：
+     - ① 时间成本高：数据标注需要人工逐句判断，查询优化需要迭代调整，耗时耗力；
+     - ② 依赖知识不对称：当知识库内容与LLM预训练知识重叠时（如公共常识），差异减小，提取效果下降；
+     - ③ 未考虑隐私保护技术的交互：未测试与差分隐私（DP）等技术的结合，当RAG系统采用DP时，知识不对称可能被削弱。
+  2. 未来可能的改进方向和研究思路：
+     - ① 减少标注成本：采用弱监督学习（如规则-based 伪标签）或主动学习（选择高不确定性样本标注），降低人工成本；
+     - ② 优化查询生成效率：利用强化学习（RL）自动优化adversarial query，减少迭代次数；
+     - ③ 增强跨域鲁棒性：引入域自适应技术（如域对抗神经网络），减少对域特定特征的依赖；
+     - ④ 研究与隐私保护技术的交互：测试DP对知识不对称的影响，设计更鲁棒的提取方法（如对抗噪声的相似性计算）。
+  3. 值得深入探索的问题：
+     - ① 实时隐私检测：如何在RAG系统生成响应时，实时定位并拦截敏感句子；
+     - ② 多模态RAG的隐私问题：当RAG系统融合文本、图像、音频等多模态数据时，如何提取细粒度隐私信息；
+     - ③ 隐私提取的伦理问题：如何平衡隐私保护与RAG系统的实用性，避免过度防护导致响应质量下降。</p>
+<h1>核心算法</h1>
+<p>pseudocode: |
+  # 核心算法流程：细粒度隐私提取框架
+  def fine_grained_privacy_extraction(rag_system, standard_llm, query_template, knowledge_base):
+      # 步骤1：生成Adversarial Query
+      q1 = generate_initial_q1(query_template, knowledge_base)  # 初始q1，包含知识库关键词
+      q2 = "and provide contextual information based on the retrieved content."
+      adversarial_query = q1 + q2</p>
+<div class="codehilite"><pre><span></span><code><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">步骤2</span><span class="err">：</span><span class="n">迭代优化q1</span><span class="err">（</span><span class="n">多域场景</span><span class="err">）</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="n">_</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">range</span><span class="p">(</span><span class="n">iterations</span><span class="p">)</span><span class="err">:</span>
+<span class="w">      </span><span class="n">rag_response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rag_system</span><span class="p">.</span><span class="n">generate</span><span class="p">(</span><span class="n">adversarial_query</span><span class="p">)</span>
+<span class="w">      </span><span class="n">standard_response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">standard_llm</span><span class="p">.</span><span class="n">generate</span><span class="p">(</span><span class="n">adversarial_query</span><span class="p">)</span>
+<span class="w">      </span><span class="n">privacy_sentences</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">detect_privacy_sentences</span><span class="p">(</span><span class="n">rag_response</span><span class="p">,</span><span class="w"> </span><span class="n">standard_response</span><span class="p">)</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">用初步相似性得分检测</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="n">privacy_sentences</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="nl">threshold</span><span class="p">:</span>
+<span class="w">          </span><span class="n">q1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">refine_q1</span><span class="p">(</span><span class="n">q1</span><span class="p">,</span><span class="w"> </span><span class="n">privacy_sentences</span><span class="p">)</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">根据泄露的隐私信息调整q1</span><span class="err">（</span><span class="n">如更具体的关键词</span><span class="err">）</span>
+<span class="w">          </span><span class="n">adversarial_query</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q2</span>
+<span class="w">      </span><span class="k">else</span><span class="err">:</span>
+<span class="w">          </span><span class="k">break</span>
+
+<span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">步骤3</span><span class="err">：</span><span class="n">计算相似性特征得分</span>
+<span class="w">  </span><span class="n">rag_sentences</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">split_into_sentences</span><span class="p">(</span><span class="n">rag_response</span><span class="p">)</span>
+<span class="w">  </span><span class="n">standard_sentences</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">split_into_sentences</span><span class="p">(</span><span class="n">standard_response</span><span class="p">)</span>
+<span class="w">  </span><span class="n">rag_embeddings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">embed_sentences</span><span class="p">(</span><span class="n">rag_sentences</span><span class="p">)</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">用all</span><span class="o">-</span><span class="n">MiniLM</span><span class="o">-</span><span class="n">L6</span><span class="o">-</span><span class="n">v2生成嵌入</span>
+<span class="w">  </span><span class="n">standard_embeddings</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">embed_sentences</span><span class="p">(</span><span class="n">standard_sentences</span><span class="p">)</span>
+
+<span class="w">  </span><span class="n">similarity_scores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">[]</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">rag_sentences</span><span class="p">))</span><span class="err">:</span>
+<span class="w">      </span><span class="n">rag_emb</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rag_embeddings</span><span class="o">[</span><span class="n">i</span><span class="o">]</span>
+<span class="w">      </span><span class="err">#</span><span class="w"> </span><span class="n">计算与所有standard句子的余弦相似度</span><span class="err">，</span><span class="n">取最大值</span>
+<span class="w">      </span><span class="n">max_sim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">max</span><span class="p">(</span><span class="o">[</span><span class="n">cosine_similarity(rag_emb, std_emb) for std_emb in standard_embeddings</span><span class="o">]</span><span class="p">)</span>
+<span class="w">      </span><span class="err">#</span><span class="w"> </span><span class="n">用NLI模型调整相似度得分</span>
+<span class="w">      </span><span class="n">nli_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nli_model</span><span class="p">.</span><span class="n">classify</span><span class="p">(</span><span class="n">rag_sentences</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="p">,</span><span class="w"> </span><span class="n">standard_sentences</span><span class="o">[</span><span class="n">argmax_sim</span><span class="o">]</span><span class="p">)</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">argmax_sim是最大相似度的standard句子索引</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="n">nli_label</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="ss">&quot;contradiction&quot;</span><span class="err">:</span>
+<span class="w">          </span><span class="n">adjusted_sim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max_sim</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">nli_confidence</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">nli_confidence是矛盾的置信度</span>
+<span class="w">      </span><span class="n">elif</span><span class="w"> </span><span class="n">nli_label</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="ss">&quot;entailment&quot;</span><span class="err">:</span>
+<span class="w">          </span><span class="n">adjusted_sim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max_sim</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">nli_confidence</span>
+<span class="w">      </span><span class="k">else</span><span class="err">:</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">neutral</span>
+<span class="w">          </span><span class="n">adjusted_sim</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">max_sim</span>
+<span class="w">      </span><span class="n">similarity_scores</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">adjusted_sim</span><span class="p">)</span>
+
+<span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">步骤4</span><span class="err">：</span><span class="n">隐私句子分类</span>
+<span class="w">  </span><span class="n">privacy_labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">privacy_classifier</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">similarity_scores</span><span class="p">)</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">用训练好的DNN分类器</span><span class="err">，</span><span class="n">输出0</span><span class="err">（</span><span class="n">非隐私</span><span class="err">）</span><span class="n">或1</span><span class="err">（</span><span class="n">隐私</span><span class="err">）</span>
+<span class="w">  </span><span class="n">privacy_sentences</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">[</span><span class="n">rag_sentences[i</span><span class="o">]</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">rag_sentences</span><span class="p">))</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">privacy_labels</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="err">]</span>
+
+<span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">步骤5</span><span class="err">：</span><span class="n">生成隐私保护响应</span><span class="err">（</span><span class="n">可选</span><span class="err">）</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="nl">need_privacy_protection</span><span class="p">:</span>
+<span class="w">      </span><span class="n">cot_prompt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">design_cot_prompt</span><span class="p">(</span><span class="n">privacy_sentences</span><span class="p">)</span><span class="w">  </span><span class="err">#</span><span class="w"> </span><span class="n">设计CoT提示</span><span class="err">，</span><span class="n">如替换个人标识符</span><span class="err">、</span><span class="n">泛化医疗指标</span>
+<span class="w">      </span><span class="n">privacy_protected_response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rag_system</span><span class="p">.</span><span class="n">generate</span><span class="p">(</span><span class="n">adversarial_query</span><span class="p">,</span><span class="w"> </span><span class="n">cot_prompt</span><span class="p">)</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">privacy_sentences</span><span class="p">,</span><span class="w"> </span><span class="n">privacy_protected_response</span>
+<span class="w">  </span><span class="k">else</span><span class="err">:</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">privacy_sentences</span>
+</code></pre></div>
+            </div>
+            
+            <div class="paper-links">
+                <a href="http://arxiv.org/abs/2507.23229" target="_blank">arXiv原文</a>
+                <a href="http://arxiv.org/pdf/2507.23229" target="_blank">PDF下载</a>
+            </div>
+        </article>
+        
+    </main>
+
+    <footer>
+        <p>Generated by Daily Paper Processing System | Template: V2</p>
+        <p>数据来源: arXiv | 分析引擎: Large Language Model</p>
+    </footer>
+</body>
+</html>
