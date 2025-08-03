@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025-08-02 AI Papers - Daily AI Papers</title>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/highlight.css">
+    <link rel="alternate" type="application/rss+xml" title="Daily AI Papers" href="/rss.xml">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+        nav {
+            margin-top: 1rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+        nav a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .paper-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        .paper-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .paper-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .paper-summary {
+            color: #444;
+            line-height: 1.7;
+        }
+        .paper-summary h2 {
+            color: #667eea;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 0.5rem;
+        }
+        .paper-summary h3 {
+            color: #555;
+            margin-top: 1.5rem;
+        }
+        .paper-links {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        .paper-links a {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+        .paper-links a:hover {
+            background: #5a6fd8;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Daily AI Papers</h1>
+        <p>2025年08月02日 - AI 领域论文汇总</p>
+        <nav>
+            <a href="/">首页</a>
+            <a href="/rss.xml">RSS订阅</a>
+            <a href="/about.html">关于</a>
+        </nav>
+    </header>
+
+    <main>
+        <div class="summary-info">
+            <p>今日共收录 1 篇 AI 领域的优质论文，使用 V2 模板进行分析。</p>
+        </div>
+
+        
+        <article class="paper-card">
+            <div class="paper-meta">
+                <span>论文 #1</span> | 
+                <span>发布: 2025-07-31</span> | 
+                <span>更新: 2025-07-31</span> |
+                <span>分类: cs.LG</span>
+            </div>
+            
+            <h2 class="paper-title">Zero-Shot Document Understanding using Pseudo Table of Contents-Guided Retrieval-Augmented Generation</h2>
+            
+            <div class="paper-summary">
+                <h1>问题定义</h1>
+<p>problem: |
+  1. 论文要解决的具体问题是<strong>复杂多模态文档的理解与检索挑战</strong>，具体包括：
+     - 非结构化文档（如商业报告、技术手册）缺乏清晰结构，现有固定大小 chunk 分割破坏语义连贯性，导致检索结果碎片化；
+     - 多模态内容（文本、图像、表格、图表）处理需要专门工具或训练，现有方法难以统一处理；
+     - 传统文档检索系统依赖训练数据或格式 cues（如标题、元数据），无法适应 diverse 文档类型，且计算复杂度高（O(N)）。
+  2. 这个问题的重要性体现在：
+     - 现实世界中，大部分文档（如扫描件、无固定格式的报告）是非结构化的，且包含多模态内容，其理解是法律、医疗、金融等领域的核心需求；
+     - 现有方法（如固定 chunk 分割、依赖OCR的 pipeline）无法有效保留语义结构或处理多模态，导致检索效率低、答案不准确（如 hallucination）；
+     - 训练-free 解决方案对资源有限的场景（如小公司、多语言文档）至关重要，可避免数据收集和模型微调的成本。
+  3. 目前存在的挑战或困难：
+     - 文档结构提取：非结构化文档缺乏明确的标题或元数据，传统方法（如LayoutLM）需要训练，无法零样本适应；
+     - 多模态统一表示：图像、表格等内容的语义需要转化为文本，但现有方法（如OCR）依赖格式或容易丢失结构信息；
+     - 检索效率与准确性平衡：固定 chunk 分割导致检索范围大（O(N)），而分层检索需要有效的结构信息，现有方法缺乏这种结构。</p>
+<h1>研究背景</h1>
+<p>background: |
+  1. 前人在这个领域的研究成果包括：
+     - <strong>文档视觉问答（DocVQA）</strong>：早期方法假设单页包含证据，近期 benchmark（如SlideVQA、ICDAR 2023）要求跨页推理，但现有模型依赖OCR或固定 chunk 分割；
+     - <strong>检索增强生成（RAG）</strong>：结合检索与生成，如RAVQA、REVEAL，但传统RAG用固定 chunk 分割，破坏语义；
+     - <strong>文档结构提取</strong>：LumberChunker用LLM分割小说为章节，提高RAG性能，但未处理多模态或分层检索；
+     - <strong>OCR-based vs OCR-free</strong>：OCR-based（如LayoutLM）依赖文本提取，OCR-free（如Donut、Kosmos-1）直接处理图像，但后者对复杂布局处理有限；
+     - <strong>大 multimodal 模型</strong>：BLIP-2、PaLI、Kosmos-1等能处理多模态，但文档检索系统未充分利用其语义理解能力。
+  2. 现有方法的优点和局限性：
+     - <strong>优点</strong>：RAG结合检索与生成，提高答案准确性；OCR-free避免OCR质量依赖；大 multimodal 模型能处理多种内容类型。
+     - <strong>局限性</strong>：固定 chunk 分割破坏语义连贯性；需要训练数据（如LayoutLM），无法零样本适应；多模态处理依赖专门工具（如表格提取、图像描述），未统一到LLM框架；检索效率低（O(N)）。
+  3. 当前技术水平：
+     - 多模态大模型（如GPT-4o、Gemini-1.5）能处理文本、图像、表格等内容，但文档检索系统仍用传统 pipeline（OCR→分割→检索），未充分利用LLM的语义理解；
+     - 文档结构提取依赖格式 cues（如HTML书签）或训练数据，无法处理非结构化文档；
+     - RAG系统的检索效率与准确性平衡未解决，固定 chunk 分割导致检索结果碎片化。</p>
+<h1>创新来源</h1>
+<p>idea_source: |
+  1. 核心思路来自<strong>现有技术的 synergistic 整合</strong>：将伪TOC生成（语义结构化）、零样本多模态分析（LLM原生能力）、分层检索（效率优化）结合，形成训练-free的端到端系统。
+  2. 灵感来自对现有方法局限性的观察：
+     - 固定 chunk 分割破坏语义，因此用LLM生成伪TOC来结构化文档，保留语义连贯性；
+     - 传统RAG效率低，因此用分层检索（粗搜 sections→细搜 chunks）降低复杂度；
+     - 多模态处理需要专门工具，因此用LLM的原生 multimodal 能力（如视觉分析、表格理解），无需额外模型。
+  3. 作者产生创新想法的过程：
+     - 首先，意识到文档结构是检索的关键，而非固定 chunk 分割；
+     - 然后，发现LLM能通过 prompt 生成伪TOC（边界检测、标题生成），无需训练；
+     - 最后，将伪TOC与分层检索结合，利用结构信息优化检索流程，同时用双嵌入提高检索准确性。</p>
+<h1>解决方案</h1>
+<p>solution: |
+  1. 具体技术方案是<strong>DocsRay</strong>，整合三个核心组件：
+     - <strong>伪TOC生成</strong>：用LLM通过 prompt 生成 hierarchical 结构，包括边界检测（判断相邻页是否为新 topic）和标题生成（总结 section 内容）；
+     - <strong>零样本多模态分析</strong>：用LLM处理文本、图像、表格等内容，将非文本内容（如表格、图像）转化为文本描述，统一表示；
+     - <strong>分层检索</strong>：粗搜（匹配 query 与 section 的标题/内容嵌入）→细搜（在 top sections 内检索 chunks），降低复杂度。
+  2. 关键技术细节：
+     - <strong>伪TOC生成</strong>：
+       - 边界检测：用 prompt 让LLM判断相邻页是否为新 topic（输出0/1），基于语义而非格式；
+       - 标题生成：用 prompt 让LLM总结 section 内容，生成 concise 标题；
+       - 算法流程：初始分割→大小约束合并→标题生成（见核心算法部分）。
+     - <strong>双嵌入 architecture</strong>：
+       - 选择BGE-M3（关键词检索）和Multilingual-E5-Large（语义理解），concatenation 后 L2 归一化，保留两者的语义信息；
+       - 实验显示，双嵌入比单模型提高8-9个百分点（见表6）。
+     - <strong>分层检索</strong>：
+       - 粗搜：计算 query 与 section 的标题嵌入（etitle）、内容嵌入（econtent）的相似度，加权融合（β=0.3）；
+       - 细搜：在 top-k sections 内检索 chunks，降低搜索范围；
+       - 复杂度从O(N)降低到O(S + k1·Ns)（S为 sections 数，Ns为 section 内 chunks 数）。
+     - <strong>多模态处理</strong>：
+       - 表格：转化为图像，用LLM分析结构与内容；
+       - 图像：用 prompt 生成描述（如“解释图表数据”“描述照片内容”）；
+       - 多列文本：用空间聚类恢复阅读顺序。</p>
+<h1>实验验证</h1>
+<p>experiment: |
+  1. 实验设计：
+     - <strong>基准</strong>：用MMLongBench-Doc（多页、多模态文档理解 benchmark），评估准确性；
+     - <strong>模型变体</strong>：DocsRay-Pro（27B）、DocsRay-Base（12B）、DocsRay-Lite（4B），均用Gemma-3 family，无需训练；
+     - ** ablation 研究<strong>：验证伪TOC生成（有无伪TOC）、双嵌入（单模型 vs 双模型）的影响；
+     - </strong>定性分析<strong>：分析证据 grounding（单源/多源证据、缺失信息）、模型 scaling（不同大小模型的性能差异）。
+  2. 数据集与评估指标：
+     - </strong>数据集<strong>：MMLongBench-Doc，包含多页文档（平均49.4页、20971 tokens），涵盖文本、图像、表格等内容；
+     - </strong>指标<strong>：准确性（Accuracy）、查询延迟（Query Latency）、证据 grounding（是否引用正确 sections/chunks）。
+  3. 实验结果：
+     - </strong>准确性<strong>：DocsRay-Pro在MMLongBench-Doc上达到64.7%，超过现有基线（如GPT-4.1的49.7%、Gemini-1.5-Pro的31.2%），接近人类专家（65.8%）；
+     - </strong>效率<strong>：伪TOC生成使查询延迟从3.89秒降低到2.12秒（45% improvement）；
+     - </strong>ablation 结果<strong>：
+       - 伪TOC生成：有伪TOC的模型（62.8%）比无伪TOC的模型（63.5%）准确性略低，但延迟降低45%，体现效率与准确性的平衡；
+       - 双嵌入：concatenation 后的双嵌入（62.8%）比单模型（BGE-M3的54.0%、E5-Large的54.7%）提高8-9个百分点；
+     - </strong>定性分析**：
+       - 单源事实检索：所有模型都能正确检索（如“Gestalt psychology 诞生地”）；
+       - 多页证据合成：Pro模型能正确聚合多页信息（如“计数 human quotes”），而小模型（Lite）会 overcount；
+       - 证据归因：Pro模型能正确识别缺失信息（如“2024年数据未提供”），避免 hallucination。</p>
+<h1>研究结论</h1>
+<p>conclusion: |
+  1. 重要结论：
+     - DocsRay通过整合伪TOC生成、分层检索、零样本多模态分析，实现了训练-free的复杂文档理解，性能接近人类专家；
+     - 伪TOC生成是关键：通过LLM生成的 hierarchical 结构，保留了语义连贯性，优化了检索流程；
+     - 分层检索有效降低了计算复杂度（从O(N)到O(S + k1·Ns)），同时保持了检索准确性；
+     - 双嵌入（BGE-M3 + E5-Large）提高了检索准确性，比单模型更能捕捉语义信息。
+  2. 主要贡献：
+     - <strong>方法创新</strong>：提出训练-free的文档理解系统，整合伪TOC生成、分层RAG、零样本多模态分析；
+     - <strong>技术贡献</strong>：
+       - 伪TOC生成算法：用两个 prompt 实现边界检测和标题生成，无需训练；
+       - 双嵌入 architecture：concatenation 两个互补嵌入模型，提高检索准确性；
+       - 分层检索流程：粗搜 sections→细搜 chunks，降低复杂度；
+     - <strong>性能贡献</strong>：在MMLongBench-Doc上达到 state-of-the-art 性能（64.7%），接近人类专家。
+  3. 对领域发展的意义：
+     - 为文档理解提供了<strong>训练-free的解决方案</strong>，可快速部署到 diverse 文档类型（如商业报告、技术手册），避免数据收集和模型微调的成本；
+     - 证明了<strong>结构信息</strong>（伪TOC）对检索的重要性，而非固定 chunk 分割；
+     - 展示了LLM的<strong>原生 multimodal 能力</strong>（如视觉分析、表格理解）可替代专门工具，简化 pipeline。</p>
+<h1>未来展望</h1>
+<p>future_work: |
+  1. 当前工作的局限性：
+     - <strong>依赖LLM选择</strong>：伪TOC生成的质量依赖 backbone LLM（如Gemini-1.5 Pro），不同LLM可能产生不同的分割结果；
+     - <strong>多图像处理</strong>：对需要跨图像比较的任务（如SlideVQA）性能低（Pro的EM为17.1%），因文本描述无法保留像素级信息；
+     - <strong>多语言验证</strong>：仅在英语文档上评估，未验证多语言（如中文、阿拉伯语）的性能；
+     - <strong>证据 grounding 粒度</strong>：目前仅支持 section 级引用，未实现 sentence 或 pixel 级的细粒度 grounding。
+  2. 未来可能的改进方向：
+     - <strong>多语言文档处理</strong>：开发多语言 benchmark（涵盖20+语言），验证双嵌入（BGE-M3、E5-Large）在非英语文档上的性能；
+     - <strong>嵌入融合策略</strong>：探索更复杂的融合方法（如 attention-based fusion、learned projections），提高双嵌入的准确性；
+     - <strong>细粒度证据 grounding</strong>：实现 sentence 级或 pixel 级的引用，提高答案的可验证性；
+     - <strong>复杂布局处理</strong>：结合 layout 信息（如文本 bounding box），提高对复杂布局文档（如表单、流程图）的理解。
+  3. 值得深入探索的问题：
+     - <strong>伪TOC生成的鲁棒性</strong>：如何让伪TOC生成适应不同文档类型（如法律文档、医疗记录），减少对 prompt 的依赖；
+     - <strong>多模态检索的统一表示</strong>：如何将图像、表格等内容的语义信息更有效地融入检索嵌入，提高跨模态检索准确性；
+     - <strong>训练-free的泛化能力</strong>：如何让DocsRay适应未见过的文档类型（如手写文档、古籍），无需调整 prompt 或模型。</p>
+<h1>核心算法</h1>
+<p>pseudocode: |
+  ## 伪TOC生成算法（Algorithm 1）
+  输入：文档页 P = {p1, p2, ..., pn}；参数：初始 chunk 大小 k=5，最小页数 m=3，最大页数 M=15
+  输出：Sections S = {s1, s2, ..., sj}</p>
+<p>### Phase 1: 初始分割
+  1. 将文档分为大小为 k 的 chunks；
+  2. 初始化 boundaries = {0}；
+  3. 对每个 chunk i（从1到|chunks|-1）：
+     a. 提取 chunk i-1 的最后500字符（end_text）和 chunk i 的前500字符（start_text）；
+     b. 用 prompt 让LLM判断是否为新 topic（输出0/1）；
+     c. 如果是新 topic（isnewtopic=1），将 i×k 添加到 boundaries；
+  4. 根据 boundaries 将文档分为初始 sections S'。</p>
+<p>### Phase 2: 大小约束合并
+  1. 对每个 section si ∈ S'：
+     a. 如果 |si| &lt; m（太小），计算 si 与相邻 sections（si-1、si+1）的内容嵌入相似度；
+     b. 将 si 合并到相似度更高的相邻 section（simprev &gt; simnext 则合并到 si-1，否则合并到 si+1）；
+  2. 得到合并后的 sections S''。</p>
+<p>### Phase 3: 标题生成
+  1. 对每个 section s ∈ S''：
+     a. 采样 section 的代表性内容（如开头段落）；
+     b. 用 prompt 让LLM生成 concise 标题；
+     c. 将标题赋值给 s.title；
+  2. 输出最终 sections S。</p>
+<p>## 分层检索流程
+  输入：query q；文档 sections S = {s1, s2, ..., sj}；每个 section 的 chunks Cs
+  输出：top-k chunks</p>
+<p>### 1. 粗搜（Section 级）
+  a. 计算 query 嵌入 eq = DualEmbed(q)；
+  b. 对每个 section s：
+     i. 计算标题嵌入 etitle = DualEmbed(s.title)；
+     ii. 计算内容嵌入 econtent = 平均所有 chunk 嵌入；
+     iii. 计算相似度 ssection = β·cos(eq, etitle) + (1-β)·cos(eq, econtent)（β=0.3）；
+  c. 选择 top-k1 sections（如k1=5）。</p>
+<p>### 2. 细搜（Chunk 级）
+  a. 对 top-k1 sections 中的每个 chunk c：
+     i. 计算 chunk 嵌入 ec = DualEmbed(c.content)；
+     ii. 计算相似度 schunk = cos(eq, ec)；
+  b. 选择 top-k2 chunks（如k2=10）。</p>
+<p>### 3. 结果返回
+  返回 top-k2 chunks，并附上 section 级引用。</p>
+<p>## 双嵌入生成
+  输入：文本 t；模型1（BGE-M3）；模型2（Multilingual-E5-Large）
+  输出：合并嵌入 ecombined</p>
+<ol>
+<li>用模型1生成嵌入 e1 = BGE-M3.encode(t)；</li>
+<li>用模型2生成嵌入 e2 = Multilingual-E5-Large.encode(t)；</li>
+<li>合并嵌入：ecombined = L2_normalize(concatenate(e1, e2))；</li>
+<li>返回 ecombined。</li>
+</ol>
+            </div>
+            
+            <div class="paper-links">
+                <a href="http://arxiv.org/abs/2507.23217" target="_blank">arXiv原文</a>
+                <a href="http://arxiv.org/pdf/2507.23217" target="_blank">PDF下载</a>
+            </div>
+        </article>
+        
+    </main>
+
+    <footer>
+        <p>Generated by Daily Paper Processing System | Template: V2</p>
+        <p>数据来源: arXiv | 分析引擎: Large Language Model</p>
+    </footer>
+</body>
+</html>
