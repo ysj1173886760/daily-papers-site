@@ -1,20 +1,79 @@
 {
   "posts": [
     {
-      "title": "2025-08-03 RAG_test Papers (5篇)",
+      "title": "DiffLoRA: Differential Low-Rank Adapters for Large Language Models",
       "date": "2025-08-03",
       "date_formatted": "2025-08-03",
       "category": "RAG_test",
-      "papers_count": 5,
-      "url": "/posts/2025-08-03-rag_test.html",
-      "filename": "2025-08-03-rag_test.html",
-      "excerpt": "今日RAG_test领域精选论文 5 篇，包含详细分析和关键洞察。",
+      "url": "/posts/2025-08-03-2507.23588v1.html",
+      "filename": "2025-08-03-2507.23588v1.html",
+      "excerpt": "RAG_test 论文: DiffLoRA: Differential Low-Rank Adapters for Large Language Models",
       "tags": [
         "RAG_test",
         "AI Research",
         "arXiv"
       ],
-      "content": "<h2>RAG_test 领域论文汇总</h2><p>本期为您精选了 5 篇 RAG_test 领域的优质论文，每篇都经过详细的结构化分析。</p>"
+      "content": "<h2>DiffLoRA: Differential Low-Rank Adapters for Large Language Models</h2><p>查看完整的论文分析和摘要。</p>"
+    },
+    {
+      "title": "MUST-RAG: MUSical Text Question Answering with Retrieval Augmented Generation",
+      "date": "2025-08-03",
+      "date_formatted": "2025-08-03",
+      "category": "RAG_test",
+      "url": "/posts/2025-08-03-2507.23334v1.html",
+      "filename": "2025-08-03-2507.23334v1.html",
+      "excerpt": "RAG_test 论文: MUST-RAG: MUSical Text Question Answering with Retrieval Augmented Generation",
+      "tags": [
+        "RAG_test",
+        "AI Research",
+        "arXiv"
+      ],
+      "content": "<h2>MUST-RAG: MUSical Text Question Answering with Retrieval Augmented Generation</h2><p>查看完整的论文分析和摘要。</p>"
+    },
+    {
+      "title": "Generalized Reinforcement Learning for Retriever-Specific Query Rewriter with Unstructured Real-World Documents",
+      "date": "2025-08-03",
+      "date_formatted": "2025-08-03",
+      "category": "RAG_test",
+      "url": "/posts/2025-08-03-2507.23242v1.html",
+      "filename": "2025-08-03-2507.23242v1.html",
+      "excerpt": "RAG_test 论文: Generalized Reinforcement Learning for Retriever-Specific Query Rewriter with Unstructured Real-World Documents",
+      "tags": [
+        "RAG_test",
+        "AI Research",
+        "arXiv"
+      ],
+      "content": "<h2>Generalized Reinforcement Learning for Retriever-Specific Query Rewriter with Unstructured Real-World Documents</h2><p>查看完整的论文分析和摘要。</p>"
+    },
+    {
+      "title": "Fine-Grained Privacy Extraction from Retrieval-Augmented Generation Systems via Knowledge Asymmetry Exploitation",
+      "date": "2025-08-03",
+      "date_formatted": "2025-08-03",
+      "category": "RAG_test",
+      "url": "/posts/2025-08-03-2507.23229v1.html",
+      "filename": "2025-08-03-2507.23229v1.html",
+      "excerpt": "RAG_test 论文: Fine-Grained Privacy Extraction from Retrieval-Augmented Generation Systems via Knowledge Asymmetry Exploitation",
+      "tags": [
+        "RAG_test",
+        "AI Research",
+        "arXiv"
+      ],
+      "content": "<h2>Fine-Grained Privacy Extraction from Retrieval-Augmented Generation Systems via Knowledge Asymmetry Exploitation</h2><p>查看完整的论文分析和摘要。</p>"
+    },
+    {
+      "title": "Zero-Shot Document Understanding using Pseudo Table of Contents-Guided Retrieval-Augmented Generation",
+      "date": "2025-08-03",
+      "date_formatted": "2025-08-03",
+      "category": "RAG_test",
+      "url": "/posts/2025-08-03-2507.23217v1.html",
+      "filename": "2025-08-03-2507.23217v1.html",
+      "excerpt": "RAG_test 论文: Zero-Shot Document Understanding using Pseudo Table of Contents-Guided Retrieval-Augmented Generation",
+      "tags": [
+        "RAG_test",
+        "AI Research",
+        "arXiv"
+      ],
+      "content": "<h2>Zero-Shot Document Understanding using Pseudo Table of Contents-Guided Retrieval-Augmented Generation</h2><p>查看完整的论文分析和摘要。</p>"
     }
   ],
   "stats": {
