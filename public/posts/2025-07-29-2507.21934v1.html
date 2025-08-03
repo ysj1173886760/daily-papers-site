@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Culinary Crossroads: A RAG Framework for Enhancing Diversity in Cross-Cultural Recipe Adaptation - Daily AI Papers</title>
+    <link rel="stylesheet" href="/assets/style.css">
+    <link rel="stylesheet" href="/assets/highlight.css">
+    <link rel="alternate" type="application/rss+xml" title="Daily AI Papers" href="/rss.xml">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        header p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+        }
+        nav {
+            margin-top: 1rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.2);
+        }
+        nav a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .paper-card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+        }
+        .paper-meta {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .paper-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        .paper-summary {
+            color: #444;
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+        .paper-summary h1 {
+            color: #667eea;
+            font-size: 1.4rem;
+            margin: 2rem 0 1rem 0;
+            padding: 0.8rem 1rem;
+            background: linear-gradient(90deg, #f8f9ff 0%, #ffffff 100%);
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary h2 {
+            color: #5a67d8;
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.8rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .paper-summary h3 {
+            color: #4a5568;
+            font-size: 1.1rem;
+            margin: 1.2rem 0 0.6rem 0;
+        }
+        .paper-summary p {
+            margin: 1rem 0;
+            text-align: justify;
+        }
+        .paper-summary ul, .paper-summary ol {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .paper-summary li {
+            margin: 0.5rem 0;
+            line-height: 1.6;
+        }
+        .paper-summary strong {
+            color: #2d3748;
+            font-weight: 600;
+        }
+        .paper-summary em {
+            color: #4a5568;
+            font-style: italic;
+        }
+        .paper-summary blockquote {
+            margin: 1.5rem 0;
+            padding: 1rem 1.5rem;
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            border-radius: 0 6px 6px 0;
+        }
+        .paper-summary code {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', 'Monaco', 'Consolas', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+        }
+        .paper-summary pre {
+            background: #0f172a;
+            color: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid #334155;
+            position: relative;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .paper-summary pre::before {
+            content: 'Python';
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.75rem;
+            border-radius: 0 8px 0 8px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        .paper-summary pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+            border: none;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .paper-summary .codehilite {
+            margin: 1.5rem 0;
+        }
+        .paper-summary .codehilite pre {
+            margin: 0;
+        }
+        /* 语法高亮颜色 */
+        .paper-summary .codehilite .c { color: #6b7280; } /* 注释 */
+        .paper-summary .codehilite .k { color: #8b5cf6; } /* 关键字 */
+        .paper-summary .codehilite .s { color: #10b981; } /* 字符串 */
+        .paper-summary .codehilite .n { color: #f8fafc; } /* 变量名 */
+        .paper-summary .codehilite .o { color: #f59e0b; } /* 操作符 */
+        .paper-summary .codehilite .p { color: #94a3b8; } /* 标点 */
+        .paper-summary .codehilite .m { color: #ef4444; } /* 数字 */
+        .paper-summary .codehilite .nf { color: #06b6d4; } /* 函数名 */
+        .paper-links {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        .paper-links a {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-right: 1rem;
+            font-size: 0.9rem;
+        }
+        .paper-links a:hover {
+            background: #5a6fd8;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Daily AI Papers</h1>
+        <p>2025年08月03日 - RAG_test 论文</p>
+        <nav>
+            <a href="/">首页</a>
+            <a href="/rss.xml">RSS订阅</a>
+            <a href="/about.html">关于</a>
+        </nav>
+    </header>
+
+    <main>
+        <article class="paper-card">
+            <div class="paper-meta">
+                <span>发布: 2025-07-29</span> | 
+                <span>更新: 2025-07-29</span> |
+                <span>分类: cs.CL</span> |
+                <span>arXiv ID: 2507.21934v1</span>
+            </div>
+            
+            <h2 class="paper-title">Culinary Crossroads: A RAG Framework for Enhancing Diversity in Cross-Cultural Recipe Adaptation</h2>
+            
+            <div class="paper-summary">
+                <h1 id="_1">问题定义</h1>
+<p><strong>problem</strong></p>
+<ol>
+<li>论文要解决的具体问题是：在跨文化食谱改编任务中，现有Retrieval-Augmented Generation (RAG)框架无法有效利用多样的上下文输入生成多样的输出，即使提供了丰富的目标文化食谱上下文，仍过度依赖有限部分上下文，导致输出多样性不足。</li>
+<li>问题的重要性体现在：跨文化食谱改编需要满足不同用户的饮食偏好（如 ingredient 替换、烹饪方式调整），多样性输出能更好覆盖用户需求；而现有方法（闭卷LLM或IR）要么缺乏文化相关性，要么无法平衡多样性与质量，因此提升RAG的多样性对实际应用（如个性化食谱推荐）至关重要。</li>
+<li>目前的挑战包括：(1) 文化差异导致的语义鸿沟，使改编后的食谱无法被有效检索（C1）；(2) 检索排序仅考虑相关性，忽略多样性，导致上下文单一（C2）；(3) LLM无法充分利用多样上下文，倾向于关注少数片段（C3）；(4) 生成过程未考虑历史输出，导致重复（C4）。</li>
+</ol>
+<h1 id="_2">研究背景</h1>
+<p><strong>background</strong></p>
+<ol>
+<li>前人研究成果：(a) 跨文化食谱改编：Cao et al. (2024) 将其视为跨文化翻译任务，用prompt-based LLM实现；Hu et al. (2024) 提出跨文化食谱检索框架，解决LLM文化知识不足问题。(b) 多样性生成：IR领域用MMR（Carbonell and Goldstein, 1998）重排序提升多样性；RAG领域主要关注知识密集型任务（如问答），未针对多答案创造性任务。</li>
+<li>现有方法的优点和局限性：(a) 闭卷LLM（如Llama3.1）：生成质量较高，但文化相关性和多样性不足；(b) IR方法（如CARROT）：能提供文化相关食谱，但源食谱保留率低；(c) 标准RAG：结合了IR的文化相关性和LLM的生成能力，但无法利用上下文多样性生成多样输出，多样性甚至低于闭卷LLM。</li>
+<li>当前技术水平：跨文化食谱改编已能实现基本的文化对齐，但多样性生成仍是瓶颈；RAG在知识密集型任务中表现出色，但在需要创造性和多答案的任务（如食谱改编）中，其多样性生成能力未被充分探索。</li>
+</ol>
+<h1 id="_3">创新来源</h1>
+<p><strong>idea_source</strong></p>
+<ol>
+<li>核心思路来自对RAG在多答案任务中的局限性的观察：标准RAG即使输入多样上下文，仍倾向于生成单一输出，原因是上下文利用效率低且未考虑历史输出。作者认为需要从检索（提升上下文多样性）和生成（促进多样输出）两方面改进。</li>
+<li>灵感来自IR领域的多样性重排序（如MMR）和对比学习：(a) MMR用于平衡相关性与多样性，作者扩展其考虑历史输出；(b) 对比上下文注入灵感来自避免重复生成，类似对比学习中的负样本。</li>
+<li>作者通过分析RAG的局限性（如C1-C4），逐步推导解决方案：首先解决检索中的文化鸿沟（查询重写），然后提升检索结果多样性（多样性重排序），接着改进上下文利用（动态上下文组织），最后避免重复生成（对比上下文注入）。</li>
+</ol>
+<h1 id="_4">解决方案</h1>
+<p><strong>solution</strong></p>
+<ol>
+<li>论文提出的具体技术方案是CARRIAGE（Cultural-Aware Recipe Retrieval Augmented Generation），一个 plug-and-play 的RAG框架，旨在提升跨文化食谱改编的多样性，同时保持质量。核心组件包括：(a) 查询重写（解决C1）；(b) 多样性重排序（解决C2）；(c) 动态上下文组织（解决C3）；(d) 对比上下文注入（解决C4）。</li>
+<li>关键技术细节和实现要点：<ul>
+<li><strong>查询重写</strong>：用LLM生成源食谱的替代标题（如基于内容重写标题、适应目标文化命名习惯），解决文化差异导致的检索遗漏。</li>
+<li><strong>多样性重排序</strong>：扩展经典MMR算法，考虑检索候选与已选结果、历史生成食谱的相似性，平衡相关性（Rel）与多样性（Sim），公式为：<code>Score(Di) = λ·Rel(Di) - (1-λ)·max(Sim(Di, Dj))</code>（Dj来自已选结果或历史输出）。</li>
+<li><strong>动态上下文组织</strong>：对检索到的k个食谱，用滑动窗口（大小w）选择子集作为上下文，不同生成轮次使用不同子集，促进多样输出，公式为：<code>C_reference(t) = {D_{tw+1}, ..., D_{(t+1)w}}</code>（t为生成轮次）。</li>
+<li><strong>对比上下文注入</strong>：在生成时注入之前生成的食谱，提示LLM避免相似输出，例如：“请确保生成的食谱与历史中的食谱不同”。</li>
+</ul>
+</li>
+</ol>
+<h1 id="_5">实验验证</h1>
+<p><strong>experiment</strong></p>
+<ol>
+<li>实验设计：(a) 任务：将拉丁美洲食谱改编为西班牙食谱；(b) 对比方法：闭卷LLM（Llama3.1-8B、Qwen2.5-7B等）、IR方法（JINA-ES、CARROT）、RAG方法（Vanilla-LLaMA RAG、CARROT-LLaMA RAG）；(c) 变量：温度（0.1-1.0）、MMR平衡因子（λ=0.2-0.8）、滑动窗口大小（w=1）。</li>
+<li>数据集与基准：(a) 数据集：RecetasDeLaAbuel@（20,447个西班牙食谱，500个拉丁美洲源食谱）；(b) 基准：闭卷LLM（Llama3.1、Qwen2.5、Gemma2）、IR方法（JINA-ES、CARROT、CARROT-MMR）、RAG方法（Vanilla-LLaMA RAG、CARROT-LLaMA RAG）。</li>
+<li>评估指标：(a) 多样性：词汇多样性（Unique-n，n=1-3）、 ingredient 多样性（标准化 ingredient 的 unique 比例）、语义多样性（Sentence-BERT嵌入的平均 pairwise 余弦距离）；(b) 质量：文化 appropriateness（CultureScore，BERT分类器预测的目标文化概率）、源保留（BERTScore，与源食谱的语义相似性）。</li>
+<li>实验结果：(a) CARRIAGE在多样性（如语义多样性0.269 vs 闭卷LLM的0.232）和质量（如CultureScore0.463 vs 闭卷LLM的0.451）间达到帕累托最优；(b) 优于现有RAG方法（如Vanilla RAG的语义多样性0.155）；(c) 温度对多样性影响最大，λ次之，top-k/top-p影响小。</li>
+</ol>
+<h1 id="_6">研究结论</h1>
+<p><strong>conclusion</strong></p>
+<ol>
+<li>重要结论：(a) 标准RAG在多答案任务（如食谱改编）中，即使输入多样上下文，仍无法生成多样输出；(b) CARRIAGE通过检索多样性提升和生成多样性促进，有效解决了这一问题；(c) 多样性与质量间存在权衡，但CARRIAGE实现了帕累托最优。</li>
+<li>主要贡献：(a) 首次探索RAG在跨文化食谱改编中的多样性问题，提出CARRIAGE框架；(b) 提出CultureScore指标，用于评估食谱的文化 appropriateness；(c) 验证了RAG在多答案任务中的局限性，为后续研究提供了方向。</li>
+<li>对领域发展的意义：(a) 为跨文化食谱改编提供了一个兼顾多样性与质量的解决方案；(b) 扩展了RAG的应用场景（从知识密集型到创造性任务）；(c) 为其他多答案任务（如对话生成、创意写作）的多样性生成提供了参考。</li>
+</ol>
+<h1 id="_7">未来展望</h1>
+<p><strong>future_work</strong></p>
+<ol>
+<li>局限性：(a) 仅针对西班牙与拉丁美洲食谱，未扩展到更多文化；(b) 使用的LLM是开源小型模型，未验证大型 proprietary 模型；(c) 未进行人类评估，依赖自动指标；(d) 全局 ingredient 多样性仍需提升（生成食谱依赖高频 ingredient）。</li>
+<li>改进方向：(a) 扩展到更多文化（如亚洲、非洲），验证框架的通用性；(b) 使用更大的LLM（如Llama3.1-70B），提升文化知识和生成质量；(c) 结合人类评估，更准确地评估食谱的多样性和质量；(d) 提升全局 ingredient 多样性，减少对高频 ingredient 的依赖。</li>
+<li>深入探索的问题：(a) 如何进一步提升RAG对多样上下文的利用效率；(b) 如何平衡局部（per-input）多样性与全局（across-input）多样性；(c) 如何将用户偏好融入多样性生成（如素食、 gluten-free 等）。</li>
+</ol>
+<h1 id="_8">核心算法</h1>
+<p>pseudocode: |</p>
+<div class="codehilite"><pre><span></span><code>  <span class="c1"># CARRIAGE核心算法流程</span>
+  <span class="n">function</span> <span class="n">CARRIAGE</span><span class="p">(</span><span class="n">source_recipe</span><span class="p">,</span> <span class="n">target_culture</span><span class="p">,</span> <span class="n">retrieval_corpus</span><span class="p">,</span> <span class="n">llm</span><span class="p">,</span> <span class="n">max_generations</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+      <span class="c1"># 1. 查询重写：生成源食谱的替代标题</span>
+      <span class="n">rewritten_queries</span> <span class="o">=</span> <span class="p">[]</span>
+      <span class="n">rewritten_queries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rewrite_title_by_content</span><span class="p">(</span><span class="n">source_recipe</span><span class="p">,</span> <span class="n">llm</span><span class="p">))</span>  <span class="c1"># 基于内容重写标题</span>
+      <span class="n">rewritten_queries</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rewrite_title_by_culture</span><span class="p">(</span><span class="n">source_recipe</span><span class="p">,</span> <span class="n">target_culture</span><span class="p">,</span> <span class="n">llm</span><span class="p">))</span>  <span class="c1"># 适应目标文化重写标题</span>
+      <span class="n">queries</span> <span class="o">=</span> <span class="p">[</span><span class="n">source_recipe</span><span class="o">.</span><span class="n">title</span><span class="p">]</span> <span class="o">+</span> <span class="n">rewritten_queries</span>  <span class="c1"># 合并原始标题与重写标题</span>
+
+      <span class="c1"># 2. 检索候选食谱：用所有查询检索目标文化食谱</span>
+      <span class="n">candidate_recipes</span> <span class="o">=</span> <span class="n">retrieve_candidates</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="n">retrieval_corpus</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>  <span class="c1"># 检索top-20候选</span>
+
+      <span class="c1"># 3. 多样性重排序：平衡相关性与多样性（考虑历史输出）</span>
+      <span class="n">selected_recipes</span> <span class="o">=</span> <span class="p">[]</span>
+      <span class="n">history_recipes</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># 历史生成的食谱</span>
+      <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">top_k</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>  <span class="c1"># 选择top-5食谱</span>
+          <span class="n">best_recipe</span> <span class="o">=</span> <span class="n">argmax</span><span class="p">(</span>
+              <span class="n">λ</span> <span class="o">*</span> <span class="n">relevance</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">queries</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">λ</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">similarity</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">selected_recipes</span> <span class="o">+</span> <span class="n">history_recipes</span><span class="p">)</span>
+              <span class="k">for</span> <span class="n">recipe</span> <span class="ow">in</span> <span class="n">candidate_recipes</span> <span class="k">if</span> <span class="n">recipe</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">selected_recipes</span>
+          <span class="p">)</span>
+          <span class="n">selected_recipes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best_recipe</span><span class="p">)</span>
+
+      <span class="c1"># 4. 动态上下文组织：滑动窗口选择上下文子集</span>
+      <span class="n">context_window_size</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 窗口大小，可调整</span>
+      <span class="n">context_subsets</span> <span class="o">=</span> <span class="p">[]</span>
+      <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_generations</span><span class="p">):</span>
+          <span class="n">start</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">context_window_size</span>
+          <span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">context_window_size</span>
+          <span class="k">if</span> <span class="n">end</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_recipes</span><span class="p">):</span>
+              <span class="k">break</span>
+          <span class="n">context_subsets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">selected_recipes</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">])</span>
+
+      <span class="c1"># 5. 对比上下文注入与生成：循环生成多样食谱</span>
+      <span class="n">generated_recipes</span> <span class="o">=</span> <span class="p">[]</span>
+      <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_generations</span><span class="p">):</span>
+          <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">context_subsets</span><span class="p">):</span>
+              <span class="k">break</span>
+          <span class="c1"># 动态选择上下文</span>
+          <span class="n">current_context</span> <span class="o">=</span> <span class="n">context_subsets</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+          <span class="c1"># 注入历史食谱（对比上下文）</span>
+          <span class="n">history_str</span> <span class="o">=</span> <span class="n">format_history</span><span class="p">(</span><span class="n">generated_recipes</span><span class="p">)</span>  <span class="c1"># 将历史食谱格式化为字符串</span>
+          <span class="c1"># 构建prompt</span>
+          <span class="n">prompt</span> <span class="o">=</span> <span class="n">build_prompt</span><span class="p">(</span><span class="n">source_recipe</span><span class="p">,</span> <span class="n">current_context</span><span class="p">,</span> <span class="n">history_str</span><span class="p">,</span> <span class="n">target_culture</span><span class="p">)</span>
+          <span class="c1"># 生成食谱</span>
+          <span class="n">generated_recipe</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+          <span class="c1"># 验证格式与质量（可选）</span>
+          <span class="k">if</span> <span class="n">is_valid_recipe</span><span class="p">(</span><span class="n">generated_recipe</span><span class="p">):</span>
+              <span class="n">generated_recipes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generated_recipe</span><span class="p">)</span>
+              <span class="n">history_recipes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">generated_recipe</span><span class="p">)</span>  <span class="c1"># 更新历史</span>
+
+      <span class="k">return</span> <span class="n">generated_recipes</span>
+
+  <span class="c1"># 辅助函数（示例）</span>
+  <span class="n">function</span> <span class="n">rewrite_title_by_content</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">llm</span><span class="p">):</span>
+      <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;请为以下食谱生成一个简短的西班牙标题：</span><span class="si">{</span><span class="n">recipe</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span>
+      <span class="k">return</span> <span class="n">llm</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+  <span class="n">function</span> <span class="n">rewrite_title_by_culture</span><span class="p">(</span><span class="n">recipe</span><span class="p">,</span> <span class="n">target_culture</span><span class="p">,</span> <span class="n">llm</span><span class="p">):</span>
+      <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;请将食谱标题&#39;</span><span class="si">{</span><span class="n">recipe</span><span class="o">.</span><span class="n">title</span><span class="si">}</span><span class="s2">&#39;重写为符合</span><span class="si">{</span><span class="n">target_culture</span><span class="si">}</span><span class="s2">命名习惯的标题：&quot;</span>
+      <span class="k">return</span> <span class="n">llm</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">max_tokens</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+  <span class="n">function</span> <span class="n">retrieve_candidates</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="n">corpus</span><span class="p">,</span> <span class="n">top_k</span><span class="p">):</span>
+      <span class="c1"># 用每个查询检索，合并结果并去重</span>
+      <span class="n">candidates</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+      <span class="k">for</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">queries</span><span class="p">:</span>
+          <span class="n">candidates</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dense_retrieval</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">corpus</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="n">top_k</span><span class="p">))</span>
+      <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">candidates</span><span class="p">)[:</span><span class="n">top_k</span><span class="p">]</span>
+
+  <span class="n">function</span> <span class="n">build_prompt</span><span class="p">(</span><span class="n">source_recipe</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">history</span><span class="p">,</span> <span class="n">target_culture</span><span class="p">):</span>
+      <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">      将以下食谱改编为符合</span><span class="si">{</span><span class="n">target_culture</span><span class="si">}</span><span class="s2">文化的食谱，确保与检索到的食谱风格一致，并避免与历史食谱相似。</span>
+<span class="s2">      检索到的相关食谱：</span><span class="si">{</span><span class="n">format_context</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="si">}</span>
+<span class="s2">      源食谱：</span><span class="si">{</span><span class="n">source_recipe</span><span class="si">}</span>
+<span class="s2">      历史食谱（避免相似）：</span><span class="si">{</span><span class="n">history</span><span class="si">}</span>
+<span class="s2">      输出格式要求：Nombre: [标题]</span><span class="se">\n</span><span class="s2">Ingredientes: [食材]</span><span class="se">\n</span><span class="s2">Pasos: [步骤]</span>
+<span class="s2">      &quot;&quot;&quot;</span>
+</code></pre></div>
+            </div>
+            
+            <div class="paper-links">
+                <a href="http://arxiv.org/abs/2507.21934" target="_blank">arXiv原文</a>
+                <a href="http://arxiv.org/pdf/2507.21934" target="_blank">PDF下载</a>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>Generated by Daily Paper Processing System | Template: V2</p>
+        <p>数据来源: arXiv | 分析引擎: Large Language Model</p>
+    </footer>
+</body>
+</html>
