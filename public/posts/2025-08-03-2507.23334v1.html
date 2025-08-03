@@ -368,71 +368,76 @@
 </li>
 </ol>
 <h1 id="_8">核心算法</h1>
-<p><strong>pseudocode</strong></p>
-<p># MusT-RAG核心算法流程（RAG推理+RAG微调）</p>
-<p># 1. 索引阶段（构建MusWikiDB）<br />
-  def build_muswikidb(corpus_path, chunk_size=128, overlap=0.1):<br />
-      # 读取音乐相关文本 corpus（来自维基百科的7类内容）<br />
-      corpus = load_corpus(corpus_path)<br />
-      # 过滤短 sections（&lt;60 token）<br />
-      filtered_corpus = [doc for doc in corpus if len(doc) &gt;= 60]<br />
-      # Chunk 文本：将每个 doc 分割为 chunk_size 的片段，相邻 chunk 重叠 overlap*chunk_size token<br />
-      chunks = []<br />
-      for doc in filtered_corpus:<br />
-          start = 0<br />
-          while start &lt; len(doc):<br />
-              end = start + chunk_size<br />
-              chunk = doc[start:end]<br />
-              chunks.append(chunk)<br />
-              start = end - int(chunk_size * overlap)<br />
-      # 使用BM25构建索引<br />
-      bm25 = BM25()<br />
-      bm25.index(chunks)<br />
-      return bm25, chunks</p>
-<p># 2. RAG推理阶段<br />
-  def rag_inference(question, bm25, chunks, llm, k=8):<br />
-      # 检索：计算问题与所有chunk的BM25相似度，选取top-k chunk<br />
-      similarities = bm25.compute_similarity(question, chunks)<br />
-      top_k_indices = sorted(range(len(similarities)), key=lambda i: similarities[i], reverse=True)[:k]<br />
-      context = [chunks[i] for i in top_k_indices]<br />
-      # 构建prompt：拼接上下文与问题<br />
-      prompt = f"Context: {' '.join(context)} \n Question: {question} \n Answer:"<br />
-      # 生成答案：输入LLM生成<br />
-      answer = llm.generate(prompt)<br />
-      return answer</p>
-<p># 3. RAG-style微调阶段<br />
-  def rag_fine_tune(llm, train_data, epochs=1, batch_size=2, lr=3e-5):<br />
-      # train_data: 列表，每个元素是（context, question, answer）三元组<br />
-      # 构建训练样本：将context与question拼接为输入，answer为目标<br />
-      train_samples = []<br />
-      for context, question, answer in train_data:<br />
-          input_text = f"Context: {context} \n Question: {question}"<br />
-          train_samples.append((input_text, answer))<br />
-      # 使用LoRA微调LLM<br />
-      lora_config = LoRAConfig(r=16, alpha=16, dropout=0.1)<br />
-      model = prepare_model_for_kbit_training(llm)<br />
-      model = get_peft_model(model, lora_config)<br />
-      # 训练循环<br />
-      for epoch in range(epochs):<br />
-          for batch in batch_generator(train_samples, batch_size):<br />
-              inputs, targets = batch<br />
-              # 前向传播：计算条件生成损失<br />
-              outputs = model(inputs, labels=targets)<br />
-              loss = outputs.loss<br />
-              # 反向传播与优化<br />
-              loss.backward()<br />
-              optimizer.step()<br />
-              optimizer.zero_grad()<br />
-      return model</p>
-<p># 示例调用<br />
-  # 构建MusWikiDB<br />
-  bm25_index, chunks = build_muswikidb("music_corpus/")<br />
-  # RAG推理<br />
-  question = "Taylor Swift的首张专辑是什么？"<br />
-  answer = rag_inference(question, bm25_index, chunks, Llama3.1_8B_Instruct())<br />
-  # RAG微调<br />
-  train_data = load_rag_train_data("rag_train_data.json")  # （context, question, answer）三元组<br />
-  fine_tuned_model = rag_fine_tune(Llama3.1_8B_Instruct(), train_data)</p>
+<p>pseudocode: |</p>
+<div class="codehilite"><pre><span></span><code>  <span class="c1"># MusT-RAG核心算法流程（RAG推理+RAG微调）</span>
+
+  <span class="c1"># 1. 索引阶段（构建MusWikiDB）</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">build_muswikidb</span><span class="p">(</span><span class="n">corpus_path</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">overlap</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+      <span class="c1"># 读取音乐相关文本 corpus（来自维基百科的7类内容）</span>
+      <span class="n">corpus</span> <span class="o">=</span> <span class="n">load_corpus</span><span class="p">(</span><span class="n">corpus_path</span><span class="p">)</span>
+      <span class="c1"># 过滤短 sections（&lt;60 token）</span>
+      <span class="n">filtered_corpus</span> <span class="o">=</span> <span class="p">[</span><span class="n">doc</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">corpus</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">60</span><span class="p">]</span>
+      <span class="c1"># Chunk 文本：将每个 doc 分割为 chunk_size 的片段，相邻 chunk 重叠 overlap*chunk_size token</span>
+      <span class="n">chunks</span> <span class="o">=</span> <span class="p">[]</span>
+      <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">filtered_corpus</span><span class="p">:</span>
+          <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+          <span class="k">while</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="p">):</span>
+              <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">chunk_size</span>
+              <span class="n">chunk</span> <span class="o">=</span> <span class="n">doc</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span>
+              <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+              <span class="n">start</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">chunk_size</span> <span class="o">*</span> <span class="n">overlap</span><span class="p">)</span>
+      <span class="c1"># 使用BM25构建索引</span>
+      <span class="n">bm25</span> <span class="o">=</span> <span class="n">BM25</span><span class="p">()</span>
+      <span class="n">bm25</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">chunks</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">bm25</span><span class="p">,</span> <span class="n">chunks</span>
+
+  <span class="c1"># 2. RAG推理阶段</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">rag_inference</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">bm25</span><span class="p">,</span> <span class="n">chunks</span><span class="p">,</span> <span class="n">llm</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">8</span><span class="p">):</span>
+      <span class="c1"># 检索：计算问题与所有chunk的BM25相似度，选取top-k chunk</span>
+      <span class="n">similarities</span> <span class="o">=</span> <span class="n">bm25</span><span class="o">.</span><span class="n">compute_similarity</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">chunks</span><span class="p">)</span>
+      <span class="n">top_k_indices</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">similarities</span><span class="p">)),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">similarities</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)[:</span><span class="n">k</span><span class="p">]</span>
+      <span class="n">context</span> <span class="o">=</span> <span class="p">[</span><span class="n">chunks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top_k_indices</span><span class="p">]</span>
+      <span class="c1"># 构建prompt：拼接上下文与问题</span>
+      <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Context: </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> Question: </span><span class="si">{</span><span class="n">question</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> Answer:&quot;</span>
+      <span class="c1"># 生成答案：输入LLM生成</span>
+      <span class="n">answer</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+      <span class="k">return</span> <span class="n">answer</span>
+
+  <span class="c1"># 3. RAG-style微调阶段</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">rag_fine_tune</span><span class="p">(</span><span class="n">llm</span><span class="p">,</span> <span class="n">train_data</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">3e-5</span><span class="p">):</span>
+      <span class="c1"># train_data: 列表，每个元素是（context, question, answer）三元组</span>
+      <span class="c1"># 构建训练样本：将context与question拼接为输入，answer为目标</span>
+      <span class="n">train_samples</span> <span class="o">=</span> <span class="p">[]</span>
+      <span class="k">for</span> <span class="n">context</span><span class="p">,</span> <span class="n">question</span><span class="p">,</span> <span class="n">answer</span> <span class="ow">in</span> <span class="n">train_data</span><span class="p">:</span>
+          <span class="n">input_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Context: </span><span class="si">{</span><span class="n">context</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2"> Question: </span><span class="si">{</span><span class="n">question</span><span class="si">}</span><span class="s2">&quot;</span>
+          <span class="n">train_samples</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">input_text</span><span class="p">,</span> <span class="n">answer</span><span class="p">))</span>
+      <span class="c1"># 使用LoRA微调LLM</span>
+      <span class="n">lora_config</span> <span class="o">=</span> <span class="n">LoRAConfig</span><span class="p">(</span><span class="n">r</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+      <span class="n">model</span> <span class="o">=</span> <span class="n">prepare_model_for_kbit_training</span><span class="p">(</span><span class="n">llm</span><span class="p">)</span>
+      <span class="n">model</span> <span class="o">=</span> <span class="n">get_peft_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">lora_config</span><span class="p">)</span>
+      <span class="c1"># 训练循环</span>
+      <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+          <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">batch_generator</span><span class="p">(</span><span class="n">train_samples</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+              <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">batch</span>
+              <span class="c1"># 前向传播：计算条件生成损失</span>
+              <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">targets</span><span class="p">)</span>
+              <span class="n">loss</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">loss</span>
+              <span class="c1"># 反向传播与优化</span>
+              <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+              <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+              <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+      <span class="k">return</span> <span class="n">model</span>
+
+  <span class="c1"># 示例调用</span>
+  <span class="c1"># 构建MusWikiDB</span>
+  <span class="n">bm25_index</span><span class="p">,</span> <span class="n">chunks</span> <span class="o">=</span> <span class="n">build_muswikidb</span><span class="p">(</span><span class="s2">&quot;music_corpus/&quot;</span><span class="p">)</span>
+  <span class="c1"># RAG推理</span>
+  <span class="n">question</span> <span class="o">=</span> <span class="s2">&quot;Taylor Swift的首张专辑是什么？&quot;</span>
+  <span class="n">answer</span> <span class="o">=</span> <span class="n">rag_inference</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">bm25_index</span><span class="p">,</span> <span class="n">chunks</span><span class="p">,</span> <span class="n">Llama3</span><span class="mf">.1_8</span><span class="n">B_Instruct</span><span class="p">())</span>
+  <span class="c1"># RAG微调</span>
+  <span class="n">train_data</span> <span class="o">=</span> <span class="n">load_rag_train_data</span><span class="p">(</span><span class="s2">&quot;rag_train_data.json&quot;</span><span class="p">)</span>  <span class="c1"># （context, question, answer）三元组</span>
+  <span class="n">fine_tuned_model</span> <span class="o">=</span> <span class="n">rag_fine_tune</span><span class="p">(</span><span class="n">Llama3</span><span class="mf">.1_8</span><span class="n">B_Instruct</span><span class="p">(),</span> <span class="n">train_data</span><span class="p">)</span>
+</code></pre></div>
             </div>
             
             <div class="paper-links">
